@@ -4,6 +4,11 @@ import java.io.File
 import java.nio.file.{Files, Paths}
 
 case class FilesInit() {
+  /*
+   * initSgitRepository:
+   * Method that create all the necessary folders for sgit
+   * Inform the user with a warning message if sommething went wrong (i.e .sgit already exists) or Inform the user that all is successful
+   */
 
   def initSgitRepository() : Unit = {
     val listFolders = List("objects", "branches", "config", "refs/heads", "refs/tags")
