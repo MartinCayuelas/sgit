@@ -23,4 +23,8 @@ case class Tree() {
     newContent::get_contentTree()
   }
 
+  def createId(): String = {
+
+  }
+
 }

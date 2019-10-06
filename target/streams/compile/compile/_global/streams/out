@@ -1,11 +1,23 @@
-[0m[[0m[31merror[0m] [0m[0m/home/martin/Bureau/sgit/src/main/scala/app/Launcher.scala:56:8: type mismatch;[0m
-[0m[[0m[31merror[0m] [0m[0m found   : String("-p")[0m
-[0m[[0m[31merror[0m] [0m[0m required: Array[String][0m
-[0m[[0m[31merror[0m] [0m[0m  case "-p" => println("log -p")[0m
-[0m[[0m[31merror[0m] [0m[0m       ^[0m
-[0m[[0m[31merror[0m] [0m[0m/home/martin/Bureau/sgit/src/main/scala/app/Launcher.scala:57:8: type mismatch;[0m
-[0m[[0m[31merror[0m] [0m[0m found   : String("--stat")[0m
-[0m[[0m[31merror[0m] [0m[0m required: Array[String][0m
-[0m[[0m[31merror[0m] [0m[0m  case "--stat" => println("log --stat")[0m
-[0m[[0m[31merror[0m] [0m[0m       ^[0m
-[0m[[0m[31merror[0m] [0m[0mtwo errors found[0m
+[0m[[0m[31merror[0m] [0m[0m/home/martin/Bureau/sgit/src/main/scala/app/FileIO.scala:35:3: type mismatch;[0m
+[0m[[0m[31merror[0m] [0m[0m found   : Unit[0m
+[0m[[0m[31merror[0m] [0m[0m required: String[0m
+[0m[[0m[31merror[0m] [0m[0m  }[0m
+[0m[[0m[31merror[0m] [0m[0m  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/martin/Bureau/sgit/src/main/scala/app/Launcher.scala:3:12: object CommandsSgit is not a member of package app[0m
+[0m[[0m[31merror[0m] [0m[0mimport app.CommandsSgit.{init,add}[0m
+[0m[[0m[31merror[0m] [0m[0m           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/martin/Bureau/sgit/src/main/scala/app/Launcher.scala:14:29: not found: value init[0m
+[0m[[0m[31merror[0m] [0m[0m      case Array("init") => init()[0m
+[0m[[0m[31merror[0m] [0m[0m                            ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/martin/Bureau/sgit/src/main/scala/app/Launcher.scala:16:7: not found: value /[0m
+[0m[[0m[31merror[0m] [0m[0m      /case Array("add", _) => add(args)[0m
+[0m[[0m[31merror[0m] [0m[0m      ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/martin/Bureau/sgit/src/main/scala/app/Launcher.scala:16:32: not found: value add[0m
+[0m[[0m[31merror[0m] [0m[0m      /case Array("add", _) => add(args)[0m
+[0m[[0m[31merror[0m] [0m[0m                               ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/martin/Bureau/sgit/src/main/scala/app/Tree.scala:26:28: type mismatch;[0m
+[0m[[0m[31merror[0m] [0m[0m found   : Unit[0m
+[0m[[0m[31merror[0m] [0m[0m required: String[0m
+[0m[[0m[31merror[0m] [0m[0m  def createId(): String = {[0m
+[0m[[0m[31merror[0m] [0m[0m                           ^[0m
+[0m[[0m[31merror[0m] [0m[0m6 errors found[0m

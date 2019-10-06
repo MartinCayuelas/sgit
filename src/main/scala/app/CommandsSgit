@@ -26,12 +26,34 @@ object CommandsSgit {
 
   def addRoutine(f: File) : Unit = {
     if(f.isFile){
-
+      FileIO.createBlob(f)
     }else{
       recursionFiles(f, new Tree())
     }
   }
+
+  
   def recursionFiles(f: File, currentTree: Tree): Unit = {
+    val path = f.getCanonicalPath
+    val listOfFiles = FileManager.getListOfAll(path)
+
+    listOfFiles.map(elem =>{
+      if(elem.isDirectory){
+        val newTree = new Tree()
+
+        recursionFiles(elem, newTree)
+        //AddTree
+        currentTree.set_contentTree()
+
+      }else{
+        println(elem)
+      }
+    })
+
+
+    // Tree part
+
+
 
   }
   /*
