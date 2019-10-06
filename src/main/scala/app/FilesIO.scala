@@ -11,7 +11,7 @@ object FilesIO {
    */
 
   def initSgitRepository() : Unit = {
-    val listFolders = List("objects", "objects/blobs", "objects/trees","objects/commits", "refs/heads", "refs/tags","logs")
+    val listFolders = List("objects", "objects/blobs", "objects/trees","objects/commits", "refs","refs/heads", "refs/tags","logs")
     val listFiles = List("HEAD","STAGE_AREA")
     val path = Paths.get("").toAbsolutePath().toString()
     val sgitPath = path + File.separator +  ".sgit"
@@ -21,6 +21,7 @@ object FilesIO {
       sgitRepository.mkdir()
       listFolders.map( folder => new File(sgitPath + File.separator +  folder).mkdir())
       listFiles.map(file => new File(sgitPath + File.separator + file).createNewFile())
+      new File(Paths.get(".sgit").toAbsolutePath().toString().concat("/refs/heads/master")).createNewFile()
       writeHead()
       println(s"Empty Git repository initialized in ${path}/.sgit/")
     } else {
@@ -81,6 +82,7 @@ object FilesIO {
 
   }
 
+
   def writeBlob(pathB: String, contentblob: String): Unit = {
     val path = Paths.get(pathB).toAbsolutePath().toString()
 
@@ -95,5 +97,52 @@ object FilesIO {
     val bw = new BufferedWriter(new FileWriter(file,true))
     bw.write(content)
     bw.close()
+  }
+
+  /*
+  Branches--------------
+   */
+
+  def createBranch(nameBranch: String): Unit = {
+    val path = Paths.get(s".sgit/refs/heads/${nameBranch}")
+    if(Files.notExists(path)){
+      new File(path.toString).createNewFile()
+    }else {
+      println(s"Fatal: a branch named ${nameBranch} is exits already")
+    }
+  }
+  def getCurrentBranch(): String = {
+    val path = Paths.get(".sgit/").toAbsolutePath().toString().concat("/HEAD")
+    val source = scala.io.Source.fromFile(path)
+    val content = try source.mkString finally source.close()
+    val pattern = "([A-Za-z]+)(:) ([A-Za-z]+)(/)([A-Za-z]+)(/)([A-Za-z]+)".r
+    val pattern(ref, a, refs,b,heads,c,currentBranch) = content
+    return currentBranch
+
+  }
+  def displayAllBranches(): Unit = {
+    val currentBranch = getCurrentBranch()
+    val listOfBranches = FilesManager.getListOfFiles(Paths.get(".sgit/refs/heads").toAbsolutePath.toString)
+    listOfBranches.map(b =>{
+      if(currentBranch.equals(b.getName)){
+        println(s"* ${b.getName}")
+      }else{
+        println(s"  ${b.getName}")
+      }
+    })
+  }
+
+  /*
+  Tags------------------------
+   */
+
+
+  def createTag(nameTag: String): Unit = {
+    if(Files.notExists(Paths.get(Paths.get(".sgit/refs/tags").toAbsolutePath().toString()+File.separator+nameTag))){
+      val path =Paths.get(".sgit/refs/heads").toAbsolutePath().toString()
+      new File(path + File.separator +  nameTag).createNewFile()
+    }else {
+      println(s"Fatal: a branch named ${nameTag} is exits already")
+    }
   }
 }

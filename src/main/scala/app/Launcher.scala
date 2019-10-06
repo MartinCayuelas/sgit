@@ -1,6 +1,6 @@
 package app
 
-import app.CommandsForSgit.{init,add}
+import app.CommandsForSgit.{init,add,branch}
 
 object Launcher extends App {
 
@@ -61,11 +61,7 @@ object Launcher extends App {
     else println("Too many arguments")
   }
 
-  def branch(args: Array[String]): Unit = {
-    if ((args.length == 2) && (args(1).equals("-av"))) println(s"List of branches and tags")
-    else if (args.length == 2) println(s"new Branch '${args(1)}' created")
-    else println("Number of arguments not supported for the command 'branch'.")
-  }
+
   def checkout(args: Array[String]): Unit = {
     if (args.length == 2) println(s"Tipping on the branch ${args(1)}")
     else  println(s"Number of arguments not supported for the command '${args(0)}'.")

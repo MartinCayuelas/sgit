@@ -1,19 +1,4 @@
-[0m[[0m[31merror[0m] [0m[0m/home/martin/Bureau/sgit/src/main/scala/app/CommandsForSgit.scala:13:5: not found: value FileIO[0m
-[0m[[0m[31merror[0m] [0m[0m    FileIO.initSgitRepository()[0m
-[0m[[0m[31merror[0m] [0m[0m    ^[0m
-[0m[[0m[31merror[0m] [0m[0m/home/martin/Bureau/sgit/src/main/scala/app/CommandsForSgit.scala:41:7: not found: value FileIO[0m
-[0m[[0m[31merror[0m] [0m[0m      FileIO.createBlob(f)[0m
-[0m[[0m[31merror[0m] [0m[0m      ^[0m
-[0m[[0m[31merror[0m] [0m[0m/home/martin/Bureau/sgit/src/main/scala/app/CommandsForSgit.scala:50:23: not found: value FileManager[0m
-[0m[[0m[31merror[0m] [0m[0m    val listOfFiles = FileManager.getListOfAll(path)[0m
-[0m[[0m[31merror[0m] [0m[0m                      ^[0m
-[0m[[0m[31merror[0m] [0m[0m/home/martin/Bureau/sgit/src/main/scala/app/CommandsForSgit.scala:72:5: not found: value FileIO[0m
-[0m[[0m[31merror[0m] [0m[0m    FileIO.addTree(currentTree.get_idTree(),currentTree.get_contentTree())[0m
-[0m[[0m[31merror[0m] [0m[0m    ^[0m
-[0m[[0m[31merror[0m] [0m[0m/home/martin/Bureau/sgit/src/main/scala/app/FilesIO.scala:35:18: not found: value Helpers[0m
-[0m[[0m[31merror[0m] [0m[0m    val idSha1 = Helpers.convertToSha1(content)[0m
-[0m[[0m[31merror[0m] [0m[0m                 ^[0m
-[0m[[0m[31merror[0m] [0m[0m/home/martin/Bureau/sgit/src/main/scala/app/Tree.scala:28:18: not found: value Helpers[0m
-[0m[[0m[31merror[0m] [0m[0m    val idSha1 = Helpers.convertToSha1(idToConvert)[0m
-[0m[[0m[31merror[0m] [0m[0m                 ^[0m
-[0m[[0m[31merror[0m] [0m[0m6 errors found[0m
+[0m[[0m[31merror[0m] [0m[0m/home/martin/Bureau/sgit/src/main/scala/app/CommandsForSgit.scala:104:1: identifier expected but '}' found.[0m
+[0m[[0m[31merror[0m] [0m[0m}[0m
+[0m[[0m[31merror[0m] [0m[0m^[0m
+[0m[[0m[31merror[0m] [0m[0mone error found[0m
