@@ -3,7 +3,7 @@ package app
 import java.io.{BufferedWriter, File, FileWriter}
 import java.nio.file.{Files, Paths}
 
-object FileIO {
+object FilesIO {
   /*
    * initSgitRepository:
    * Method that create all the necessary folders for sgit
@@ -11,7 +11,7 @@ object FileIO {
    */
 
   def initSgitRepository() : Unit = {
-    val listFolders = List("objects", "objects/blobs", "objects/trees","objects/commits ", "refs/heads", "refs/tags","logs")
+    val listFolders = List("objects", "objects/blobs", "objects/trees","objects/commits", "refs/heads", "refs/tags","logs")
     val listFiles = List("HEAD","STAGE_AREA")
     val path = Paths.get("").toAbsolutePath().toString()
     val sgitPath = path + File.separator +  ".sgit"
@@ -30,9 +30,10 @@ object FileIO {
 
 
   def createBlob(f: File): String = {
-    val source = scala.io.Source.fromFile(f.getName)
+
+    val source = scala.io.Source.fromFile(f.getAbsoluteFile)
     val content = try source.mkString finally source.close()
-    val idSha1 = Helpers.convertToSha1(content)
+    val idSha1 = HelpersApp.convertToSha1(content)
     val contentBlob = content.getBytes.toString
 
     addBlob(idSha1, contentBlob)
@@ -46,11 +47,12 @@ object FileIO {
     val path = Paths.get(".sgit/objects/blobs").toAbsolutePath().toString()
     val folder = idSha1.substring(0,2)
     val nameFile = idSha1.substring(2,idSha1.length)
-    new File(path + File.separator +  folder).mkdir()
-    new File(path + File.separator +  folder + File.separator + nameFile).createNewFile()
-    val pathFile = path + File.separator +  folder
 
-    writeBlob(pathFile,contentBlob)
+    new File(path + File.separator +  folder).mkdir()
+    new File(path + File.separator +  folder+File.separator+nameFile).createNewFile()
+
+
+    writeBlob(path + File.separator +  folder+File.separator+nameFile,contentBlob)
 
   }
 
@@ -60,10 +62,9 @@ object FileIO {
     val nameFile = idSha1.substring(2,idSha1.length)
     new File(path + File.separator +  folder).mkdir()
     new File(path + File.separator +  folder + File.separator + nameFile).createNewFile()
-    val pathFile = path + File.separator +  folder
     val contentToWrite = contentTree.reduce(_.concat(_))
 
-    writeTree(pathFile,contentToWrite)
+    writeTree(path + File.separator +  folder + File.separator + nameFile,contentToWrite)
 
   }
 
@@ -81,7 +82,9 @@ object FileIO {
   }
 
   def writeBlob(pathB: String, contentblob: String): Unit = {
-    val file = new File(pathB)
+    val path = Paths.get(pathB).toAbsolutePath().toString()
+
+    val file = new File(path)
     val bw = new BufferedWriter(new FileWriter(file))
     bw.write(contentblob)
     bw.close()

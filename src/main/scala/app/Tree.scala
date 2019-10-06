@@ -25,7 +25,7 @@ case class Tree() {
 
   def createId(): Unit = {
     val idToConvert = get_contentTree().reduce(_.concat(_))
-    val idSha1 = Helpers.convertToSha1(idToConvert)
+    val idSha1 = HelpersApp.convertToSha1(idToConvert)
     set_idTree(idSha1)
   }
 

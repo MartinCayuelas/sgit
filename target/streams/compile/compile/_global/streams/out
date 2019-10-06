@@ -1,23 +1,19 @@
-[0m[[0m[31merror[0m] [0m[0m/home/martin/Bureau/sgit/src/main/scala/app/FileIO.scala:35:3: type mismatch;[0m
-[0m[[0m[31merror[0m] [0m[0m found   : Unit[0m
-[0m[[0m[31merror[0m] [0m[0m required: String[0m
-[0m[[0m[31merror[0m] [0m[0m  }[0m
-[0m[[0m[31merror[0m] [0m[0m  ^[0m
-[0m[[0m[31merror[0m] [0m[0m/home/martin/Bureau/sgit/src/main/scala/app/Launcher.scala:3:12: object CommandsSgit is not a member of package app[0m
-[0m[[0m[31merror[0m] [0m[0mimport app.CommandsSgit.{init,add}[0m
-[0m[[0m[31merror[0m] [0m[0m           ^[0m
-[0m[[0m[31merror[0m] [0m[0m/home/martin/Bureau/sgit/src/main/scala/app/Launcher.scala:14:29: not found: value init[0m
-[0m[[0m[31merror[0m] [0m[0m      case Array("init") => init()[0m
-[0m[[0m[31merror[0m] [0m[0m                            ^[0m
-[0m[[0m[31merror[0m] [0m[0m/home/martin/Bureau/sgit/src/main/scala/app/Launcher.scala:16:7: not found: value /[0m
-[0m[[0m[31merror[0m] [0m[0m      /case Array("add", _) => add(args)[0m
+[0m[[0m[31merror[0m] [0m[0m/home/martin/Bureau/sgit/src/main/scala/app/CommandsForSgit.scala:13:5: not found: value FileIO[0m
+[0m[[0m[31merror[0m] [0m[0m    FileIO.initSgitRepository()[0m
+[0m[[0m[31merror[0m] [0m[0m    ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/martin/Bureau/sgit/src/main/scala/app/CommandsForSgit.scala:41:7: not found: value FileIO[0m
+[0m[[0m[31merror[0m] [0m[0m      FileIO.createBlob(f)[0m
 [0m[[0m[31merror[0m] [0m[0m      ^[0m
-[0m[[0m[31merror[0m] [0m[0m/home/martin/Bureau/sgit/src/main/scala/app/Launcher.scala:16:32: not found: value add[0m
-[0m[[0m[31merror[0m] [0m[0m      /case Array("add", _) => add(args)[0m
-[0m[[0m[31merror[0m] [0m[0m                               ^[0m
-[0m[[0m[31merror[0m] [0m[0m/home/martin/Bureau/sgit/src/main/scala/app/Tree.scala:26:28: type mismatch;[0m
-[0m[[0m[31merror[0m] [0m[0m found   : Unit[0m
-[0m[[0m[31merror[0m] [0m[0m required: String[0m
-[0m[[0m[31merror[0m] [0m[0m  def createId(): String = {[0m
-[0m[[0m[31merror[0m] [0m[0m                           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/martin/Bureau/sgit/src/main/scala/app/CommandsForSgit.scala:50:23: not found: value FileManager[0m
+[0m[[0m[31merror[0m] [0m[0m    val listOfFiles = FileManager.getListOfAll(path)[0m
+[0m[[0m[31merror[0m] [0m[0m                      ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/martin/Bureau/sgit/src/main/scala/app/CommandsForSgit.scala:72:5: not found: value FileIO[0m
+[0m[[0m[31merror[0m] [0m[0m    FileIO.addTree(currentTree.get_idTree(),currentTree.get_contentTree())[0m
+[0m[[0m[31merror[0m] [0m[0m    ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/martin/Bureau/sgit/src/main/scala/app/FilesIO.scala:35:18: not found: value Helpers[0m
+[0m[[0m[31merror[0m] [0m[0m    val idSha1 = Helpers.convertToSha1(content)[0m
+[0m[[0m[31merror[0m] [0m[0m                 ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/martin/Bureau/sgit/src/main/scala/app/Tree.scala:28:18: not found: value Helpers[0m
+[0m[[0m[31merror[0m] [0m[0m    val idSha1 = Helpers.convertToSha1(idToConvert)[0m
+[0m[[0m[31merror[0m] [0m[0m                 ^[0m
 [0m[[0m[31merror[0m] [0m[0m6 errors found[0m

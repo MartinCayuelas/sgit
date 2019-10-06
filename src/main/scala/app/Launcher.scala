@@ -1,6 +1,6 @@
 package app
 
-import app.CommandsSgit.{init,add}
+import app.CommandsForSgit.{init,add}
 
 object Launcher extends App {
 
@@ -13,7 +13,7 @@ object Launcher extends App {
       case Array("init", _) => println("No argument(s) expected.")
       case Array("init") => init()
         //ADD
-      /case Array("add", _) => add(args)
+      case Array("add", _) => add(args)
       case Array("status", _) => println("No argument(s) expected.")
       case Array("status") => status()
       //Diff
