@@ -1,0 +1,41 @@
+package app
+
+import java.io.File
+
+object CommandsSgit {
+
+
+  /*
+  INIT -----------
+   */
+  def init() : Unit = {
+    FileIO.initSgitRepository()
+  }
+  /*
+  --------------
+   */
+
+
+  /*
+ ADD -----------
+  */
+  def add(args: Array[String]) : Unit = {
+
+
+  }
+
+  def addRoutine(f: File) : Unit = {
+    if(f.isFile){
+
+    }else{
+      recursionFiles(f, new Tree())
+    }
+  }
+  def recursionFiles(f: File, currentTree: Tree): Unit = {
+
+  }
+  /*
+  --------------
+   */
+
+}

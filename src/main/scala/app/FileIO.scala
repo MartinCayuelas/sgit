@@ -3,7 +3,7 @@ package app
 import java.io.File
 import java.nio.file.{Files, Paths}
 
-case class FilesInit() {
+object FileIO {
   /*
    * initSgitRepository:
    * Method that create all the necessary folders for sgit
@@ -11,7 +11,7 @@ case class FilesInit() {
    */
 
   def initSgitRepository() : Unit = {
-    val listFolders = List("objects", "branches", "config", "refs/heads", "refs/tags")
+    val listFolders = List("objects", "objects/blobs", "objects/trees","objects/commits ", "refs/heads", "refs/tags","logs")
     val listFiles = List("HEAD","STAGE_AREA")
     val path = Paths.get("").toAbsolutePath().toString()
     val sgitPath = path + File.separator +  ".sgit"
@@ -27,4 +27,20 @@ case class FilesInit() {
     }
   }
 
+
+  def createBlob(): String = {
+
+  }
+
+  def addBlob(): Unit {
+
+  }
+
+  /*
+
+   */
+
+  def writeHead(): Unit = {
+
+  }
 }

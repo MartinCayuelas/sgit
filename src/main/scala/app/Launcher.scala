@@ -1,5 +1,7 @@
 package app
 
+import app.CommandsSgit.{init,add}
+
 object Launcher extends App {
 
   dispatcher(args)
@@ -10,7 +12,8 @@ object Launcher extends App {
       //Init
       case Array("init", _) => println("No argument(s) expected.")
       case Array("init") => init()
-      //Status
+        //ADD
+      /case Array("add", _) => add(args)
       case Array("status", _) => println("No argument(s) expected.")
       case Array("status") => status()
       //Diff
@@ -35,10 +38,7 @@ object Launcher extends App {
       case _ => println("This command doesn't exists")
     }
   }
-  def init() : Unit = {
-    val initFile = new FilesInit()
-    initFile.initSgitRepository()
-  }
+
   def status() : Unit ={
     println("Status")
   }
