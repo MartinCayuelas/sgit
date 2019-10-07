@@ -3,7 +3,8 @@ package app.commands
 import java.io.File
 import java.nio.file.Paths
 
-import app.{FilesIO, FilesManager, Tree}
+import app.FilesManager
+import app.objects.{Blob, Tree}
 
 object Add {
   /*
@@ -28,7 +29,7 @@ ADD -----------
   def addRoutine(f: File) : Unit = {
     if(f.isFile){
 
-      FilesIO.createBlob(f)
+      Blob.createBlob(f)
     }else{
       recursionFiles(f, new Tree())
     }
@@ -48,13 +49,13 @@ ADD -----------
         currentTree.set_contentTree(currentTree.addContentTree(newContent))
 
       }else{
-        val blob = FilesIO.createBlob(elem)
+        val blob = Blob.createBlob(elem)
         currentTree.set_contentTree(currentTree.addContentTree(blob))
       }
     })
     // Tree part
     currentTree.createId()
-    FilesIO.addTree(currentTree.get_idTree(),currentTree.get_contentTree())
+    currentTree.addTree(currentTree.get_idTree(),currentTree.get_contentTree())
 
   }
 

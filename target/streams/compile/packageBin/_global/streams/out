@@ -10,8 +10,6 @@
 [0m[[0m[0mdebug[0m] [0m[0m	  /home/martin/Bureau/sgit/target/scala-2.13/classes/app/CommandsSgit[0m
 [0m[[0m[0mdebug[0m] [0m[0m	app/FilesManager$.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	  /home/martin/Bureau/sgit/target/scala-2.13/classes/app/FilesManager$.class[0m
-[0m[[0m[0mdebug[0m] [0m[0m	app/Tree.class[0m
-[0m[[0m[0mdebug[0m] [0m[0m	  /home/martin/Bureau/sgit/target/scala-2.13/classes/app/Tree.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	app/FilesIO$.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	  /home/martin/Bureau/sgit/target/scala-2.13/classes/app/FilesIO$.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	app/FileManager[0m
@@ -36,6 +34,16 @@
 [0m[[0m[0mdebug[0m] [0m[0m	  /home/martin/Bureau/sgit/target/scala-2.13/classes/app/commands/Add.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	app/HelpersApp$.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	  /home/martin/Bureau/sgit/target/scala-2.13/classes/app/HelpersApp$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	app/objects[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/martin/Bureau/sgit/target/scala-2.13/classes/app/objects[0m
+[0m[[0m[0mdebug[0m] [0m[0m	app/objects/Tree.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/martin/Bureau/sgit/target/scala-2.13/classes/app/objects/Tree.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	app/objects/Blob.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/martin/Bureau/sgit/target/scala-2.13/classes/app/objects/Blob.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	app/objects/Blob$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/martin/Bureau/sgit/target/scala-2.13/classes/app/objects/Blob$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	app/objects/Tree$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/martin/Bureau/sgit/target/scala-2.13/classes/app/objects/Tree$.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	app/Launcher$.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	  /home/martin/Bureau/sgit/target/scala-2.13/classes/app/Launcher$.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	app/FilesManager.class[0m
@@ -48,8 +56,6 @@
 [0m[[0m[0mdebug[0m] [0m[0m	  /home/martin/Bureau/sgit/target/scala-2.13/classes/app/HelpersApp.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	app/FilesIO.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	  /home/martin/Bureau/sgit/target/scala-2.13/classes/app/FilesIO.class[0m
-[0m[[0m[0mdebug[0m] [0m[0m	app/Tree$.class[0m
-[0m[[0m[0mdebug[0m] [0m[0m	  /home/martin/Bureau/sgit/target/scala-2.13/classes/app/Tree$.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	META-INF[0m
 [0m[[0m[0mdebug[0m] [0m[0m	  /home/martin/Bureau/sgit/target/scala-2.13/classes/META-INF[0m
 [0m[[0m[0mdebug[0m] [0m[0m	META-INF/sgit.kotlin_module[0m
