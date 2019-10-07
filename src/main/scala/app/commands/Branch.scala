@@ -28,8 +28,16 @@ object Branch {
     val path = Paths.get(s".sgit/refs/heads/${nameBranch}")
     if(Files.notExists(path)){
       new File(path.toString).createNewFile()
+      createBranchStage(nameBranch)
     }else {
       println(s"Fatal: a branch named ${nameBranch} is exits already")
+    }
+  }
+
+  def createBranchStage(nameBranch: String): Unit = {
+    val path = Paths.get(s".sgit/stages/${nameBranch}")
+    if(Files.notExists(path)){
+      new File(path.toString).createNewFile()
     }
   }
   def getCurrentBranch: String = {

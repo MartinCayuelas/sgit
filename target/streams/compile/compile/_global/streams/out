@@ -1,7 +1,7 @@
-[0m[[0m[31merror[0m] [0m[0m/home/martin/Bureau/sgit/src/main/scala/app/commands/Add.scala:81:17: overloaded method value split with alternatives:[0m
-[0m[[0m[31merror[0m] [0m[0m  (x$1: String)Array[String] <and>[0m
-[0m[[0m[31merror[0m] [0m[0m  (x$1: String,x$2: Int)Array[String][0m
-[0m[[0m[31merror[0m] [0m[0m cannot be applied to ()[0m
-[0m[[0m[31merror[0m] [0m[0m      println(a.split())[0m
-[0m[[0m[31merror[0m] [0m[0m                ^[0m
-[0m[[0m[31merror[0m] [0m[0mone error found[0m
+[0m[[0m[33mwarn[0m] [0m[0m/home/martin/Bureau/sgit/src/main/scala/app/objects/Commit.scala:33:12: a pure expression does nothing in statement position[0m
+[0m[[0m[33mwarn[0m] [0m[0m    return commiter[0m
+[0m[[0m[33mwarn[0m] [0m[0m           ^[0m
+[0m[[0m[33mwarn[0m] [0m[0m/home/martin/Bureau/sgit/src/main/scala/app/objects/Commit.scala:33:5: enclosing method set_commiter has result type Unit: return value discarded[0m
+[0m[[0m[33mwarn[0m] [0m[0m    return commiter[0m
+[0m[[0m[33mwarn[0m] [0m[0m    ^[0m
+[0m[[0m[33mwarn[0m] [0m[0mtwo warnings found[0m

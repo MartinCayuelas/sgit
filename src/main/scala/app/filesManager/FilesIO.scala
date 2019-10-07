@@ -28,7 +28,7 @@ object FilesIO {
   }
 
   def writeBlobStage(contentblob: String): Unit = {
-    val currentBranch = Branch.getCurrentBranch()
+    val currentBranch = Branch.getCurrentBranch
     val path = Paths.get(".sgit").toAbsolutePath.toString.concat(s"/stages/${currentBranch}")
     val file = new File(path)
     val bw = new BufferedWriter(new FileWriter(file,true))
@@ -45,7 +45,7 @@ object FilesIO {
 
 
   def readStage(): String = {
-    val path = Paths.get(".sgit").toAbsolutePath.toString.concat(s"/stages/${Branch.getCurrentBranch()}")
+    val path = Paths.get(".sgit").toAbsolutePath.toString.concat(s"/stages/${Branch.getCurrentBranch}")
     val source = scala.io.Source.fromFile(path)
     val content = try source.mkString finally source.close()
     content

@@ -38,7 +38,7 @@ INIT -----------
       new File(Paths.get(".sgit").toAbsolutePath.toString.concat("/refs/heads/master")).createNewFile()
 
       writeHead()
-      val currentBranch = Branch.getCurrentBranch()
+      val currentBranch = Branch.getCurrentBranch
       new File(Paths.get(".sgit").toAbsolutePath.toString.concat("/stages").concat(s"/${currentBranch}")).createNewFile()
       println(s"Empty Git repository initialized in ${path}/.sgit/")
     } else {
