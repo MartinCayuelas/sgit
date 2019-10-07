@@ -14,14 +14,9 @@ object Tag {
     if (args.length == 2)  createTag(args(1))
     else  println(s"Number of arguments not supported for the command '${args(0)}'.")
   }
-
-
-
   /*
   Tags------------------------
    */
-
-
   def createTag(nameTag: String): Unit = {
     if(Files.notExists(Paths.get(s".sgit/refs/tags/${nameTag}"))){
       val path =Paths.get(".sgit/refs/tags").toAbsolutePath().toString()
@@ -33,9 +28,7 @@ object Tag {
   def displayAllTags(): Unit = {
     val listOfTags = FilesManager.getListOfFiles(Paths.get(".sgit/refs/tags").toAbsolutePath.toString)
     listOfTags.map(b =>{
-
       println(s"  ${b.getName} (tag)")
-
     })
   }
 

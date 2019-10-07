@@ -21,7 +21,4 @@ object FilesManager {
       List[File]()
     }
   }
-
-
-
 }

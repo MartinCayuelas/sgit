@@ -16,7 +16,6 @@ case class Commit(var idCommit: String="new", var parent: String=_, var comment:
   def get_commiter(): String = {
     return commiter
   }
-
   def set_idCommit(id: String): Unit = {
     this.idCommit = id
   }

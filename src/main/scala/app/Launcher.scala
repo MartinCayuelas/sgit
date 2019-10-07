@@ -16,7 +16,7 @@ object Launcher extends App {
       //Init
       case Array("init", _) => println("No argument(s) expected.")
       case Array("init") => init()
-        //ADD
+      //ADD
       case Array("add", _*) => add(args)
       case Array("status", _) => println("No argument(s) expected.")
       case Array("status") => status()

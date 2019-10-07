@@ -30,7 +30,6 @@ case class Tree(var items: List[(String, String, String)] = List(), var id: Stri
   }
 
 
-
   def saveTreeFile(idSha1: String, contentTree: List[(String, String, String)]): Unit = {
     val path = Paths.get(".sgit/objects/trees").toAbsolutePath.toString
     val folder = idSha1.substring(0,2)

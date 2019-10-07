@@ -22,44 +22,17 @@ ADD -----------
         addRoutine(file)
       })
     }
-
-
   }
 
   def addRoutine(f: File) : Unit = {
     if(f.isFile){
       Blob.createBlob(f)
     }else{
-     // recursionFiles(f, new Tree())
+      // recursionFiles(f, new Tree())
       recursionFilesBlob(f)
     }
   }
 
-/*
-  def recursionFiles(f: File, currentTree: Tree): Unit = {
-    val path = f.getCanonicalPath
-    val listOfFiles = FilesManager.getListOfAll(path)
-
-    listOfFiles.map(elem =>{
-      if(elem.isDirectory){
-        val newTree = new Tree()
-        recursionFiles(elem, newTree)
-        //AddTree
-        val newContent = s"Tree ${newTree.get_idTree()} ${elem.getName}\n"
-        currentTree.set_contentTree(currentTree.addContentTree(newContent))
-
-      }else{
-
-        val blob = Blob.createBlob(elem)
-        currentTree.set_contentTree(currentTree.addContentTree(blob))
-      }
-    })
-    // Tree part
-    //currentTree.createId()
-    currentTree.addTree(currentTree.get_idTree(),currentTree.get_contentTree())
-
-  }
-*/
   def recursionFilesBlob(f: File): Unit = {
     val path = f.getPath
     val listOfFiles = FilesManager.getListOfAll(path)

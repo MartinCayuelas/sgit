@@ -13,7 +13,6 @@ INIT -----------
   def init(): Unit = {
     initSgitRepository()
   }
-
   /*
   --------------
    */

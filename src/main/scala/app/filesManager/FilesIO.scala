@@ -7,7 +7,6 @@ import app.commands.Branch
 
 object FilesIO {
 
-
   def writeHead(): Unit = {
     val path = Paths.get(".sgit").toAbsolutePath.toString.concat("/HEAD")
     val file = new File(path)
@@ -16,8 +15,6 @@ object FilesIO {
     bw.close()
 
   }
-
-
   def writeBlob(pathB: String, contentblob: String): Unit = {
     val path = Paths.get(pathB).toAbsolutePath.toString
 
@@ -42,14 +39,12 @@ object FilesIO {
     bw.write(content)
     bw.close()
   }
-
-
+  
   def readStage(): String = {
     val path = Paths.get(".sgit").toAbsolutePath.toString.concat(s"/stages/${Branch.getCurrentBranch}")
     val source = scala.io.Source.fromFile(path)
     val content = try source.mkString finally source.close()
     content
   }
-
 
 }

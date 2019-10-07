@@ -14,14 +14,11 @@ object Blob {
     val content = try source.mkString finally source.close()
     val idSha1 = HelpersApp.convertToSha1(content)
 
-
     addBlob(idSha1, content)
 
     val blob = s"Blob ${idSha1} ${f.getPath}\n"
     writeBlobStage(blob)
     blob
-
-
   }
 
   def addBlob(idSha1: String, contentBlob: String): Unit = {
@@ -32,12 +29,6 @@ object Blob {
     new File(path + File.separator +  folder).mkdir()
     new File(path + File.separator +  folder+File.separator+nameFile).createNewFile()
 
-
     writeBlob(path + File.separator +  folder+File.separator+nameFile,contentBlob)
-
-
-
   }
-
-
 }
