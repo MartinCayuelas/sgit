@@ -3,7 +3,7 @@ package app.commands
 import java.io.File
 import java.nio.file.{Files, Paths}
 
-import app.FilesIO.writeHead
+import app.filesManager.FilesIO.writeHead
 
 object Init {
 

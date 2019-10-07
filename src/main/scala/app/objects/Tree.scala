@@ -3,8 +3,8 @@ package app.objects
 import java.io.File
 import java.nio.file.Paths
 
-import app.FilesIO.writeTree
-import app.HelpersApp
+import app.filesManager.FilesIO.writeTree
+import app.helpers.HelpersApp
 
 case class Tree() {
   private var idTree = "new"

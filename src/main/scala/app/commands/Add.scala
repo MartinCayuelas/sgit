@@ -3,7 +3,7 @@ package app.commands
 import java.io.File
 import java.nio.file.Paths
 
-import app.FilesManager
+import app.filesManager.FilesManager
 import app.objects.{Blob, Tree}
 
 object Add {

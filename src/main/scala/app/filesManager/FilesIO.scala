@@ -1,15 +1,9 @@
-package app
+package app.filesManager
 
 import java.io.{BufferedWriter, File, FileWriter}
 import java.nio.file.Paths
 
 object FilesIO {
-
-
-
-
-
-
 
 
   def writeHead(): Unit = {

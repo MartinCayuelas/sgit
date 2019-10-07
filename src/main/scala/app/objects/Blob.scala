@@ -3,8 +3,8 @@ package app.objects
 import java.io.File
 import java.nio.file.Paths
 
-import app.FilesIO.writeBlob
-import app.HelpersApp
+import app.filesManager.FilesIO.writeBlob
+import app.helpers.HelpersApp
 
 object Blob {
 
