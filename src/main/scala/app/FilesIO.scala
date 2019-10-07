@@ -125,9 +125,9 @@ object FilesIO {
     val listOfBranches = FilesManager.getListOfFiles(Paths.get(".sgit/refs/heads").toAbsolutePath.toString)
     listOfBranches.map(b =>{
       if(currentBranch.equals(b.getName)){
-        println(s"* ${b.getName}")
+        println(s"* ${b.getName} (branch)")
       }else{
-        println(s"  ${b.getName}")
+        println(s"  ${b.getName} (branch)")
       }
     })
   }
@@ -138,11 +138,20 @@ object FilesIO {
 
 
   def createTag(nameTag: String): Unit = {
-    if(Files.notExists(Paths.get(Paths.get(".sgit/refs/tags").toAbsolutePath().toString()+File.separator+nameTag))){
-      val path =Paths.get(".sgit/refs/heads").toAbsolutePath().toString()
+    if(Files.notExists(Paths.get(s".sgit/refs/tags/${nameTag}"))){
+      val path =Paths.get(".sgit/refs/tags").toAbsolutePath().toString()
       new File(path + File.separator +  nameTag).createNewFile()
     }else {
       println(s"Fatal: a branch named ${nameTag} is exits already")
     }
   }
+  def displayAllTags(): Unit = {
+    val listOfTags = FilesManager.getListOfFiles(Paths.get(".sgit/refs/tags").toAbsolutePath.toString)
+    listOfTags.map(b =>{
+
+        println(s"  ${b.getName} (tag)")
+
+    })
+  }
+
 }

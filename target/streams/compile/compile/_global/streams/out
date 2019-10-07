@@ -1,4 +1,4 @@
-[0m[[0m[31merror[0m] [0m[0m/home/martin/Bureau/sgit/src/main/scala/app/CommandsForSgit.scala:104:1: identifier expected but '}' found.[0m
+[0m[[0m[31merror[0m] [0m[0m/home/martin/Bureau/sgit/src/main/scala/app/commands/Tag.scala:18:1: Unmatched closing brace '}' ignored here[0m
 [0m[[0m[31merror[0m] [0m[0m}[0m
 [0m[[0m[31merror[0m] [0m[0m^[0m
 [0m[[0m[31merror[0m] [0m[0mone error found[0m

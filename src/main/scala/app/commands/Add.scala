@@ -1,25 +1,14 @@
-package app
+package app.commands
 
 import java.io.File
 import java.nio.file.Paths
 
-object CommandsForSgit {
+import app.{FilesIO, FilesManager, Tree}
 
-
+object Add {
   /*
-  INIT -----------
-   */
-  def init() : Unit = {
-    FilesIO.initSgitRepository()
-  }
-  /*
-  --------------
-   */
-
-
-  /*
- ADD -----------
-  */
+ADD -----------
+ */
   def add(args: Array[String]) : Unit = {
     if (args.length == 1) println("You need to specify a folder or a file")
     else if(args.length == 2 && args(1).equals(".")) {
@@ -53,9 +42,7 @@ object CommandsForSgit {
     listOfFiles.map(elem =>{
       if(elem.isDirectory){
         val newTree = new Tree()
-
         recursionFiles(elem, newTree)
-
         //AddTree
         val newContent = s"Tree ${newTree.get_idTree()} ${elem.getName}\n"
         currentTree.set_contentTree(currentTree.addContentTree(newContent))
@@ -63,41 +50,12 @@ object CommandsForSgit {
       }else{
         val blob = FilesIO.createBlob(elem)
         currentTree.set_contentTree(currentTree.addContentTree(blob))
-
       }
     })
-
     // Tree part
     currentTree.createId()
     FilesIO.addTree(currentTree.get_idTree(),currentTree.get_contentTree())
 
   }
-  /*
-  --------------
-   */
 
-  /*
-  BRANCH---------------------
-   */
-
-  def branch(args: Array[String]): Unit = {
-    if ((args.length == 2) && (args(1).equals("-av"))) {
-      FilesIO.displayAllBranches()
-    }
-    else if (args.length == 2) FilesIO.createBranch(args(1))
-    else println("Number of arguments not supported for the command 'branch'.")
-  }
-
-
-
-  /*
-  ---------------------
-   */
-
-  /*
-  TAG---------------------
-   */
-  /*
-  ---------------------
-   */
 }

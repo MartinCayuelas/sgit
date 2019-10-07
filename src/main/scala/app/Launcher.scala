@@ -1,6 +1,9 @@
 package app
 
-import app.CommandsForSgit.{init,add,branch}
+import app.commands.Add.add
+import app.commands.Init.init
+import app.commands.Branch.branch
+import app.commands.Tag.tag
 
 object Launcher extends App {
 
@@ -66,10 +69,7 @@ object Launcher extends App {
     if (args.length == 2) println(s"Tipping on the branch ${args(1)}")
     else  println(s"Number of arguments not supported for the command '${args(0)}'.")
   }
-  def tag(args: Array[String]): Unit = {
-    if (args.length == 2) println(s"tag")
-    else  println(s"Number of arguments not supported for the command '${args(0)}'.")
-  }
+
   def merge(args: Array[String]): Unit = {
     if (args.length == 2) println(s"merge")
     else  println(s"Number of arguments not supported for the command '${args(0)}'.")
