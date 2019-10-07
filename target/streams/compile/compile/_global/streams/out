@@ -1,7 +1,2 @@
-[0m[[0m[33mwarn[0m] [0m[0m/home/martin/Bureau/sgit/src/main/scala/app/objects/Commit.scala:33:12: a pure expression does nothing in statement position[0m
-[0m[[0m[33mwarn[0m] [0m[0m    return commiter[0m
-[0m[[0m[33mwarn[0m] [0m[0m           ^[0m
-[0m[[0m[33mwarn[0m] [0m[0m/home/martin/Bureau/sgit/src/main/scala/app/objects/Commit.scala:33:5: enclosing method set_commiter has result type Unit: return value discarded[0m
-[0m[[0m[33mwarn[0m] [0m[0m    return commiter[0m
-[0m[[0m[33mwarn[0m] [0m[0m    ^[0m
-[0m[[0m[33mwarn[0m] [0m[0mtwo warnings found[0m
+[0m[[0m[33mwarn[0m] [0m[0mthere were two deprecation warnings (since 2.13.0); re-run with -deprecation for details[0m
+[0m[[0m[33mwarn[0m] [0m[0mone warning found[0m

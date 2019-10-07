@@ -4,7 +4,7 @@ import java.io.File
 import java.nio.file.Paths
 
 import app.filesManager.FilesManager
-import app.objects.{Blob, Tree}
+import app.objects.Blob
 
 object Add {
   /*
@@ -35,7 +35,7 @@ ADD -----------
     }
   }
 
-
+/*
   def recursionFiles(f: File, currentTree: Tree): Unit = {
     val path = f.getCanonicalPath
     val listOfFiles = FilesManager.getListOfAll(path)
@@ -59,10 +59,9 @@ ADD -----------
     currentTree.addTree(currentTree.get_idTree(),currentTree.get_contentTree())
 
   }
-
+*/
   def recursionFilesBlob(f: File): Unit = {
     val path = f.getPath
-    println(path)
     val listOfFiles = FilesManager.getListOfAll(path)
     listOfFiles.map(elem =>{
       if(elem.isDirectory){

@@ -4,6 +4,7 @@ import app.commands.Add.add
 import app.commands.Init.init
 import app.commands.Branch.branch
 import app.commands.Tag.tag
+import app.commands.Commit.commit
 
 object Launcher extends App {
 
@@ -48,9 +49,7 @@ object Launcher extends App {
   def diff() : Unit ={
     println("Diff")
   }
-  def commit() : Unit ={
-    println("Commit")
-  }
+
 
   def log(args: Array[String]) : Unit ={
     if (args.length == 1) println("log")
