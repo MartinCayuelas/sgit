@@ -29,14 +29,14 @@ case class Tree() {
     newContent::get_contentTree()
   }
 
-  def createId(): Unit = {
-    val idToConvert = get_contentTree().reduce(_.concat(_))
+  def createId(t: Tree): String = {
+    val idToConvert = t.get_contentTree().reduce(_.concat(_))
     val idSha1 = HelpersApp.convertToSha1(idToConvert)
-    set_idTree(idSha1)
+    return  idSha1
   }
 
   def addTree(idSha1: String, contentTree: List[String]): Unit = {
-    val path = Paths.get(".sgit/objects/trees").toAbsolutePath().toString()
+    val path = Paths.get(".sgit/objects/trees").toAbsolutePath.toString
     val folder = idSha1.substring(0,2)
     val nameFile = idSha1.substring(2,idSha1.length)
     new File(path + File.separator +  folder).mkdir()

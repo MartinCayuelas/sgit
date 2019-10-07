@@ -25,9 +25,9 @@ INIT -----------
   */
 
   def initSgitRepository(): Unit = {
-    val listFolders = List("objects", "objects/blobs", "objects/trees", "objects/commits", "refs", "refs/heads", "refs/tags", "logs")
-    val listFiles = List("HEAD", "STAGE_AREA")
-    val path = Paths.get("").toAbsolutePath().toString()
+    val listFolders = List("objects", "objects/blobs", "objects/trees", "objects/commits", "refs", "refs/heads", "refs/tags", "logs", "stages")
+    val listFiles = List("HEAD")
+    val path = Paths.get("").toAbsolutePath.toString
     val sgitPath = path + File.separator + ".sgit"
     val sgitRepository = new File(".sgit")
 
@@ -35,8 +35,11 @@ INIT -----------
       sgitRepository.mkdir()
       listFolders.map(folder => new File(sgitPath + File.separator + folder).mkdir())
       listFiles.map(file => new File(sgitPath + File.separator + file).createNewFile())
-      new File(Paths.get(".sgit").toAbsolutePath().toString().concat("/refs/heads/master")).createNewFile()
+      new File(Paths.get(".sgit").toAbsolutePath.toString.concat("/refs/heads/master")).createNewFile()
+
       writeHead()
+      val currentBranch = Branch.getCurrentBranch()
+      new File(Paths.get(".sgit").toAbsolutePath.toString.concat("/stages").concat(s"/${currentBranch}")).createNewFile()
       println(s"Empty Git repository initialized in ${path}/.sgit/")
     } else {
       println(s"Sgit repository already exists.")

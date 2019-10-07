@@ -32,17 +32,17 @@ object Branch {
       println(s"Fatal: a branch named ${nameBranch} is exits already")
     }
   }
-  def getCurrentBranch(): String = {
-    val path = Paths.get(".sgit/").toAbsolutePath().toString().concat("/HEAD")
+  def getCurrentBranch: String = {
+    val path = Paths.get(".sgit/").toAbsolutePath.toString.concat("/HEAD")
     val source = scala.io.Source.fromFile(path)
     val content = try source.mkString finally source.close()
     val pattern = "([A-Za-z]+)(:) ([A-Za-z]+)(/)([A-Za-z]+)(/)([A-Za-z]+)".r
     val pattern(ref, a, refs,b,heads,c,currentBranch) = content
-    return currentBranch
+    currentBranch
 
   }
   def displayAllBranches(): Unit = {
-    val currentBranch = getCurrentBranch()
+    val currentBranch: String = getCurrentBranch
     val listOfBranches = FilesManager.getListOfFiles(Paths.get(".sgit/refs/heads").toAbsolutePath.toString)
     listOfBranches.map(b =>{
       if(currentBranch.equals(b.getName)){

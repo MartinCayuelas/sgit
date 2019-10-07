@@ -16,7 +16,7 @@ object Launcher extends App {
       case Array("init", _) => println("No argument(s) expected.")
       case Array("init") => init()
         //ADD
-      case Array("add", _) => add(args)
+      case Array("add", _*) => add(args)
       case Array("status", _) => println("No argument(s) expected.")
       case Array("status") => status()
       //Diff
@@ -75,7 +75,7 @@ object Launcher extends App {
     else  println(s"Number of arguments not supported for the command '${args(0)}'.")
   }
   def rebase(args: Array[String]): Unit = {
-    if ((args.length == 3) && (args(1).equals("-i"))) println(s"rebase -i")
+    if ((args.length == 3) && args(1).equals("-i")) println(s"rebase -i")
     else if (args.length == 2)  println(s"rebase")
     else  println(s"Number of arguments not supported for the command '${args(0)}'.")
   }
