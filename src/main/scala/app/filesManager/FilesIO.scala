@@ -39,7 +39,7 @@ object FilesIO {
     bw.write(content)
     bw.close()
   }
-  
+
   def readStage(): String = {
     val path = Paths.get(".sgit").toAbsolutePath.toString.concat(s"/stages/${Branch.getCurrentBranch}")
     val source = scala.io.Source.fromFile(path)

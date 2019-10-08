@@ -12,8 +12,25 @@ import scala.annotation.tailrec
 object Commit {
 
   def commit(): Unit = {
-    val stage = retrieveStageStatus()
-    val res = addTrees(stage, None)
+    //val stage = retrieveStageStatus()
+    val (stage, resBlobsAlone) = retrieveStageStatusBis()
+    val resTrees = addTrees(stage, None)
+    resTrees.map(e=> println(s"Hash : ${e}"))
+    println()
+    resBlobsAlone.map(e=> println(s"B : ${e}"))
+    /*
+    Creating the tree for commit
+     */
+    val treeCommit = new Tree()
+   // treeCommit.set_contentTree(resTrees)
+
+    /*
+    Commit
+     */
+
+    /*
+    TO DO COMMIT
+     */
   }
 
 
@@ -38,7 +55,7 @@ object Commit {
 
   def createTree(deeper: List[(String, String, String)]): String = {
     val tree = new Tree()
-    deeper.map(x => println(x))
+    //deeper.map(x => println(x))
     deeper.map(element => tree.set_contentTree(tree.addElement(element._3, element._2, element._1)))
     val hash = tree.createTreeId(tree.get_contentTree())
     tree.set_idTree(hash)
@@ -50,7 +67,7 @@ object Commit {
   //OUTPUT is something like this:
   //(src/main/scala/objects,a7dbb76b0406d104b116766a40f2e80a79f40a0349533017253d52ea750d9144)
   //(src/main/scala/utils,29ee69c28399de6f830f3f0f55140ad97c211fc851240901f9e030aaaf2e13a0)
-  def retrieveStageStatus(): List[(String,String, String)] = {
+  def retrieveStageStatus(): List[(String,String, String)]= {
     //Retrieve useful data
     val files = FilesIO.readStage()
     val base_dir = System.getProperty("user.dir")
@@ -60,10 +77,39 @@ object Commit {
 
     //Cleaning from the filenames
     val paths = stage_content.map(x => BFile(base_dir).relativize(BFile(x(2)).parent).toString).toList
+
     val hashs = stage_content.map(x =>x(1)).toList
     val blob = List.fill(paths.size)("blob")
     //Merging the result
-    (paths,hashs,blob).zipped.toList
+    ((paths,hashs,blob).zipped.toList)
+  }
+
+
+  def retrieveStageStatusBis(): (List[(String,String, String)],List[String])= {
+    //Retrieve useful data
+    val files = FilesIO.readStage()
+    val base_dir = System.getProperty("user.dir")
+
+    //Split lines
+    val stage_content = files.split("\n").map(x => x.split(" "))
+
+    //Cleaning from the filenames
+    var pathsTrees: List[String] = List()
+    val paths = stage_content.map(x => {
+      if(!getParentPath(x(2)).isEmpty) pathsTrees = x(2)::pathsTrees
+
+    })
+
+
+    var hashesTrees: List[String] = List()
+    var hashesBlobsAlone: List[String] = List()
+stage_content.map(x =>{
+      if(!getParentPath(x(2)).isEmpty) hashesTrees = x(1)::hashesTrees
+      else hashesBlobsAlone = x(1)::hashesBlobsAlone
+    })
+    val blob = List.fill(paths.size)("blob")
+    //Merging the result
+    ((pathsTrees,hashesTrees,blob).zipped.toList,hashesBlobsAlone)
   }
 
   def getDeeperDirectory(l: List[(String, String, String)]): (List[(String,String, String)], List[(String,String, String)], Option[String]) = {

@@ -1,7 +1,7 @@
 package app.objects
 
 
-case class Commit(var idCommit: String="new", var parent: String=_, var comment:String=_, commiter:String="Me") {
+case class Commit(var idCommit: String="new", var parent: String="", var comment:String="", commiter:String="Me") {
 
 
   def get_idCommit(): String = {
