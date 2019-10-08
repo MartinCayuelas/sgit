@@ -4,24 +4,19 @@ import java.io.File
 
 import app.filesManager.FilesIO
 import app.objects.Tree
-
-import better.files.{File => BFile}
-
 import scala.annotation.tailrec
+import better.files.{File => BFile}
 
 object Commit {
 
   def commit(): Unit = {
     //val stage = retrieveStageStatus()
-    val (stage, resBlobsAlone) = retrieveStageStatusBis()
+    val stage = retrieveStageStatus()
     val resTrees = addTrees(stage, None)
-    resTrees.map(e=> println(s"Hash : ${e}"))
-    println()
-    resBlobsAlone.map(e=> println(s"B : ${e}"))
     /*
     Creating the tree for commit
      */
-    val treeCommit = new Tree()
+  //  val treeCommit = new Tree()
    // treeCommit.set_contentTree(resTrees)
 
     /*
@@ -82,34 +77,6 @@ object Commit {
     val blob = List.fill(paths.size)("blob")
     //Merging the result
     ((paths,hashs,blob).zipped.toList)
-  }
-
-
-  def retrieveStageStatusBis(): (List[(String,String, String)],List[String])= {
-    //Retrieve useful data
-    val files = FilesIO.readStage()
-    val base_dir = System.getProperty("user.dir")
-
-    //Split lines
-    val stage_content = files.split("\n").map(x => x.split(" "))
-
-    //Cleaning from the filenames
-    var pathsTrees: List[String] = List()
-    val paths = stage_content.map(x => {
-      if(!getParentPath(x(2)).isEmpty) pathsTrees = x(2)::pathsTrees
-
-    })
-
-
-    var hashesTrees: List[String] = List()
-    var hashesBlobsAlone: List[String] = List()
-stage_content.map(x =>{
-      if(!getParentPath(x(2)).isEmpty) hashesTrees = x(1)::hashesTrees
-      else hashesBlobsAlone = x(1)::hashesBlobsAlone
-    })
-    val blob = List.fill(paths.size)("blob")
-    //Merging the result
-    ((pathsTrees,hashesTrees,blob).zipped.toList,hashesBlobsAlone)
   }
 
   def getDeeperDirectory(l: List[(String, String, String)]): (List[(String,String, String)], List[(String,String, String)], Option[String]) = {
