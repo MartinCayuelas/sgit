@@ -1,28 +1,35 @@
+[0m[[0m[0mdebug[0m] [0m[0mThe app.FilesInit has the following regular definitions changed:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	UsedName(app;FilesInit;init;,[Default]), UsedName(finalize,[Default]), UsedName(synchronized,[Default]), UsedName($asInstanceOf,[Default]), UsedName(productPrefix,[Default]), UsedName(apply,[Default]), UsedName(equals,[Default]), UsedName(FilesInit,[Default]), UsedName(productIterator,[Default]), UsedName(##,[Default]), UsedName(productArity,[Default]), UsedName(wait,[Default]), UsedName(==,[Default]), UsedName(copy,[Default]), UsedName(getClass,[Default]), UsedName(notifyAll,[Default]), UsedName($isInstanceOf,[Default]), UsedName(!=,[Default]), UsedName(unapply,[Default]), UsedName(clone,[Default]), UsedName($init$,[Default]), UsedName(productElement,[Default]), UsedName(toString,[Default]), UsedName(eq,[Default]), UsedName(canEqual,[Default]), UsedName(productElementNames,[Default]), UsedName(ne,[Default]), UsedName(initSgitRepository,[Default]), UsedName(notify,[Default]), UsedName(isInstanceOf,[Default]), UsedName(asInstanceOf,[Default]), UsedName(hashCode,[Default]), UsedName(productElementName,[Default]).[0m
+[0m[[0m[0mdebug[0m] [0m[0mAll member reference dependencies will be considered within this context.[0m
+[0m[[0m[0mdebug[0m] [0m[0mFiles invalidated by inheriting from (external) app.FilesInit: Set(); now invalidating by inheritance (internally).[0m
+[0m[[0m[0mdebug[0m] [0m[0mGetting direct dependencies of all classes transitively invalidated by inheritance.[0m
+[0m[[0m[0mdebug[0m] [0m[0mGetting classes that directly depend on (external) app.FilesInit.[0m
+[0m[[0m[0mdebug[0m] [0m[0mThe following modified names cause invalidation of app.FilesInitSpec: Set(UsedName(app;FilesInit;init;,[Default]), UsedName(apply,[Default]), UsedName(FilesInit,[Default]), UsedName(initSgitRepository,[Default]))[0m
 [0m[[0m[0mdebug[0m] [0m[0m[0m
 [0m[[0m[0mdebug[0m] [0m[0mInitial source changes: [0m
 [0m[[0m[0mdebug[0m] [0m[0m	removed:Set()[0m
 [0m[[0m[0mdebug[0m] [0m[0m	added: Set()[0m
 [0m[[0m[0mdebug[0m] [0m[0m	modified: Set(/home/martin/Bureau/sgit/src/test/scala/app/FilesInitSpec.scala)[0m
-[0m[[0m[0mdebug[0m] [0m[0mInvalidated products: Set()[0m
-[0m[[0m[0mdebug[0m] [0m[0mExternal API changes: API Changes: Set()[0m
-[0m[[0m[0mdebug[0m] [0m[0mModified binary dependencies: Set()[0m
+[0m[[0m[0mdebug[0m] [0m[0mInvalidated products: Set(/home/martin/Bureau/sgit/target/scala-2.13/test-classes/app/FilesInitSpec.class)[0m
+[0m[[0m[0mdebug[0m] [0m[0mExternal API changes: API Changes: Set(NamesChange(app.FilesInit,ModifiedNames(changes = UsedName(app;FilesInit;init;,[Default]), UsedName(finalize,[Default]), UsedName(synchronized,[Default]), UsedName($asInstanceOf,[Default]), UsedName(productPrefix,[Default]), UsedName(apply,[Default]), UsedName(equals,[Default]), UsedName(FilesInit,[Default]), UsedName(productIterator,[Default]), UsedName(##,[Default]), UsedName(productArity,[Default]), UsedName(wait,[Default]), UsedName(==,[Default]), UsedName(copy,[Default]), UsedName(getClass,[Default]), UsedName(notifyAll,[Default]), UsedName($isInstanceOf,[Default]), UsedName(!=,[Default]), UsedName(unapply,[Default]), UsedName(clone,[Default]), UsedName($init$,[Default]), UsedName(productElement,[Default]), UsedName(toString,[Default]), UsedName(eq,[Default]), UsedName(canEqual,[Default]), UsedName(productElementNames,[Default]), UsedName(ne,[Default]), UsedName(initSgitRepository,[Default]), UsedName(notify,[Default]), UsedName(isInstanceOf,[Default]), UsedName(asInstanceOf,[Default]), UsedName(hashCode,[Default]), UsedName(productElementName,[Default]))))[0m
+[0m[[0m[0mdebug[0m] [0m[0mModified binary dependencies: Set(/home/martin/Bureau/sgit/target/scala-2.13/classes, /home/martin/.cache/coursier/v1/https/repo1.maven.org/maven2/com/github/pathikrit/better-files_2.13/3.8.0/better-files_2.13-3.8.0.jar)[0m
 [0m[[0m[0mdebug[0m] [0m[0mInitial directly invalidated classes: Set(app.FilesInitSpec)[0m
 [0m[[0m[0mdebug[0m] [0m[0m[0m
 [0m[[0m[0mdebug[0m] [0m[0mSources indirectly invalidated by:[0m
-[0m[[0m[0mdebug[0m] [0m[0m	product: Set()[0m
+[0m[[0m[0mdebug[0m] [0m[0m	product: Set(/home/martin/Bureau/sgit/src/test/scala/app/FilesInitSpec.scala)[0m
 [0m[[0m[0mdebug[0m] [0m[0m	binary dep: Set()[0m
-[0m[[0m[0mdebug[0m] [0m[0m	external source: Set()[0m
+[0m[[0m[0mdebug[0m] [0m[0m	external source: Set(app.FilesInitSpec)[0m
 [0m[[0m[0mdebug[0m] [0m[0mAll sources are invalidated.[0m
 [0m[[0m[0mdebug[0m] [0m[0mInitial set of included nodes: app.FilesInitSpec[0m
 [0m[[0m[0mdebug[0m] [0m[0mRecompiling all sources: number of invalidated sources > 50.0% of all sources[0m
 [0m[[0m[0minfo[0m] [0m[0mCompiling 1 Scala source to /home/martin/Bureau/sgit/target/scala-2.13/test-classes ...[0m
 [0m[[0m[0mdebug[0m] [0m[0mGetting org.scala-sbt:compiler-bridge_2.13:1.3.0:compile for Scala 2.13.1[0m
 [0m[[0m[0mdebug[0m] [0m[0mGetting org.scala-sbt:compiler-bridge_2.13:1.3.0:compile for Scala 2.13.1[0m
-[0m[[0m[0mdebug[0m] [0m[0m[zinc] Running cached compiler 211ac1c8 for Scala compiler version 2.13.1[0m
+[0m[[0m[0mdebug[0m] [0m[0m[zinc] Running cached compiler 750a96a9 for Scala compiler version 2.13.1[0m
 [0m[[0m[0mdebug[0m] [0m[0m[zinc] The Scala compiler is invoked with:[0m
 [0m[[0m[0mdebug[0m] [0m[0m	-bootclasspath[0m
 [0m[[0m[0mdebug[0m] [0m[0m	/home/martin/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala-library/2.13.1/scala-library-2.13.1.jar[0m
 [0m[[0m[0mdebug[0m] [0m[0m	-classpath[0m
-[0m[[0m[0mdebug[0m] [0m[0m	/home/martin/Bureau/sgit/target/scala-2.13/test-classes:/home/martin/Bureau/sgit/target/scala-2.13/classes:/home/martin/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-xml_2.13/1.2.0/scala-xml_2.13-1.2.0.jar:/home/martin/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala-reflect/2.13.1/scala-reflect-2.13.1.jar:/home/martin/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalactic/scalactic_2.13/3.0.8/scalactic_2.13-3.0.8.jar:/home/martin/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest_2.13/3.0.8/scalatest_2.13-3.0.8.jar[0m
-[0m[[0m[0mdebug[0m] [0m[0mScala compilation took 3.638070868 s[0m
+[0m[[0m[0mdebug[0m] [0m[0m	/home/martin/Bureau/sgit/target/scala-2.13/test-classes:/home/martin/Bureau/sgit/target/scala-2.13/classes:/home/martin/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-xml_2.13/1.2.0/scala-xml_2.13-1.2.0.jar:/home/martin/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala-reflect/2.13.1/scala-reflect-2.13.1.jar:/home/martin/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalactic/scalactic_2.13/3.0.8/scalactic_2.13-3.0.8.jar:/home/martin/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest_2.13/3.0.8/scalatest_2.13-3.0.8.jar:/home/martin/.cache/coursier/v1/https/repo1.maven.org/maven2/com/github/pathikrit/better-files_2.13/3.8.0/better-files_2.13-3.8.0.jar[0m
+[0m[[0m[0mdebug[0m] [0m[0mScala compilation took 1.600460345 s[0m
 [0m[[0m[0mdebug[0m] [0m[0mDone compiling.[0m

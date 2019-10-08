@@ -3,7 +3,8 @@ package app.commands
 import java.io.File
 
 import app.filesManager.FilesIO
-import app.objects.Tree
+import app.objects.{Entry, Tree}
+
 import scala.annotation.tailrec
 import better.files.{File => BFile}
 
@@ -12,6 +13,7 @@ object Commit {
   def commit(): Unit = {
     //val stage = retrieveStageStatus()
     val stage = retrieveStageStatus()
+
     val resTrees = addTrees(stage, None)
     /*
     Creating the tree for commit
@@ -30,7 +32,7 @@ object Commit {
 
 
   @tailrec
-  def addTrees(l: List[(String, String, String)], hashFinal: Option[List[String]]): List[String] = {
+  def addTrees(l: List[Entry], hashFinal: Option[List[String]]): List[String] = {
     if(l.size == 0){
       hashFinal.get
     } else {
@@ -43,15 +45,15 @@ object Commit {
           addTrees(rest, Some(hash :: hashFinal.get))
         }
       } else {
-        addTrees((parent.get, hash, "tree") :: rest, hashFinal)
+        addTrees(Entry(parent.get, hash, "tree") :: rest, hashFinal)
       }
     }
   }
 
-  def createTree(deeper: List[(String, String, String)]): String = {
+  def createTree(deeper: List[Entry]): String = {
     val tree = new Tree()
     //deeper.map(x => println(x))
-    deeper.map(element => tree.set_contentTree(tree.addElement(element._3, element._2, element._1)))
+    deeper.map(element => tree.set_contentTree(tree.addElement(element.get_TypeE(), element.get_hash(), element.get_path())))
     val hash = tree.createTreeId(tree.get_contentTree())
     tree.set_idTree(hash)
     tree.saveTreeFile(tree.get_idTree(), tree.get_contentTree())
@@ -62,7 +64,7 @@ object Commit {
   //OUTPUT is something like this:
   //(src/main/scala/objects,a7dbb76b0406d104b116766a40f2e80a79f40a0349533017253d52ea750d9144)
   //(src/main/scala/utils,29ee69c28399de6f830f3f0f55140ad97c211fc851240901f9e030aaaf2e13a0)
-  def retrieveStageStatus(): List[(String,String, String)]= {
+  def retrieveStageStatus(): List[Entry]= {
     //Retrieve useful data
     val files = FilesIO.readStage()
     val base_dir = System.getProperty("user.dir")
@@ -76,20 +78,21 @@ object Commit {
     val hashs = stage_content.map(x =>x(1)).toList
     val blob = List.fill(paths.size)("blob")
     //Merging the result
-    ((paths,hashs,blob).zipped.toList)
+    val listTobeReturned=((paths,hashs,blob).zipped.toList)
+    listTobeReturned.map(elem => Entry(elem._1,elem._2,elem._3))
   }
 
-  def getDeeperDirectory(l: List[(String, String, String)]): (List[(String,String, String)], List[(String,String, String)], Option[String]) = {
+  def getDeeperDirectory(l: List[Entry]): (List[Entry], List[Entry], Option[String]) = {
     var max = 0
     var pathForMax = ""
 
-    l.map(line => if (line._1.split("/").size >= max) {
-      max = line._1.split("/").size
-      pathForMax = line._1
+    l.map(line => if (line.get_path().split("/").size >= max) {
+      max = line.get_path().split("/").size
+      pathForMax = line.get_path()
     })
 
-    val rest = l.filter(x => !(x._1.equals(pathForMax)))
-    val deepest = l.filter(x => x._1.equals(pathForMax))
+    val rest = l.filter(x => !(x.get_path().equals(pathForMax)))
+    val deepest = l.filter(x => x.get_path()equals(pathForMax))
 
     val parentPath = getParentPath(pathForMax)
     (deepest, rest, parentPath)
