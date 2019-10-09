@@ -57,7 +57,7 @@ case class Commit(var idCommit: String="", var parent: String="", var parentMerg
   def get_commitContent():String = {
     s"tree ${get_tree()} author ${get_author()} -- ${get_dateCommit()}"
   }
-  def get_commitContentLog(parent: String, idCommit: String): String = {
+  def get_commitContentInLog(parent: String, idCommit: String): String = {
     if (parent.length >0)  s"${parent} ${idCommit} ${get_author()} ${get_dateCommit()}\n"
     else   s"0000000000000000000000000000000000000000 ${idCommit} ${get_author()} ${get_dateCommit()}\n"
 
@@ -71,9 +71,7 @@ case class Commit(var idCommit: String="", var parent: String="", var parentMerg
     val nameFile = idSha1.substring(2,idSha1.length)
     new File(path + File.separator +  folder).mkdir()
     new File(path + File.separator +  folder + File.separator + nameFile).createNewFile()
-    get_commitContentInFileObject().map(line => {
-      FilesIO.writeCommit(path + File.separator +  folder + File.separator + nameFile,line)
-    })
+    get_commitContentInFileObject().map(line => FilesIO.writeCommit(path + File.separator +  folder + File.separator + nameFile,line))
   }
 
   //get in refs/heads/branch
@@ -105,9 +103,9 @@ object Commit{
     commit.set_parent(commit.get_last_commitInRefs())
     commit.set_tree(hashTreeFinal)
     commit.set_idCommit(commit.create_id_commit())
-    Stage.clear_Stage()
+    Stage.clearStage()
     commit.saveCommitFile(commit.get_idCommit())
     commit.set_commitInRefs()
-    Logs.writeInLogs(commit.get_commitContentLog(commit.get_parent(),commit.get_idCommit()))
+    Logs.writeInLogs(commit.get_commitContentInLog(commit.get_parent(),commit.get_idCommit()))
   }
 }

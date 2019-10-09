@@ -13,7 +13,7 @@ object FilesManager {
     }
   }
 
-  def getListOfAll(dir: String):List[File] = {
+  def getListOfContentInDirectory(dir: String):List[File] = {
     val d = new File(dir)
     if (d.exists && d.isDirectory && !d.getName.equals(".git")&& !d.getName.equals(".sgit")&& !d.getName.equals(".idea")) {
       d.listFiles.toList

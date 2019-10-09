@@ -51,9 +51,29 @@ case class Tree(var items: List[Wrapper] = List.empty, var id: String = "") {
     acc
   }
 
+}
 
+object Tree {
+  def createTree(content: List[Wrapper]): String = {
+    val tree = new Tree()
+    content.map(element => tree.set_contentTree(tree.addElement(element)))
+    val hash = tree.createTreeId(tree.get_contentTree())
+    tree.set_idTree(hash)
+    tree.saveTreeFile(tree.get_idTree(), tree.get_contentTree())
+    tree.get_idTree()
+  }
 
+  def createTreeGhost(nonRootFiles: List[Wrapper], rootFiles: List[Wrapper]): String = {
+    val tree = new Tree()
 
+    if(nonRootFiles.length > 0) nonRootFiles.map(element => tree.set_contentTree(tree.addElement(element)))
+    if(rootFiles.length > 0) rootFiles.map(element => tree.set_contentTree(tree.addElement(element)))
+
+    val hash = tree.createTreeId(tree.get_contentTree())
+    tree.set_idTree(hash)
+    tree.saveTreeFile(tree.get_idTree(), tree.get_contentTree())
+    tree.get_idTree()
+  }
 }
 
 

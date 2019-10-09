@@ -1,6 +1,7 @@
 package app.objects
 
 case class Wrapper(path: String, hash: String, typeE: String) {
+
   def get_path(): String = {
     this.path
   }

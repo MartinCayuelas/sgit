@@ -21,12 +21,10 @@ object FilesIO {
     bw.close()
   }
 
-
-
-  def writeTree(path: String, content: String): Unit = {
+  def writeTree(path: String, contentTree: String): Unit = {
     val file = new File(path)
     val bw = new BufferedWriter(new FileWriter(file,true))
-    bw.write(content)
+    bw.write(contentTree)
     bw.close()
   }
 

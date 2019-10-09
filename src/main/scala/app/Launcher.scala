@@ -1,7 +1,7 @@
 package app
 
 import app.commands.Add_cmd.add
-import app.commands.Init_cmd.init
+import app.commands.Init_cmd.{init,sgitExists}
 import app.commands.Branch_cmd.branch
 import app.commands.Tag_cmd.tag
 import app.commands.Commit_cmd.commit
@@ -17,27 +17,27 @@ object Launcher extends App {
       case Array("init", _) => println("No argument(s) expected.")
       case Array("init") => init()
       //ADD
-      case Array("add", _*) => add(args)
+      case Array("add", _*) => if (sgitExists()) add(args) else println("fatal: neither this nor any of its parent directories is a sgit: .sgit repository")
       case Array("status", _) => println("No argument(s) expected.")
-      case Array("status") => status()
+      case Array("status") => if (sgitExists()) status() else println("fatal: neither this nor any of its parent directories is a sgit: .sgit repository")
       //Diff
       case Array("diff", _) => println("No argument(s) expected.")
-      case Array("diff") => diff()
+      case Array("diff") => if (sgitExists()) diff() else println("fatal: neither this nor any of its parent directories is a sgit: .sgit repository")
       //Commit
       case Array("commit", _) => println("No argument(s) expected.")
-      case Array("commit") => commit()
+      case Array("commit") => if (sgitExists()) commit() else println("fatal: neither this nor any of its parent directories is a sgit: .sgit repository")
       //Log
-      case Array("log", _*) => log(args)
+      case Array("log", _*) => if (sgitExists()) log(args) else println("fatal: neither this nor any of its parent directories is a sgit: .sgit repository")
       //Branch
-      case Array("branch", _*)  => branch(args)
+      case Array("branch", _*)  => if (sgitExists()) branch(args) else println("fatal: neither this nor any of its parent directories is a sgit: .sgit repository")
       //Checkout
-      case Array("checkout", _*)  => checkout(args)
+      case Array("checkout", _*)  => if (sgitExists()) checkout(args)else println("fatal: neither this nor any of its parent directories is a sgit: .sgit repository")
       //tag
-      case Array("tag", _*)  => tag(args)
+      case Array("tag", _*)  => if (sgitExists()) tag(args) else println("fatal: neither this nor any of its parent directories is a sgit: .sgit repository")
       //Merge
-      case Array("merge", _*) => merge(args)
+      case Array("merge", _*) => if (sgitExists()) merge(args) else println("fatal: neither this nor any of its parent directories is a sgit: .sgit repository")
       //Rebase
-      case Array("rebase", _*) => rebase(args)
+      case Array("rebase", _*) => if (sgitExists()) rebase(args) else println("fatal: neither this nor any of its parent directories is a sgit: .sgit repository")
       //Default Case
       case _ => println("This command doesn't exists")
     }

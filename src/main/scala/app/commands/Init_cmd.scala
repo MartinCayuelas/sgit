@@ -31,20 +31,23 @@ INIT -----------
     val sgitPath = path + File.separator + ".sgit"
     val sgitRepository = new File(".sgit")
 
-    if (Files.notExists(Paths.get(".sgit"))) {
+    if (sgitExists()) {
       sgitRepository.mkdir()
       listFolders.map(folder => new File(sgitPath + File.separator + folder).mkdir())
       listFiles.map(file => new File(sgitPath + File.separator + file).createNewFile())
       new File(Paths.get(".sgit").toAbsolutePath.toString.concat("/refs/heads/master")).createNewFile()
-
       writeHead()
+
       val currentBranch = Branch_cmd.getCurrentBranch
       Logs.createLogFileForBranch(currentBranch)
       new File(Paths.get(".sgit").toAbsolutePath.toString.concat("/stages").concat(s"/${currentBranch}")).createNewFile()
-      println(s"Empty Git repository initialized in ${path}/.sgit/")
-    } else {
-      println(s"Sgit repository already exists.")
-    }
 
+      println(s"Empty Git repository initialized in ${path}/.sgit/")
+    }
+    else println(s"Sgit repository already exists.")
+  }
+
+  def sgitExists(): Boolean ={
+    Files.exists(Paths.get(".sgit"))
   }
 }
