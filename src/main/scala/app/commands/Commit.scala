@@ -2,7 +2,7 @@ package app.commands
 
 import java.io.File
 
-import app.filesManager.FilesIO
+import app.filesManager.Stage
 import app.objects.{Tree, Wrapper}
 
 import scala.annotation.tailrec
@@ -10,18 +10,16 @@ import scala.annotation.tailrec
 object Commit {
 
   def commit(): Unit = {
-    //val stage = retrieveStageStatus()
-    val stage = FilesIO.retrieveStageStatus()
-    val blobsRoot = FilesIO.retrieveStageRootBlobs()
-    //blobsRoot.map(e=> println(s"BlobRoot: ${e.get_hash()}"))
-
+    val stage: List[Wrapper] = Stage.retrieveStageStatus()
+    val blobsRoot: List[Wrapper] = Stage.retrieveStageRootBlobs()
 
     val resTrees = addTrees(stage, None)
     /*
     Creating the tree for commit
      */
-  //  val treeCommit = new Tree()
-   // treeCommit.set_contentTree(resTrees)
+
+  val hashFinalGhostTree = createTreeGhost(blobsRoot,resTrees)
+
 
     /*
     Commit
@@ -33,7 +31,7 @@ object Commit {
   }
 
   @tailrec
-  def addTrees(l: List[Wrapper], hashFinal: Option[List[String]]): List[String] = {
+  def addTrees(l: List[Wrapper], hashFinal: Option[List[Wrapper]]): List[Wrapper] = {
     if(l.size == 0){
       hashFinal.get
     } else {
@@ -41,24 +39,37 @@ object Commit {
       val hash = createTree(deeper)
       if(parent.isEmpty) {
         if (hashFinal.isEmpty){
-          addTrees(rest, Some(List(hash)))
+          addTrees(rest, Some(List(Wrapper(deeper(0).get_path(),hash,"Tree"))))
         } else {
-          addTrees(rest, Some(hash :: hashFinal.get))
+          addTrees(rest, Some(Wrapper(deeper(0).get_path(),hash,"Tree") :: hashFinal.get))
         }
       } else {
-        addTrees(Wrapper(parent.get, hash, "tree") :: rest, hashFinal)
+        addTrees(Wrapper(parent.get, hash, "Tree") :: rest, hashFinal)
       }
     }
   }
 
-  def createTree(deeper: List[Wrapper]): String = {
+  def createTree(content: List[Wrapper]): String = {
     val tree = new Tree()
-    deeper.map(element => tree.set_contentTree(tree.addElement(element)))
+    content.map(element => tree.set_contentTree(tree.addElement(element)))
     val hash = tree.createTreeId(tree.get_contentTree())
     tree.set_idTree(hash)
     tree.saveTreeFile(tree.get_idTree(), tree.get_contentTree())
     tree.get_idTree()
   }
+
+  def createTreeGhost(nonRootFiles: List[Wrapper], rootFiles: List[Wrapper]): String = {
+    val tree = new Tree()
+
+    if(nonRootFiles.length > 0) nonRootFiles.map(element => tree.set_contentTree(tree.addElement(element)))
+    if(rootFiles.length > 0) rootFiles.map(element => tree.set_contentTree(tree.addElement(element)))
+
+    val hash = tree.createTreeId(tree.get_contentTree())
+    tree.set_idTree(hash)
+    tree.saveTreeFile(tree.get_idTree(), tree.get_contentTree())
+    tree.get_idTree()
+  }
+
 
 
 

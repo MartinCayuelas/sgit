@@ -3,7 +3,8 @@ package app.objects
 import java.io.File
 import java.nio.file.Paths
 
-import app.filesManager.FilesIO.{writeBlob,writeBlobStage}
+import app.filesManager.FilesIO.writeBlob
+import app.filesManager.Stage
 import app.helpers.HelpersApp
 
 object Blob {
@@ -17,7 +18,7 @@ object Blob {
     addBlob(idSha1, content)
 
     val blob = s"Blob ${idSha1} ${f.getPath}\n"
-    writeBlobStage(blob)
+    Stage.writeInStage(blob)
     blob
   }
 
