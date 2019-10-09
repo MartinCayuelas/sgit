@@ -25,12 +25,15 @@ ADD -----------
   }
 
   def addRoutine(f: File) : Unit = {
-    if(f.isFile){
-      Blob.createBlob(f)
-    }else{
-      // recursionFiles(f, new Tree())
-      recursionFilesBlob(f)
-    }
+    if(f.exists()){
+      if(f.isFile){
+        Blob.createBlob(f)
+      }else{
+        // recursionFiles(f, new Tree())
+        recursionFilesBlob(f)
+      }
+    }else println(s"fatal: the path ${f.getName} does not correspond to any file")
+
   }
 
   def recursionFilesBlob(f: File): Unit = {

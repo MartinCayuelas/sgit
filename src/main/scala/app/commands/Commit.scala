@@ -15,6 +15,7 @@ object Commit {
     val stage = retrieveStageStatus()
 
     val resTrees = addTrees(stage, None)
+    resTrees.map(e=>println(e))
     /*
     Creating the tree for commit
      */
@@ -74,6 +75,7 @@ object Commit {
 
     //Cleaning from the filenames
     val paths = stage_content.map(x => BFile(base_dir).relativize(BFile(x(2)).parent).toString).toList
+    paths.map(e=>println(e))
 
     val hashs = stage_content.map(x =>x(1)).toList
     val blob = List.fill(paths.size)("blob")
@@ -92,9 +94,10 @@ object Commit {
     })
 
     val rest = l.filter(x => !(x.get_path().equals(pathForMax)))
-    val deepest = l.filter(x => x.get_path()equals(pathForMax))
+    val deepest = l.filter(x => x.get_path().equals(pathForMax))
 
     val parentPath = getParentPath(pathForMax)
+
     (deepest, rest, parentPath)
   }
 
@@ -106,13 +109,15 @@ object Commit {
       var parentPath = ""
       var first_dir = true
       val lastValue = pathSplit.last
-      pathSplit.map(x => if(x != lastValue){
+      var index =0
+      pathSplit.map(x => if(index < pathSplit.length-1){
         if(first_dir){
           parentPath = x
           first_dir = false
         } else {
           parentPath = parentPath + File.separator + x
         }
+        index = index+1
       })
       Some(parentPath)
     }
