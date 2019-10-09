@@ -3,31 +3,30 @@ package app.commands
 import java.io.File
 
 import app.filesManager.Stage
-import app.objects.{Tree, Wrapper}
+import app.objects.{Commit, Tree, Wrapper}
 
 import scala.annotation.tailrec
 
-object Commit {
+
+object Commit_cmd {
 
   def commit(): Unit = {
-    val stage: List[Wrapper] = Stage.retrieveStageStatus()
-    val blobsRoot: List[Wrapper] = Stage.retrieveStageRootBlobs()
+    if(Stage.stageEmpty()) println("Nothing to commit")
+    else {
+      val stage: List[Wrapper] = Stage.retrieveStageStatus()
+      val blobsRoot: List[Wrapper] = Stage.retrieveStageRootBlobs()
 
-    val resTrees = addTrees(stage, None)
-    /*
-    Creating the tree for commit
-     */
+      val resTrees = addTrees(stage, None)
+      /*
+      Creating the tree for commit
+       */
+      val hashFinalGhostTree = createTreeGhost(blobsRoot,resTrees)
 
-  val hashFinalGhostTree = createTreeGhost(blobsRoot,resTrees)
+      //Creation and process about a Commit object (class)
+      Commit.commit(hashFinalGhostTree)
+    }
 
 
-    /*
-    Commit
-     */
-
-    /*
-    TO DO COMMIT
-     */
   }
 
   @tailrec

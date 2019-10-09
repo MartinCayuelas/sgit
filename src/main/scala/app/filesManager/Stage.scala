@@ -3,26 +3,34 @@ package app.filesManager
 import java.io.{BufferedWriter, File, FileWriter}
 import java.nio.file.Paths
 
-import app.commands.Branch
+import app.commands.Branch_cmd
 import app.objects.Wrapper
 import better.files.{File => BFile}
-
+import java.io.PrintWriter
 object Stage {
 
   def readStage(): String = {
-    val path = Paths.get(".sgit").toAbsolutePath.toString.concat(s"/stages/${Branch.getCurrentBranch}")
+    val path = Paths.get(".sgit").toAbsolutePath.toString.concat(s"/stages/${Branch_cmd.getCurrentBranch}")
     val source = scala.io.Source.fromFile(path)
     val content = try source.mkString finally source.close()
     content
   }
 
   def writeInStage(contentblob: String): Unit = {
-    val currentBranch = Branch.getCurrentBranch
+    val currentBranch = Branch_cmd.getCurrentBranch
     val path = Paths.get(".sgit").toAbsolutePath.toString.concat(s"/stages/${currentBranch}")
     val file = new File(path)
     val bw = new BufferedWriter(new FileWriter(file,true))
     bw.write(contentblob)
     bw.close()
+  }
+
+  def clear_Stage():Unit ={
+    val currentBranch = Branch_cmd.getCurrentBranch
+    val path = Paths.get(".sgit").toAbsolutePath.toString.concat(s"/stages/${currentBranch}")
+    val writer = new PrintWriter(path)
+    writer.print("")
+    writer.close()
   }
 
   //Returns a list containing the path to a file that has been converted to a Blob (because it's in the STAGE) and its Hash
@@ -58,5 +66,13 @@ object Stage {
     blobs.map(e => Wrapper(e(2),e(1),e(0)))
 
   }
+
+  def stageEmpty(): Boolean = {
+    val currentBranch = Branch_cmd.getCurrentBranch
+    val path = Paths.get(".sgit").toAbsolutePath.toString.concat(s"/stages/${currentBranch}")
+    val file = new File(path)
+    file.length() == 0
+  }
+
 
 }

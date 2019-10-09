@@ -4,8 +4,9 @@ import java.io.File
 import java.nio.file.{Files, Paths}
 
 import app.filesManager.FilesIO.writeHead
+import app.filesManager.Logs
 
-object Init {
+object Init_cmd {
 
   /*
 INIT -----------
@@ -37,7 +38,8 @@ INIT -----------
       new File(Paths.get(".sgit").toAbsolutePath.toString.concat("/refs/heads/master")).createNewFile()
 
       writeHead()
-      val currentBranch = Branch.getCurrentBranch
+      val currentBranch = Branch_cmd.getCurrentBranch
+      Logs.createLogFileForBranch(currentBranch)
       new File(Paths.get(".sgit").toAbsolutePath.toString.concat("/stages").concat(s"/${currentBranch}")).createNewFile()
       println(s"Empty Git repository initialized in ${path}/.sgit/")
     } else {

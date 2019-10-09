@@ -6,7 +6,7 @@ import java.nio.file.Paths
 import app.filesManager.FilesManager
 import app.objects.Blob
 
-object Add {
+object Add_cmd {
   /*
 ADD -----------
  */

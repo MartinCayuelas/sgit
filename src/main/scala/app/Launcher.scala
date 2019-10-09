@@ -1,10 +1,10 @@
 package app
 
-import app.commands.Add.add
-import app.commands.Init.init
-import app.commands.Branch.branch
-import app.commands.Tag.tag
-import app.commands.Commit.commit
+import app.commands.Add_cmd.add
+import app.commands.Init_cmd.init
+import app.commands.Branch_cmd.branch
+import app.commands.Tag_cmd.tag
+import app.commands.Commit_cmd.commit
 
 object Launcher extends App {
 

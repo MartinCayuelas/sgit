@@ -30,6 +30,12 @@ object FilesIO {
     bw.close()
   }
 
+  def writeCommit(path: String, contentCommit: String): Unit = {
+    val file = new File(path)
+    val bw = new BufferedWriter(new FileWriter(file,true))
+    bw.write(contentCommit)
+    bw.close()
+  }
 
 
 

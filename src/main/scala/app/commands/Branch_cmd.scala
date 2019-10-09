@@ -5,7 +5,7 @@ import java.nio.file.{Files, Paths}
 
 import app.filesManager.FilesManager
 
-object Branch {
+object Branch_cmd {
   /*
   BRANCH---------------------
    */
@@ -13,7 +13,7 @@ object Branch {
   def branch(args: Array[String]): Unit = {
     if ((args.length == 2) && (args(1).equals("-av"))) {
       displayAllBranches()
-      Tag.displayAllTags()
+      Tag_cmd.displayAllTags()
     }
     else if (args.length == 2) createBranch(args(1))
     else println("Number of arguments not supported for the command 'branch'.")

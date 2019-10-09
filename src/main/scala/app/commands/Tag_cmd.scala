@@ -5,7 +5,7 @@ import java.nio.file.{Files, Paths}
 
 import app.filesManager.FilesManager
 
-object Tag {
+object Tag_cmd {
   /*
   TAG---------------------
    */
