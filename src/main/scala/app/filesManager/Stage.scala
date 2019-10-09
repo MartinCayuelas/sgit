@@ -33,6 +33,25 @@ object Stage {
     writer.close()
   }
 
+
+  def stageEmpty(): Boolean = {
+    val currentBranch = Branch_cmd.getCurrentBranch
+    val path = Paths.get(".sgit").toAbsolutePath.toString.concat(s"/stages/${currentBranch}")
+    val file = new File(path)
+    file.length() == 0
+  }
+
+  def retrieveStageRootBlobs(): List[Wrapper]= {
+    //Retrieve useful data
+    val files = readStage()
+    val base_dir = System.getProperty("user.dir")
+    //Split lines
+    val stage_content = files.split("\n").map(x => x.split(" "))
+    val blobs = stage_content.filter(x => x(2).split("/").length==1).toList
+    blobs.map(e => Wrapper(e(2),e(1),e(0)))
+
+  }
+
   //Returns a list containing the path to a file that has been converted to a Blob (because it's in the STAGE) and its Hash
   //OUTPUT is something like this:
   //(src/main/scala/objects,a7dbb76b0406d104b116766a40f2e80a79f40a0349533017253d52ea750d9144)
@@ -56,23 +75,26 @@ object Stage {
     listTobeReturned.map(elem => Wrapper(elem._1,elem._2,elem._3))
   }
 
-  def retrieveStageRootBlobs(): List[Wrapper]= {
-    //Retrieve useful data
-    val files = readStage()
-    val base_dir = System.getProperty("user.dir")
-    //Split lines
-    val stage_content = files.split("\n").map(x => x.split(" "))
-    val blobs = stage_content.filter(x => x(2).split("/").length==1).toList
-    blobs.map(e => Wrapper(e(2),e(1),e(0)))
 
-  }
 
-  def stageEmpty(): Boolean = {
+  def deleteLinesInStage(pathLine: String): Unit ={
     val currentBranch = Branch_cmd.getCurrentBranch
     val path = Paths.get(".sgit").toAbsolutePath.toString.concat(s"/stages/${currentBranch}")
     val file = new File(path)
-    file.length() == 0
-  }
+    val source = scala.io.Source.fromFile(file)
+    val lines = source.getLines.toList
+    source.close()
+    val writer = new PrintWriter(path)
+    writer.print("")
+    writer.close()
 
+    val stage_content = lines.map(x => x.split(" "))
+    val stage_filtered =  stage_content.filter(x => !x(2).equals(pathLine))
+    val stage: List[String] = stage_filtered.map(x => x(0)+" "+x(1)+" "+x(2)+"\n")
+
+    stage.map(line => {
+      writeInStage(line)
+    })
+  }
 
 }

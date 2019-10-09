@@ -18,6 +18,7 @@ object Blob {
     addBlob(idSha1, content)
 
     val blob = s"Blob ${idSha1} ${f.getPath}\n"
+    Stage.deleteLinesInStage(f.getPath)
     Stage.writeInStage(blob)
     blob
   }
