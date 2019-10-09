@@ -6,17 +6,17 @@ import java.nio.file.Paths
 import app.filesManager.FilesIO.writeTree
 import app.helpers.HelpersApp
 
-case class Tree(var items: List[EntryTree] = List(), var id: String = "") {
+case class Tree(var items: List[Wrapper] = List.empty, var id: String = "") {
 
-  def addElement(typeElem: String, id: String, filename: String): List[EntryTree] = {
-    EntryTree(typeElem, id, filename) :: this.get_contentTree()
+  def addElement(elem: Wrapper): List[Wrapper] = {
+    elem :: this.get_contentTree()
   }
 
-  def get_contentTree(): List[EntryTree] = {
+  def get_contentTree(): List[Wrapper] = {
     this.items
   }
 
-  def set_contentTree (items: List[EntryTree]): Unit = {
+  def set_contentTree (items: List[Wrapper]): Unit = {
     this.items = items
   }
 
@@ -29,7 +29,7 @@ case class Tree(var items: List[EntryTree] = List(), var id: String = "") {
   }
 
 
-  def saveTreeFile(idSha1: String, contentTree: List[EntryTree]): Unit = {
+  def saveTreeFile(idSha1: String, contentTree: List[Wrapper]): Unit = {
     val path = Paths.get(".sgit/objects/trees").toAbsolutePath.toString
     val folder = idSha1.substring(0,2)
     val nameFile = idSha1.substring(2,idSha1.length)
@@ -40,14 +40,14 @@ case class Tree(var items: List[EntryTree] = List(), var id: String = "") {
 
   }
 
-  def createTreeId(items: List[EntryTree]): String = {
+  def createTreeId(items: List[Wrapper]): String = {
     val content = treeContent(items)
     HelpersApp.convertToSha1(content)
   }
 
-  def treeContent(items: List[EntryTree]): String = {
+  def treeContent(items: List[Wrapper]): String = {
     var acc = ""
-    items.map(x => acc = acc + x.get_typeElem() + " " + x.get_id() +" "+ x.get_fileName()+ "\n")
+    items.map(x => acc = acc + x.get_TypeE() + " " + x.get_hash() +" "+ x.get_path()+ "\n")
     acc
   }
 

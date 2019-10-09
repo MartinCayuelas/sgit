@@ -3,7 +3,7 @@ package app.commands
 import java.io.File
 
 import app.filesManager.FilesIO
-import app.objects.{Entry, Tree}
+import app.objects.{Wrapper, Tree}
 
 import scala.annotation.tailrec
 import better.files.{File => BFile}
@@ -32,7 +32,7 @@ object Commit {
 
 
   @tailrec
-  def addTrees(l: List[Entry], hashFinal: Option[List[String]]): List[String] = {
+  def addTrees(l: List[Wrapper], hashFinal: Option[List[String]]): List[String] = {
     if(l.size == 0){
       hashFinal.get
     } else {
@@ -45,15 +45,15 @@ object Commit {
           addTrees(rest, Some(hash :: hashFinal.get))
         }
       } else {
-        addTrees(Entry(parent.get, hash, "tree") :: rest, hashFinal)
+        addTrees(Wrapper(parent.get, hash, "tree") :: rest, hashFinal)
       }
     }
   }
 
-  def createTree(deeper: List[Entry]): String = {
+  def createTree(deeper: List[Wrapper]): String = {
     val tree = new Tree()
     //deeper.map(x => println(x))
-    deeper.map(element => tree.set_contentTree(tree.addElement(element.get_TypeE(), element.get_hash(), element.get_path())))
+    deeper.map(element => tree.set_contentTree(tree.addElement(element)))
     val hash = tree.createTreeId(tree.get_contentTree())
     tree.set_idTree(hash)
     tree.saveTreeFile(tree.get_idTree(), tree.get_contentTree())
@@ -64,7 +64,7 @@ object Commit {
   //OUTPUT is something like this:
   //(src/main/scala/objects,a7dbb76b0406d104b116766a40f2e80a79f40a0349533017253d52ea750d9144)
   //(src/main/scala/utils,29ee69c28399de6f830f3f0f55140ad97c211fc851240901f9e030aaaf2e13a0)
-  def retrieveStageStatus(): List[Entry]= {
+  def retrieveStageStatus(): List[Wrapper]= {
     //Retrieve useful data
     val files = FilesIO.readStage()
     val base_dir = System.getProperty("user.dir")
@@ -79,10 +79,10 @@ object Commit {
     val blob = List.fill(paths.size)("blob")
     //Merging the result
     val listTobeReturned=((paths,hashs,blob).zipped.toList)
-    listTobeReturned.map(elem => Entry(elem._1,elem._2,elem._3))
+    listTobeReturned.map(elem => Wrapper(elem._1,elem._2,elem._3))
   }
 
-  def getDeeperDirectory(l: List[Entry]): (List[Entry], List[Entry], Option[String]) = {
+  def getDeeperDirectory(l: List[Wrapper]): (List[Wrapper], List[Wrapper], Option[String]) = {
     var max = 0
     var pathForMax = ""
 
