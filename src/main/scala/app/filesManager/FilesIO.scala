@@ -62,10 +62,10 @@ object FilesIO {
     //Split lines
     val stage_content = files.split("\n").map(x => x.split(" "))
 
+    val filesNotInRoot = stage_content.filter(x => x(2).split("/").length > 1).toList
     //Cleaning from the filenames
-    val paths = stage_content.map(x => BFile(base_dir).relativize(BFile(x(2)).parent).toString).toList
-
-val pathes = paths
+    val paths = filesNotInRoot.map(x => BFile(base_dir).relativize(BFile(x(2)).parent).toString)
+    paths.map(e =>println(s"NotRoot : ${e}"))
     val hashs = stage_content.map(x =>x(1)).toList
     val blob = List.fill(paths.size)("blob")
     //Merging the result
@@ -73,7 +73,7 @@ val pathes = paths
     listTobeReturned.map(elem => Wrapper(elem._1,elem._2,elem._3))
   }
 
-  def retrieveStageRootBlobs(): Unit= {
+  def retrieveStageRootBlobs(): List[Wrapper]= {
     //Retrieve useful data
     val files = FilesIO.readStage()
     val base_dir = System.getProperty("user.dir")
@@ -81,7 +81,7 @@ val pathes = paths
     //Split lines
     val stage_content = files.split("\n").map(x => x.split(" "))
     val blobs = stage_content.filter(x => x(2).split("/").length==1).toList
-   blobs.map(e => println(e(2)))
+    blobs.map(e => Wrapper(e(0),e(1),e(2)))
 
   }
 

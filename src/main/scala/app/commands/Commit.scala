@@ -13,8 +13,7 @@ object Commit {
     //val stage = retrieveStageStatus()
     val stage = FilesIO.retrieveStageStatus()
     val blobsRoot = FilesIO.retrieveStageRootBlobs()
-
-    val stageWithNonRootBlobs = stage.filter(x => !root_blobs.contains(x))
+    //blobsRoot.map(e=> println(s"BlobRoot: ${e.get_hash()}"))
 
 
     val resTrees = addTrees(stage, None)
