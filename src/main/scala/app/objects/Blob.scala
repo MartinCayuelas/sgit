@@ -10,6 +10,7 @@ import app.helpers.HelpersApp
 object Blob {
 
   def createBlob(f: File): String = {
+    println(f.getPath)
 
     val source = scala.io.Source.fromFile(f.getAbsoluteFile)
     val content = try source.mkString finally source.close()

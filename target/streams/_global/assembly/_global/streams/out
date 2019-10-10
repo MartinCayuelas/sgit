@@ -1,17 +1,18 @@
-[0m[[0m[0minfo[0m] [0m[0mIncluding from cache: better-files_2.13-3.8.0.jar[0m
-[0m[[0m[0minfo[0m] [0m[0mIncluding from cache: scala-library-2.13.1.jar[0m
+[0m[[0m[0minfo[0m] [0m[0mIncluding: better-files_2.13-3.8.0.jar[0m
+[0m[[0m[0minfo[0m] [0m[0mIncluding: scala-library-2.13.1.jar[0m
 [0m[[0m[0mdebug[0m] [0m[0mCalculate mappings...[0m
 [0m[[0m[0minfo[0m] [0m[0mChecking every *.class/*.jar file's SHA-1.[0m
 [0m[[0m[0minfo[0m] [0m[0mMerging files...[0m
+[0m[[0m[33mwarn[0m] [0m[0mMerging 'NOTICE' with strategy 'rename'[0m
+[0m[[0m[33mwarn[0m] [0m[0mMerging 'LICENSE' with strategy 'rename'[0m
 [0m[[0m[33mwarn[0m] [0m[0mMerging 'META-INF/MANIFEST.MF' with strategy 'discard'[0m
 [0m[[0m[33mwarn[0m] [0m[0mStrategy 'discard' was applied to a file[0m
-[0m[[0m[0minfo[0m] [0m[0mSHA-1: 7fe1ad7d0e4c775743f39bfccee7f98520ea74b9[0m
+[0m[[0m[33mwarn[0m] [0m[0mStrategy 'rename' was applied to 2 files[0m
+[0m[[0m[0minfo[0m] [0m[0mSHA-1: 0b6e16b32a47f70132f31bc5675720d9c2c967ff[0m
 [0m[[0m[0mdebug[0m] [0m[0mPackaging /home/martin/Bureau/sgit/target/scala-2.13/sgit-assembly-0.1.jar ...[0m
 [0m[[0m[0mdebug[0m] [0m[0mInput file mappings:[0m
 [0m[[0m[0mdebug[0m] [0m[0m	LICENSE_scala-library-2.13.1[0m
 [0m[[0m[0mdebug[0m] [0m[0m	  /home/martin/Bureau/sgit/target/streams/_global/assemblyOption/_global/streams/assembly/dffa125d7c2fca75fac895661fae3ccb5762c88f_1418c956704990564fb9dfac5960647ca54b5a91_da39a3ee5e6b4b0d3255bfef95601890afd80709/LICENSE_scala-library-2.13.1[0m
-[0m[[0m[0mdebug[0m] [0m[0m	META-INF/sgit.kotlin_module[0m
-[0m[[0m[0mdebug[0m] [0m[0m	  /home/martin/Bureau/sgit/target/streams/_global/assemblyOption/_global/streams/assembly/4556f00313947155c1340e6ec69eb2f4be12037e_dir/META-INF/sgit.kotlin_module[0m
 [0m[[0m[0mdebug[0m] [0m[0m	NOTICE_scala-library-2.13.1[0m
 [0m[[0m[0mdebug[0m] [0m[0m	  /home/martin/Bureau/sgit/target/streams/_global/assemblyOption/_global/streams/assembly/dffa125d7c2fca75fac895661fae3ccb5762c88f_1418c956704990564fb9dfac5960647ca54b5a91_da39a3ee5e6b4b0d3255bfef95601890afd80709/NOTICE_scala-library-2.13.1[0m
 [0m[[0m[0mdebug[0m] [0m[0m	app/Launcher$.class[0m
