@@ -1,4 +1,5 @@
-#!/bin/bash
-chmod u+x sgit.sh
-ln -s sgit.sh sgit
-export PATH=$PATH:~/Bureau/sgit
+#!/bin/sh
+chmod +x sgit.sh
+DIR="$( cd "$( dirname "$0" )" && pwd )"
+alias sgit='source '$DIR'/./sgit.sh'
+
