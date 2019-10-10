@@ -37,7 +37,7 @@ case class Tree(var contentTree: List[Wrapper] = List.empty, var id: String = ""
   }
 
 
-  def saveTreeFile(idSha1: String, contentTree: List[Wrapper]): Unit = {
+  def saveTreeInObjects(idSha1: String, contentTree: List[Wrapper]): Unit = {
     val path = treesPath
     val folder = idSha1.substring(0,2)
     val nameFile = idSha1.substring(2,idSha1.length)
@@ -76,7 +76,7 @@ object Tree {
     content.map(element => tree.set_contentTree(tree.addElement(element)))
     val hash = tree.createTreeId(tree.contentTree)
     val treeCopy = tree.copy(id = hash)
-    treeCopy.saveTreeFile(treeCopy.id, treeCopy.contentTree)
+    treeCopy.saveTreeInObjects(treeCopy.id, treeCopy.contentTree)
     treeCopy.id
   }
 
@@ -89,7 +89,7 @@ object Tree {
     val hash = tree.createTreeId(tree.contentTree)
     //tree.set_idTree(hash)
     val treeCopy = tree.copy(id = hash)
-    treeCopy.saveTreeFile(treeCopy.id, treeCopy.contentTree)
+    treeCopy.saveTreeInObjects(treeCopy.id, treeCopy.contentTree)
     treeCopy.id
   }
 }
