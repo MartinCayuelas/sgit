@@ -1,4 +1,18 @@
-[0m[[0m[31merror[0m] [0m[0m/home/martin/Bureau/sgit/src/test/scala/app/FilesInitSpec.scala:10:27: can't expand macros compiled by previous versions of Scala[0m
-[0m[[0m[31merror[0m] [0m[0m    assert(Files.notExists(Paths.get(".sgit")))[0m
-[0m[[0m[31merror[0m] [0m[0m                          ^[0m
-[0m[[0m[31merror[0m] [0m[0mone error found[0m
+[0m[[0m[31merror[0m] [0m[0m/home/martin/Bureau/sgit/src/test/scala/app/CommandInitSpec.scala:14:21: class java.io.File is not a value[0m
+[0m[[0m[31merror[0m] [0m[0m  var tempDirPath = File("")[0m
+[0m[[0m[31merror[0m] [0m[0m                    ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/martin/Bureau/sgit/src/test/scala/app/CommandInitSpec.scala:18:19: class java.io.File is not a value[0m
+[0m[[0m[31merror[0m] [0m[0m    tempDirPath = File(tempDir.getCanonicalPath)[0m
+[0m[[0m[31merror[0m] [0m[0m                  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/martin/Bureau/sgit/src/test/scala/app/CommandInitSpec.scala:22:5: not found: value Init[0m
+[0m[[0m[31merror[0m] [0m[0m    Init.init(tempDirPath)[0m
+[0m[[0m[31merror[0m] [0m[0m    ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/martin/Bureau/sgit/src/test/scala/app/CommandInitSpec.scala:25:38: not enough arguments for method initSgitRepository: (path: String)Unit.[0m
+[0m[[0m[31merror[0m] [0m[0mUnspecified value parameter path.[0m
+[0m[[0m[31merror[0m] [0m[0m    val sgitInit = initSgitRepository()[0m
+[0m[[0m[31merror[0m] [0m[0m                                     ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/martin/Bureau/sgit/src/test/scala/app/CommandInitSpec.scala:30:38: not enough arguments for method initSgitRepository: (path: String)Unit.[0m
+[0m[[0m[31merror[0m] [0m[0mUnspecified value parameter path.[0m
+[0m[[0m[31merror[0m] [0m[0m    val sgitInit = initSgitRepository()[0m
+[0m[[0m[31merror[0m] [0m[0m                                     ^[0m
+[0m[[0m[31merror[0m] [0m[0m5 errors found[0m

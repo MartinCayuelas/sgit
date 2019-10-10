@@ -1,3 +1,3 @@
 # sgit
 
-### Scala
+### Scala + Git

@@ -1,31 +1,37 @@
 package app.objects
 
-import java.io.File
+import java.io.{File, PrintWriter}
 import java.nio.file.Paths
 
 import app.filesManager.FilesIO.writeTree
+import app.filesManager.Stage.writeInStage
 import app.helpers.HelpersApp
 
-case class Tree(var items: List[Wrapper] = List.empty, var id: String = "") {
+case class Tree(var contentTree: List[Wrapper] = List.empty, var id: String = "") {
 
   def addElement(elem: Wrapper): List[Wrapper] = {
-    elem :: this.get_contentTree()
+    elem :: this.contentTree
   }
 
-  def get_contentTree(): List[Wrapper] = {
-    this.items
+
+  def set_contentTree (contentTree: List[Wrapper]): Unit = {
+    this.contentTree = contentTree
   }
 
-  def set_contentTree (items: List[Wrapper]): Unit = {
-    this.items = items
-  }
-
-  def get_idTree(): String = {
-    this.id
-  }
-
+/*
   def set_idTree (id: String): Unit = {
     this.id = id
+  }*/
+
+  def createTreeId(contentTree: List[Wrapper]): String = {
+    val content = treeContent(contentTree)
+    HelpersApp.convertToSha1(content)
+  }
+
+  def treeContent(contentTree: List[Wrapper]): String = {
+    var acc = ""
+    contentTree.map(x => acc = acc + x.typeE+ " " + x.hash+" "+ x.path+ "\n")
+    acc
   }
 
 
@@ -35,20 +41,30 @@ case class Tree(var items: List[Wrapper] = List.empty, var id: String = "") {
     val nameFile = idSha1.substring(2,idSha1.length)
     new File(path + File.separator +  folder).mkdir()
     new File(path + File.separator +  folder + File.separator + nameFile).createNewFile()
-
+    val file = Paths.get(path + File.separator +  folder + File.separator + nameFile).toFile
+    deleteLineInTreeFileIfFileAlreadyExists(file.getPath,folder,nameFile)
     writeTree(path + File.separator +  folder + File.separator + nameFile,treeContent(contentTree))
 
   }
 
-  def createTreeId(items: List[Wrapper]): String = {
-    val content = treeContent(items)
-    HelpersApp.convertToSha1(content)
-  }
 
-  def treeContent(items: List[Wrapper]): String = {
-    var acc = ""
-    items.map(x => acc = acc + x.get_TypeE() + " " + x.get_hash() +" "+ x.get_path()+ "\n")
-    acc
+  def deleteLineInTreeFileIfFileAlreadyExists(pathLine: String, folder: String, nameFile: String): Unit = {
+    val path = Paths.get(".sgit".concat(File.separator).concat("objects").concat(File.separator).concat("trees").concat(File.separator).concat(folder).concat(File.separator).concat(nameFile)).toAbsolutePath.toString
+    val file = new File(path)
+    val source = scala.io.Source.fromFile(file)
+    val lines = source.getLines.toList
+    source.close()
+
+    //Clean the file
+    val writer = new PrintWriter(path)
+    writer.print("")
+    writer.close()
+
+    val treeContent = lines.map(x => x.split(" "))
+    val treeContentFiltered =  treeContent.filter(x => !x(2).equals(pathLine))
+    val contentTree: List[String] = treeContentFiltered.map(x => x(0)+" "+x(1)+" "+x(2)+"\n")
+
+    contentTree.map(line => writeInStage(line))
   }
 
 }
@@ -57,10 +73,10 @@ object Tree {
   def createTree(content: List[Wrapper]): String = {
     val tree = new Tree()
     content.map(element => tree.set_contentTree(tree.addElement(element)))
-    val hash = tree.createTreeId(tree.get_contentTree())
-    tree.set_idTree(hash)
-    tree.saveTreeFile(tree.get_idTree(), tree.get_contentTree())
-    tree.get_idTree()
+    val hash = tree.createTreeId(tree.contentTree)
+    val treeCopy = tree.copy(id = hash)
+    treeCopy.saveTreeFile(treeCopy.id, treeCopy.contentTree)
+    treeCopy.id
   }
 
   def createTreeGhost(nonRootFiles: List[Wrapper], rootFiles: List[Wrapper]): String = {
@@ -69,10 +85,11 @@ object Tree {
     if(nonRootFiles.length > 0) nonRootFiles.map(element => tree.set_contentTree(tree.addElement(element)))
     if(rootFiles.length > 0) rootFiles.map(element => tree.set_contentTree(tree.addElement(element)))
 
-    val hash = tree.createTreeId(tree.get_contentTree())
-    tree.set_idTree(hash)
-    tree.saveTreeFile(tree.get_idTree(), tree.get_contentTree())
-    tree.get_idTree()
+    val hash = tree.createTreeId(tree.contentTree)
+    //tree.set_idTree(hash)
+    val treeCopy = tree.copy(id = hash)
+    treeCopy.saveTreeFile(treeCopy.id, treeCopy.contentTree)
+    treeCopy.id
   }
 }
 

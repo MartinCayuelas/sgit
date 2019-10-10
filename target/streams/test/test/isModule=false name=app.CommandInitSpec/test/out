@@ -1,0 +1,4 @@
+[0m[[0m[0minfo[0m] [0m[0m[32mCommandInitSpec:[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32mSgit initialization[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- should create a .sgit folder with folders[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- should not re-create a sgit folder if existing already[0m[0m

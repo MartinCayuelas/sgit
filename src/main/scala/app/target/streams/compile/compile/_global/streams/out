@@ -1,0 +1,61 @@
+[0m[[0m[31merror[0m] [0m[0m/home/martin/Bureau/sgit/src/main/scala/app/Launcher.scala:3:12: object commands is not a member of package app[0m
+[0m[[0m[31merror[0m] [0m[0mimport app.commands.Add_cmd.add[0m
+[0m[[0m[31merror[0m] [0m[0m           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/martin/Bureau/sgit/src/main/scala/app/Launcher.scala:4:12: object commands is not a member of package app[0m
+[0m[[0m[31merror[0m] [0m[0mimport app.commands.Init_cmd.{init,isInSgitRepository}[0m
+[0m[[0m[31merror[0m] [0m[0m           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/martin/Bureau/sgit/src/main/scala/app/Launcher.scala:5:12: object commands is not a member of package app[0m
+[0m[[0m[31merror[0m] [0m[0mimport app.commands.Branch_cmd.branch[0m
+[0m[[0m[31merror[0m] [0m[0m           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/martin/Bureau/sgit/src/main/scala/app/Launcher.scala:6:12: object commands is not a member of package app[0m
+[0m[[0m[31merror[0m] [0m[0mimport app.commands.Tag_cmd.tag[0m
+[0m[[0m[31merror[0m] [0m[0m           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/martin/Bureau/sgit/src/main/scala/app/Launcher.scala:7:12: object commands is not a member of package app[0m
+[0m[[0m[31merror[0m] [0m[0mimport app.commands.Commit_cmd.commit[0m
+[0m[[0m[31merror[0m] [0m[0m           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/martin/Bureau/sgit/src/main/scala/app/Launcher.scala:18:29: not found: value init[0m
+[0m[[0m[31merror[0m] [0m[0m      case Array("init") => init()[0m
+[0m[[0m[31merror[0m] [0m[0m                            ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/martin/Bureau/sgit/src/main/scala/app/Launcher.scala:20:36: not found: value isInSgitRepository[0m
+[0m[[0m[31merror[0m] [0m[0m      case Array("add", _*) => if (isInSgitRepository(".")) add(args) else println("fatal: neither this nor any of its parent directories is a sgit: .sgit repository")[0m
+[0m[[0m[31merror[0m] [0m[0m                                   ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/martin/Bureau/sgit/src/main/scala/app/Launcher.scala:20:61: not found: value add[0m
+[0m[[0m[31merror[0m] [0m[0m      case Array("add", _*) => if (isInSgitRepository(".")) add(args) else println("fatal: neither this nor any of its parent directories is a sgit: .sgit repository")[0m
+[0m[[0m[31merror[0m] [0m[0m                                                            ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/martin/Bureau/sgit/src/main/scala/app/Launcher.scala:22:35: not found: value isInSgitRepository[0m
+[0m[[0m[31merror[0m] [0m[0m      case Array("status") => if (isInSgitRepository(".")) status() else println("fatal: neither this nor any of its parent directories is a sgit: .sgit repository")[0m
+[0m[[0m[31merror[0m] [0m[0m                                  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/martin/Bureau/sgit/src/main/scala/app/Launcher.scala:25:33: not found: value isInSgitRepository[0m
+[0m[[0m[31merror[0m] [0m[0m      case Array("diff") => if (isInSgitRepository(".")) diff() else println("fatal: neither this nor any of its parent directories is a sgit: .sgit repository")[0m
+[0m[[0m[31merror[0m] [0m[0m                                ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/martin/Bureau/sgit/src/main/scala/app/Launcher.scala:28:35: not found: value isInSgitRepository[0m
+[0m[[0m[31merror[0m] [0m[0m      case Array("commit") => if (isInSgitRepository("."))commit() else println("fatal: neither this nor any of its parent directories is a sgit: .sgit repository")[0m
+[0m[[0m[31merror[0m] [0m[0m                                  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/martin/Bureau/sgit/src/main/scala/app/Launcher.scala:28:59: not found: value commit[0m
+[0m[[0m[31merror[0m] [0m[0m      case Array("commit") => if (isInSgitRepository("."))commit() else println("fatal: neither this nor any of its parent directories is a sgit: .sgit repository")[0m
+[0m[[0m[31merror[0m] [0m[0m                                                          ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/martin/Bureau/sgit/src/main/scala/app/Launcher.scala:30:36: not found: value isInSgitRepository[0m
+[0m[[0m[31merror[0m] [0m[0m      case Array("log", _*) => if (isInSgitRepository(".")) log(args) else println("fatal: neither this nor any of its parent directories is a sgit: .sgit repository")[0m
+[0m[[0m[31merror[0m] [0m[0m                                   ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/martin/Bureau/sgit/src/main/scala/app/Launcher.scala:32:40: not found: value isInSgitRepository[0m
+[0m[[0m[31merror[0m] [0m[0m      case Array("branch", _*)  => if (isInSgitRepository(".")) branch(args) else println("fatal: neither this nor any of its parent directories is a sgit: .sgit repository")[0m
+[0m[[0m[31merror[0m] [0m[0m                                       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/martin/Bureau/sgit/src/main/scala/app/Launcher.scala:32:65: not found: value branch[0m
+[0m[[0m[31merror[0m] [0m[0m      case Array("branch", _*)  => if (isInSgitRepository(".")) branch(args) else println("fatal: neither this nor any of its parent directories is a sgit: .sgit repository")[0m
+[0m[[0m[31merror[0m] [0m[0m                                                                ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/martin/Bureau/sgit/src/main/scala/app/Launcher.scala:34:42: not found: value isInSgitRepository[0m
+[0m[[0m[31merror[0m] [0m[0m      case Array("checkout", _*)  => if (isInSgitRepository("."))checkout(args)else println("fatal: neither this nor any of its parent directories is a sgit: .sgit repository")[0m
+[0m[[0m[31merror[0m] [0m[0m                                         ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/martin/Bureau/sgit/src/main/scala/app/Launcher.scala:36:37: not found: value isInSgitRepository[0m
+[0m[[0m[31merror[0m] [0m[0m      case Array("tag", _*)  => if (isInSgitRepository(".")) tag(args) else println("fatal: neither this nor any of its parent directories is a sgit: .sgit repository")[0m
+[0m[[0m[31merror[0m] [0m[0m                                    ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/martin/Bureau/sgit/src/main/scala/app/Launcher.scala:36:62: not found: value tag[0m
+[0m[[0m[31merror[0m] [0m[0m      case Array("tag", _*)  => if (isInSgitRepository(".")) tag(args) else println("fatal: neither this nor any of its parent directories is a sgit: .sgit repository")[0m
+[0m[[0m[31merror[0m] [0m[0m                                                             ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/martin/Bureau/sgit/src/main/scala/app/Launcher.scala:38:38: not found: value isInSgitRepository[0m
+[0m[[0m[31merror[0m] [0m[0m      case Array("merge", _*) => if (isInSgitRepository(".")) merge(args) else println("fatal: neither this nor any of its parent directories is a sgit: .sgit repository")[0m
+[0m[[0m[31merror[0m] [0m[0m                                     ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/martin/Bureau/sgit/src/main/scala/app/Launcher.scala:40:39: not found: value isInSgitRepository[0m
+[0m[[0m[31merror[0m] [0m[0m      case Array("rebase", _*) => if (isInSgitRepository(".")) rebase(args) else println("fatal: neither this nor any of its parent directories is a sgit: .sgit repository")[0m
+[0m[[0m[31merror[0m] [0m[0m                                      ^[0m
+[0m[[0m[31merror[0m] [0m[0m20 errors found[0m

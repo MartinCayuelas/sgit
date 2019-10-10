@@ -1,7 +1,7 @@
 package app
 
 import app.commands.Add_cmd.add
-import app.commands.Init_cmd.{init,sgitExists}
+import app.commands.Init_cmd.{init,isInSgitRepository}
 import app.commands.Branch_cmd.branch
 import app.commands.Tag_cmd.tag
 import app.commands.Commit_cmd.commit
@@ -17,27 +17,27 @@ object Launcher extends App {
       case Array("init", _) => println("No argument(s) expected.")
       case Array("init") => init()
       //ADD
-      case Array("add", _*) => if (sgitExists()) add(args) else println("fatal: neither this nor any of its parent directories is a sgit: .sgit repository")
+      case Array("add", _*) => if (isInSgitRepository(".")) add(args) else println("fatal: neither this nor any of its parent directories is a sgit: .sgit repository")
       case Array("status", _) => println("No argument(s) expected.")
-      case Array("status") => if (sgitExists()) status() else println("fatal: neither this nor any of its parent directories is a sgit: .sgit repository")
+      case Array("status") => if (isInSgitRepository(".")) status() else println("fatal: neither this nor any of its parent directories is a sgit: .sgit repository")
       //Diff
       case Array("diff", _) => println("No argument(s) expected.")
-      case Array("diff") => if (sgitExists()) diff() else println("fatal: neither this nor any of its parent directories is a sgit: .sgit repository")
+      case Array("diff") => if (isInSgitRepository(".")) diff() else println("fatal: neither this nor any of its parent directories is a sgit: .sgit repository")
       //Commit
       case Array("commit", _) => println("No argument(s) expected.")
-      case Array("commit") => if (sgitExists()) commit() else println("fatal: neither this nor any of its parent directories is a sgit: .sgit repository")
+      case Array("commit") => if (isInSgitRepository("."))commit() else println("fatal: neither this nor any of its parent directories is a sgit: .sgit repository")
       //Log
-      case Array("log", _*) => if (sgitExists()) log(args) else println("fatal: neither this nor any of its parent directories is a sgit: .sgit repository")
+      case Array("log", _*) => if (isInSgitRepository(".")) log(args) else println("fatal: neither this nor any of its parent directories is a sgit: .sgit repository")
       //Branch
-      case Array("branch", _*)  => if (sgitExists()) branch(args) else println("fatal: neither this nor any of its parent directories is a sgit: .sgit repository")
+      case Array("branch", _*)  => if (isInSgitRepository(".")) branch(args) else println("fatal: neither this nor any of its parent directories is a sgit: .sgit repository")
       //Checkout
-      case Array("checkout", _*)  => if (sgitExists()) checkout(args)else println("fatal: neither this nor any of its parent directories is a sgit: .sgit repository")
+      case Array("checkout", _*)  => if (isInSgitRepository("."))checkout(args)else println("fatal: neither this nor any of its parent directories is a sgit: .sgit repository")
       //tag
-      case Array("tag", _*)  => if (sgitExists()) tag(args) else println("fatal: neither this nor any of its parent directories is a sgit: .sgit repository")
+      case Array("tag", _*)  => if (isInSgitRepository(".")) tag(args) else println("fatal: neither this nor any of its parent directories is a sgit: .sgit repository")
       //Merge
-      case Array("merge", _*) => if (sgitExists()) merge(args) else println("fatal: neither this nor any of its parent directories is a sgit: .sgit repository")
+      case Array("merge", _*) => if (isInSgitRepository(".")) merge(args) else println("fatal: neither this nor any of its parent directories is a sgit: .sgit repository")
       //Rebase
-      case Array("rebase", _*) => if (sgitExists()) rebase(args) else println("fatal: neither this nor any of its parent directories is a sgit: .sgit repository")
+      case Array("rebase", _*) => if (isInSgitRepository(".")) rebase(args) else println("fatal: neither this nor any of its parent directories is a sgit: .sgit repository")
       //Default Case
       case _ => println("This command doesn't exists")
     }

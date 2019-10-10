@@ -13,8 +13,8 @@ ADD -----------
   def add(args: Array[String]) : Unit = {
     if (args.length == 1) println("You need to specify a folder or a file")
     else if(args.length == 2 && args(1).equals(".")) {
-      val path: File = Paths.get("").toFile
-      addRoutine(path)
+      val file =  Paths.get(System.getProperty("user.dir")).toFile
+      addRoutine(file)
     }
     else {
       args.filter(_ != "add").map(arg =>{
@@ -25,10 +25,11 @@ ADD -----------
   }
 
   def addRoutine(f: File) : Unit = {
-    if(f.exists()){
       if(f.isFile) Blob.createBlob(f)
-      else recursionAddBlob(f)
-    }else println(s"fatal: the path ${f.getName} does not correspond to any file")
+      else if (f.isDirectory){
+        recursionAddBlob(f)
+      }
+    else println(s"fatal: the path ${f.getName} does not correspond to any file")
   }
 
   def recursionAddBlob(f: File): Unit = {

@@ -10,30 +10,6 @@ import app.helpers.HelpersApp
 
 case class Commit(var idCommit: String="", var parent: String="", var parentMerge: Option[String]=None, var tree:String="", commiter:String="MartinCayuelas", author: String="MartinCayuelas", var dateCommit:String= Calendar.getInstance().getTime().toString) {
 
-
-  def get_idCommit(): String = {
-    this.idCommit
-  }
-  def get_parent(): String = {
-    this.parent
-  }
-  def get_parentMerge(): String = {
-    this.parentMerge.get
-  }
-  def get_commiter(): String = {
-    this.commiter
-  }
-  def get_author(): String = {
-    this.author
-  }
-  def get_tree():String={
-    this.tree
-
-  }
-  def get_dateCommit(): String = {
-    this.dateCommit
-  }
-
   def set_idCommit(id: String): Unit = {
     this.idCommit = id
   }
@@ -52,14 +28,14 @@ case class Commit(var idCommit: String="", var parent: String="", var parentMerg
     HelpersApp.convertToSha1(get_commitContent())
   }
   def get_commitContentInFileObject(): List[String] = {
-    List(s"tree ${get_tree()}\n",s"author ${get_author()} -- ${get_dateCommit()}\n")
+    List(s"tree ${tree}\n",s"author ${author} -- ${dateCommit}\n")
   }
   def get_commitContent():String = {
-    s"tree ${get_tree()} author ${get_author()} -- ${get_dateCommit()}"
+    s"tree ${tree} author ${author} -- ${dateCommit}"
   }
-  def get_commitContentInLog(parent: String, idCommit: String): String = {
-    if (parent.length >0)  s"${parent} ${idCommit} ${get_author()} ${get_dateCommit()}\n"
-    else   s"0000000000000000000000000000000000000000 ${idCommit} ${get_author()} ${get_dateCommit()}\n"
+  def get_commitContentInLog: String = {
+    if (parent.length >0)  s"${parent} ${idCommit} ${author} ${dateCommit}\n"
+    else   s"0000000000000000000000000000000000000000 ${idCommit} ${author} ${dateCommit}\n"
 
   }
 
@@ -89,7 +65,7 @@ case class Commit(var idCommit: String="", var parent: String="", var parentMerg
     val path = Paths.get(".sgit".concat(File.separator).concat("refs").concat(File.separator).concat("heads").concat(File.separator).concat(Branch_cmd.getCurrentBranch)).toAbsolutePath.toString
     val file = new File(path)
     val bw = new BufferedWriter(new FileWriter(file))
-    bw.write(get_idCommit())
+    bw.write(idCommit)
     bw.close()
   }
 
@@ -104,8 +80,8 @@ object Commit{
     commit.set_tree(hashTreeFinal)
     commit.set_idCommit(commit.create_id_commit())
     Stage.clearStage()
-    commit.saveCommitFile(commit.get_idCommit())
+    commit.saveCommitFile(commit.idCommit)
     commit.set_commitInRefs()
-    Logs.writeInLogs(commit.get_commitContentInLog(commit.get_parent(),commit.get_idCommit()))
+    Logs.writeInLogs(commit.get_commitContentInLog)
   }
 }
