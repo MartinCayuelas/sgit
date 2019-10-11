@@ -59,7 +59,7 @@ object StageManager {
     //Split lines
     val stage_content = contentInStage.split("\n").map(x => x.split(" "))
     val blobs = stage_content.filter(x => x(2).split("/").length==1).toList
-    blobs.map(e => Wrapper(e(2),e(1),e(0)))
+    blobs.map(e => Wrapper(e(2),e(1),e(0),BFile(e(2)).name))
   }
 
   //Returns a list containing the path to a file that has been converted to a Blob (because it's in the STAGE) and its Hash
@@ -83,12 +83,17 @@ object StageManager {
     val filesNotInRoot = stage_content.filter(x => x(2).split("/").length > 1).toList
     //Cleaning from the filenames
     val paths = filesNotInRoot.map(x => BFile(System.getProperty("user.dir")).relativize(BFile(x(2)).parent).toString)
+    val files_names = filesNotInRoot.map(x =>{
+      //x(2) the entire path
+      BFile(x(2)).name // only the file name
+    } )
 
-    val hashes = stage_content.map(x =>x(1)).toList
+    val hashes = filesNotInRoot.map(x =>x(1)).toList
     val blobs = List.fill(paths.size)("Blob")
     //Merging the result
-    val listTobeReturned=((paths,hashes,blobs).zipped.toList)
-    listTobeReturned.map(elem => Wrapper(elem._1,elem._2,elem._3))
+
+    paths zip hashes zip blobs zip files_names map {case (((a,b),c),d)=>Wrapper(a,b,c,d)}
+
   }
 
   /**

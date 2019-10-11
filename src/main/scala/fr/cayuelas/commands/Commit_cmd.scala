@@ -33,17 +33,17 @@ object Commit_cmd {
   def createAllTrees(l: List[Wrapper], WrapperWithHashFinal: Option[List[Wrapper]]): List[Wrapper] = {
     if(l.isEmpty) WrapperWithHashFinal.get
     else {
-      val (deeper, rest, father) = getDeeperDirectory(l)
+      val (deeper, rest, father,oldPath) = getDeeperDirectory(l)
       val hash: String = Tree.createTree(None,Some(deeper))
       if(father.isEmpty) {
-        if (WrapperWithHashFinal.isEmpty) createAllTrees(rest, Some(List(Wrapper(deeper(0).path,hash,"Tree"))))
-        else  createAllTrees(rest, Some(Wrapper(deeper(0).path,hash,"Tree") :: WrapperWithHashFinal.get))
+        if (WrapperWithHashFinal.isEmpty) createAllTrees(rest, Some(List(Wrapper(deeper(0).path,hash,"Tree",oldPath.get))))
+        else  createAllTrees(rest, Some(Wrapper(deeper(0).path,hash,"Tree",oldPath.get) :: WrapperWithHashFinal.get))
       }
-      else createAllTrees(Wrapper(father.get, hash, "Tree") :: rest, WrapperWithHashFinal)
+      else createAllTrees(Wrapper(father.get, hash, "Tree",oldPath.get) :: rest, WrapperWithHashFinal)
     }
   }
 
-  def getDeeperDirectory(l: List[Wrapper]): (List[Wrapper], List[Wrapper], Option[String]) = {
+  def getDeeperDirectory(l: List[Wrapper]): (List[Wrapper], List[Wrapper], Option[String],Option[String]) = {
     var max: Int = 0
     var pathForMax: String = ""
 
@@ -54,14 +54,14 @@ object Commit_cmd {
 
     val rest: List[Wrapper] = l.filter(x => !(x.path.equals(pathForMax)))
     val deepest: List[Wrapper]  = l.filter(x => x.path.equals(pathForMax))
-    val fatherPath: Option[String] = getParentPath(pathForMax)
+    val (fatherPath, oldPath) = getParentPath(pathForMax)
 
-    (deepest, rest, fatherPath)
+    (deepest, rest, fatherPath,oldPath)
   }
 
-  def getParentPath(path: String): Option[String] = {
+  def getParentPath(path: String): (Option[String],Option[String]) = {
     val pathSplited: Array[String] = path.split("/")
-    if(pathSplited.length <= 1) None
+    if(pathSplited.length <= 1) (None,Some(path))
      else {
       var parentPath : String = ""
       var first_dir: Boolean = true
@@ -73,7 +73,7 @@ object Commit_cmd {
         } else parentPath = parentPath + File.separator + x
         index = index+1
       })
-      Some(parentPath)
+      (Some(parentPath),Some(path))
     }
   }
 }

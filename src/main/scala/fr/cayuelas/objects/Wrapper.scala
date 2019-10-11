@@ -1,9 +1,9 @@
 package fr.cayuelas.objects
 
-case class Wrapper(path: String, hash: String, typeElement: String) {
+case class Wrapper(path: String, hash: String, typeElement: String, name: String) {
 
 }
 
 object Wrapper{
-  def apply(path: String, hash: String, typeElement: String): Wrapper = new Wrapper(path, hash, typeElement)
+  def apply(path: String, hash: String, typeElement: String, name: String): Wrapper = new Wrapper(path, hash, typeElement,name)
 }

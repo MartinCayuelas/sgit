@@ -38,18 +38,10 @@ case class Tree(var contentTree: List[Wrapper] = List.empty, var id: String = ""
 
   def treeContent(contentTree: List[Wrapper]): String = {
     var acc = ""
-    contentTree.map(x => acc = acc + clearStar(x.typeElement)+ " " + x.hash+" "+ x.path+ "\n")
+    contentTree.map(x => {
+       acc = acc + x.typeElement+ " " + x.hash+" "+ x.name+ "\n"
+    })
     acc
-  }
-
-  /**
-   * Helper that clears the start at the beginning
-   * @param stringToClear : the string with a *
-   * @return the string without the *
-   */
-  def clearStar(stringToClear: String): String = {
-    if(stringToClear.startsWith("*")) stringToClear.substring(1,stringToClear.length)
-    else stringToClear
   }
 
   /**

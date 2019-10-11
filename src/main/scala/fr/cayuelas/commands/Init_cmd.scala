@@ -43,6 +43,7 @@ INIT -----------
    *                 │   │   └── master
    *                 │   └── tags
    *                 └── stages
+   *                 │     ├── master
    *                 │     ├── stageCommit
    *                 │     └── stageValidated
    *                 └── master
