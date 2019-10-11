@@ -12,7 +12,7 @@ import scala.annotation.tailrec
 object Commit_cmd {
 
   def commit(): Unit = {
-    if(StageManager.stageEmpty()) println("Nothing to commit")
+    if(!StageManager.canCommit) println("Nothing to commit")
     else {
 
       var resHighestTrees: List[Wrapper] = List()

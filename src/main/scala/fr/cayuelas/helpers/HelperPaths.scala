@@ -14,7 +14,7 @@ object HelperPaths {
   val sgitPath: String = {
     val workingDirectory = new File(System.getProperty("user.dir"))
     val path = getSgitPath(workingDirectory)
-    if (!(path.isEmpty)) path.get + File.separator
+    if (path.isDefined) path.get + File.separator
     else new String("")
   }
 
@@ -35,6 +35,11 @@ object HelperPaths {
 
   }
 
+  /**
+   *Method taht calculates the relative apth of a file
+   * @param absoluteFilePath  the absolute path of a file in String
+   * @return the relative path relative to the .sgit path folder
+   */
   def getRelativePathOfFile(absoluteFilePath: String): String = absoluteFilePath.toSeq.diff(sgitPath.toSeq).unwrap
 
   //Directories absolute paths

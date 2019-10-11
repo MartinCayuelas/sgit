@@ -22,7 +22,8 @@ object Blob {
 
     addBlobInObjects(idSha1, content) //Add blob in osgit/objects/blobs
 
-    val blob = s"Blob ${idSha1} ${HelperPaths.getRelativePathOfFile(f.getAbsolutePath)}\n"
+    val blob = s"*Blob ${idSha1} ${HelperPaths.getRelativePathOfFile(f.getAbsolutePath)}\n"
+
     StageManager.deleteLineInStageIfFileAlreadyExists(HelperPaths.getRelativePathOfFile(f.getAbsolutePath))
     IOManager.writeInFile(StageManager.currentStagePath,blob,append = true) //WriteInStage
 

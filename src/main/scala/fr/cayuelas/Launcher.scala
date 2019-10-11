@@ -5,6 +5,7 @@ import commands.Add_cmd.add
 import commands.Commit_cmd.commit
 import commands.Branch_cmd.branch
 import commands.Tag_cmd.tag
+import commands.Status_cmd.status
 import fr.cayuelas.commands.Init_cmd
 import fr.cayuelas.managers.IOManager
 
@@ -48,10 +49,6 @@ object Launcher extends App {
   }
 
 
-
-  def status() : Unit ={
-    println("Status")
-  }
   def diff() : Unit ={
     println("Diff")
   }

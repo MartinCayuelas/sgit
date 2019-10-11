@@ -30,10 +30,10 @@ case class Commit(var idCommit: String="", var parent: String="", var parentMerg
     HelperSha1.convertToSha1(get_commitContent())
   }
   def get_commitContentInFileObject(): List[String] = {
-    List(s"tree ${tree}\n",s"author ${author} -- ${dateCommit}\n")
+    List(s"Tree ${tree}\n",s"author ${author} -- ${dateCommit}\n")
   }
   def get_commitContent():String = {
-    s"tree ${tree} author ${author} -- ${dateCommit}"
+    s"Tree ${tree} author ${author} -- ${dateCommit}"
   }
   def get_commitContentInLog: String = {
     if (parent.length >0)  s"${parent} ${idCommit} ${author} ${dateCommit}\n"
@@ -72,7 +72,8 @@ object Commit{
     commit.set_parent(commit.get_last_commitInRefs())
     commit.set_tree(hashTreeFinal)
     commit.set_idCommit(commit.create_id_commit())
-    StageManager.clearStage()
+    StageManager.clearStarsInStage()
+    StageManager.clearPlusInStage()
     commit.saveCommitFile(commit.idCommit)
     commit.set_commitInRefs()
    IOManager.writeInFile(LogsManager.currentLogsPath,commit.get_commitContentInLog,true)//WriteInLogs

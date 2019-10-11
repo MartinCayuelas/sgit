@@ -5,6 +5,12 @@ import java.io.File
 
 object FilesManager {
 
+  /**
+   * Methods that gives recursively all the files contained in a directory and his subdirectories
+   * @param dir : directry name
+   * @return a list of File of the given directory, could be empty if the directory is empty
+   */
+
   def getListOfFiles(dir: String):List[File] = {
     val d = new File(dir)
     if (d.exists && d.isDirectory) {
@@ -14,6 +20,11 @@ object FilesManager {
     }
   }
 
+  /**
+   * Methods that gives recursively all the files and directories contained in a directory and his subdirectories
+   * @param dir :directry name
+   * @return a list of files and directories of the given directory, could be empty if the directory is empty
+   */
   def getListOfContentInDirectory(dir: String):List[File] = {
     val d = new File(dir)
     if (d.exists && d.isDirectory && !d.getName.equals(".sgit") && !d.getName.equals(".git")) {
@@ -23,10 +34,20 @@ object FilesManager {
     }
   }
 
+  /**
+   * Method that creates a folder given a path (String)
+   * @param pathNewFolder : the path of the new folder that will be created
+   * @return true if it's created else false
+   */
   def createNewFolder(pathNewFolder: String): Boolean = {
     new File(pathNewFolder).mkdir()
   }
 
+  /**
+   * Method that creates a file given a path (String)
+   * @param pathNewFile : the path of the new file that will be created
+   * @return true if it's created else false
+   */
   def createNewFile(pathNewFile: String): Boolean = {
     new File(pathNewFile).createNewFile()
   }

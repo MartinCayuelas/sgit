@@ -3,6 +3,8 @@ package fr.cayuelas.managers
 
 import java.io.{BufferedWriter, File, FileWriter}
 
+import fr.cayuelas.managers.StageManager.currentStagePath
+
 object IOManager {
 
 
@@ -29,6 +31,19 @@ object IOManager {
     val source = scala.io.Source.fromFile(pathToFile)
     val content = try source.mkString finally source.close()
     content
+  }
+
+  /**
+   *General function that write in files (For commit, tree, blob, stage)
+   * @param pathToFile in which we want to read the content
+   * @return the content of a file in a List
+   */
+  def readInFileAsLine(pathToFile: String): List[String] = {
+    val file = new File(currentStagePath)
+    val source = scala.io.Source.fromFile(file)
+    val lines = source.getLines.toList
+    source.close()
+    lines
   }
 
   /*
