@@ -4,7 +4,8 @@ package fr.cayuelas.commands
 import java.io.File
 import java.nio.file.Paths
 
-import fr.cayuelas.filesManager.{FilesIO, Logs}
+import fr.cayuelas.helpers.HelperPaths
+import fr.cayuelas.managers.{FilesManager, IOManager, LogsManager, StageManager}
 
 import scala.annotation.tailrec
 
@@ -23,10 +24,26 @@ INIT -----------
   //base path
   val SgitRepositoryName = ".sgit"
 
-  /*
+  /**
   * initSgitRepository:
-  * Method that create all the necessary folders for sgit
-  * Inform the user with a warning message if sommething went wrong (i.e .sgit already exists) or Inform the user that all is successful
+  * Function that create all the necessary folders for sgit
+   * @param path : the path where the .sgit repository will be created
+  *              Inform the user with a warning message if sommething went wrong (i.e .sgit already exists) or Inform the user that all is successful
+   *             Creates an architecture with différents files and folders
+   *             .sgit/
+   *                 ├── HEAD
+   *                 ├── logs
+   *                 │   └── master
+   *                 ├── objects
+   *                 │   ├── blobs
+   *                 │   ├── commits
+   *                 │   └── trees
+   *                 ├── refs
+   *                 │   ├── heads
+   *                 │   │   └── master
+   *                 │   └── tags
+   *                 └── stages
+   *                 └── master
   */
 
   def initSgitRepository(path: String): Unit = {
@@ -34,26 +51,29 @@ INIT -----------
     val listFiles:List[String] = List("HEAD")
     val path = Paths.get(System.getProperty("user.dir")).toString
     val sgitPath = path + File.separator + SgitRepositoryName
-    val sgitRepository = new File(SgitRepositoryName)
 
     if (!isInSgitRepository(path)) {
-      sgitRepository.mkdir()
-      listFolders.map(folder => new File(sgitPath + File.separator + folder).mkdir())
-      listFiles.map(file => new File(sgitPath + File.separator + file).createNewFile())
-      new File(Paths.get(SgitRepositoryName).toString.concat(s"${File.separator}refs${File.separator}heads${File.separator}master")).createNewFile()
+      FilesManager.createNewFolder(SgitRepositoryName) //Creates .sgit
+      listFolders.map(folder => FilesManager.createNewFolder(sgitPath + File.separator + folder))
+      listFiles.map(file => FilesManager.createNewFile(sgitPath + File.separator + file))
 
-      FilesIO.writeInFile(Paths.get(".sgit").toString.concat("/HEAD"),"ref: refs/heads/master",false)//WriteInHEAD
-
-      val currentBranch = Branch_cmd.getCurrentBranch
-      Logs.createLogFileForBranch(currentBranch)
-      new File(Paths.get(SgitRepositoryName).toString.concat(s"${File.separator}stages${File.separator}${currentBranch}")).createNewFile()
+      FilesManager.createNewFile(HelperPaths.branchesPath + File.separator + "master") //Creates file for master branch in refs/heads
+      IOManager.writeInFile(HelperPaths.headFile,"ref: refs/heads/master",false)//WriteInHEAD
+      LogsManager.createLogFileForBranch() //creates file log for master branch
+      FilesManager.createNewFile(StageManager.currentStagePath)// Creates file stage for master branch
 
       println(s"Empty Sgit repository initialized in ${path}/.sgit/")
     }
     else println(s"Sgit repository already exists.")
   }
 
-
+  /**
+   * Method that create all the necessary folders for sgit
+   *
+   * @param path : the path we want to check
+   * @return true if a .sgit folder already exists in a parent folder else false
+   *
+   */
   def isInSgitRepository(path: String): Boolean = {
     @tailrec
     def searchForSgitRepo(currentPath: String): Boolean = {

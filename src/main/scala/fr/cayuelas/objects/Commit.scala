@@ -2,16 +2,15 @@ package fr.cayuelas.objects
 
 
 import java.io.File
-import java.nio.file.Paths
 import java.util.Calendar
 
 import fr.cayuelas.commands.Branch_cmd
-import fr.cayuelas.filesManager.{FilesIO, Stage}
-import fr.cayuelas.helpers.HelpersApp
+import fr.cayuelas.helpers.{HelperPaths, HelperSha1}
+import fr.cayuelas.managers.{FilesManager, IOManager, LogsManager, StageManager}
 
 case class Commit(var idCommit: String="", var parent: String="", var parentMerge: Option[String]=None, var tree:String="", commiter:String="MartinCayuelas", author: String="MartinCayuelas", var dateCommit:String= Calendar.getInstance().getTime().toString) {
 
-  val currentRefs : String = Paths.get(".sgit".concat(File.separator).concat("refs").concat(File.separator).concat("heads").concat(File.separator).concat(Branch_cmd.getCurrentBranch)).toAbsolutePath.toString
+  val currentRefs : String = HelperPaths.branchesPath + File.separator + Branch_cmd.getCurrentBranch
 
   def set_idCommit(id: String): Unit = {
     this.idCommit = id
@@ -28,7 +27,7 @@ case class Commit(var idCommit: String="", var parent: String="", var parentMerg
   }
 
   def create_id_commit(): String = {
-    HelpersApp.convertToSha1(get_commitContent())
+    HelperSha1.convertToSha1(get_commitContent())
   }
   def get_commitContentInFileObject(): List[String] = {
     List(s"tree ${tree}\n",s"author ${author} -- ${dateCommit}\n")
@@ -44,27 +43,23 @@ case class Commit(var idCommit: String="", var parent: String="", var parentMerg
 
   //Set in objects/objects/commits
   def saveCommitFile(idSha1: String): Unit = {
-    val path = Paths.get(".sgit".concat(File.separator).concat("objects").concat(File.separator).concat("commits")).toAbsolutePath.toString
+    val path = HelperPaths.objectsPath + File.separator + "commits"
     val folder = idSha1.substring(0,2)
     val nameFile = idSha1.substring(2,idSha1.length)
-    new File(path + File.separator +  folder).mkdir()
-    new File(path + File.separator +  folder + File.separator + nameFile).createNewFile()
-    get_commitContentInFileObject().map(line => FilesIO.writeInFile(path + File.separator +  folder + File.separator + nameFile,line,true)) //WriteInCommitFile
+    FilesManager.createNewFolder(path + File.separator +  folder)
+    FilesManager.createNewFile(path + File.separator +  folder + File.separator + nameFile)
+
+    get_commitContentInFileObject().map(line => IOManager.writeInFile(path + File.separator +  folder + File.separator + nameFile,line,true)) //WriteInCommitFile
   }
 
   //get in refs/heads/branch
   def get_last_commitInRefs(): String = {
-    val path = currentRefs
-    val file = new File(path)
-    val source = scala.io.Source.fromFile(file)
-    val content = try source.mkString finally source.close()
-
-    content
+    IOManager.readInFile(currentRefs)
   }
 
   //Set in refs/heads/branch
   def set_commitInRefs(): Unit = {
-    FilesIO.writeInFile(currentRefs,idCommit,false) //WriteInRefs
+    IOManager.writeInFile(currentRefs,idCommit,false) //WriteInRefs
   }
 
 
@@ -77,9 +72,9 @@ object Commit{
     commit.set_parent(commit.get_last_commitInRefs())
     commit.set_tree(hashTreeFinal)
     commit.set_idCommit(commit.create_id_commit())
-    Stage.clearStage()
+    StageManager.clearStage()
     commit.saveCommitFile(commit.idCommit)
     commit.set_commitInRefs()
-   FilesIO.writeInFile(Paths.get(".sgit").toString.concat(s"/logs/${Branch_cmd.getCurrentBranch}"),commit.get_commitContentInLog,true)//WriteInLogs
+   IOManager.writeInFile(LogsManager.currentLogsPath,commit.get_commitContentInLog,true)//WriteInLogs
   }
 }

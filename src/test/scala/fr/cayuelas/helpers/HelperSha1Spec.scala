@@ -2,13 +2,13 @@ package fr.cayuelas.helpers
 
 import org.scalatest.{FunSpec, Matchers}
 
-class HelpersAppSpec extends FunSpec with Matchers {
+class HelperSha1Spec extends FunSpec with Matchers {
 
   describe("Hashes strings"){
 
     it ("should be equals with the same content") {
       //Given
-      val classTested = HelpersApp
+      val classTested = HelperSha1
       val stringToConvert = "sha1 is very good"
 
       //When
@@ -21,7 +21,7 @@ class HelpersAppSpec extends FunSpec with Matchers {
 
     it ("should be different if the content isn't the same"){
       //Given
-      val classTested = HelpersApp
+      val classTested = HelperSha1
       val stringToConvert = "sha1 is very good"
       val stringToConvert2 = "sha256 is better"
 

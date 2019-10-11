@@ -4,12 +4,12 @@ package fr.cayuelas.objects
 import java.io.{File, PrintWriter}
 import java.nio.file.Paths
 
-import fr.cayuelas.filesManager.FilesIO
-import fr.cayuelas.helpers.HelpersApp
+import fr.cayuelas.managers.{FilesManager, IOManager}
+import fr.cayuelas.helpers.{HelperPaths, HelperSha1}
 
 case class Tree(var contentTree: List[Wrapper] = List.empty, var id: String = "") {
 
-  val treesPath: String = Paths.get(".sgit/objects/trees").toAbsolutePath.toString
+  val treesPath: String = HelperPaths.objectsPath + File.separator + "trees"
 
   def addElement(elem: Wrapper): List[Wrapper] = {
     elem :: this.contentTree
@@ -27,7 +27,7 @@ case class Tree(var contentTree: List[Wrapper] = List.empty, var id: String = ""
 
   def createTreeId(contentTree: List[Wrapper]): String = {
     val content = treeContent(contentTree)
-    HelpersApp.convertToSha1(content)
+    HelperSha1.convertToSha1(content)
   }
 
   def treeContent(contentTree: List[Wrapper]): String = {
@@ -38,19 +38,23 @@ case class Tree(var contentTree: List[Wrapper] = List.empty, var id: String = ""
 
 
   def saveTreeInObjects(idSha1: String, contentTree: List[Wrapper]): Unit = {
-    val path = treesPath
+
     val folder = idSha1.substring(0,2)
     val nameFile = idSha1.substring(2,idSha1.length)
-    new File(path + File.separator +  folder).mkdir()
-    new File(path + File.separator +  folder + File.separator + nameFile).createNewFile()
-    val file = Paths.get(path + File.separator +  folder + File.separator + nameFile).toFile
-    deleteLineInTreeFileIfFileAlreadyExists(file.getPath,folder,nameFile)
-    FilesIO.writeInFile(path + File.separator +  folder + File.separator + nameFile,treeContent(contentTree),true)//WriteInTree
+    val pathFile = treesPath + File.separator +  folder + File.separator + nameFile
+
+    FilesManager.createNewFolder(treesPath + File.separator +  folder)
+    FilesManager.createNewFile(pathFile)
+
+    val file = Paths.get(pathFile).toFile
+    deleteLineInTreeFileIfFileAlreadyExists(HelperPaths.getRelativePathOfFile(file.getAbsolutePath),folder,nameFile)
+    IOManager.writeInFile(pathFile,treeContent(contentTree),true)//WriteInTree
 
   }
 
   def deleteLineInTreeFileIfFileAlreadyExists(pathLine: String, folder: String, nameFile: String): Unit = {
-    val path = treesPath.concat(File.separator).concat(folder).concat(File.separator).concat(nameFile)
+    val path = treesPath + File.separator + folder + File.separator + nameFile
+
     val file = new File(path)
     val source = scala.io.Source.fromFile(file)
     val lines = source.getLines.toList
@@ -65,7 +69,7 @@ case class Tree(var contentTree: List[Wrapper] = List.empty, var id: String = ""
     val treeContentFiltered =  treeContent.filter(x => !x(2).equals(pathLine))
     val contentTree: List[String] = treeContentFiltered.map(x => x(0)+" "+x(1)+" "+x(2)+"\n")
 
-    contentTree.map(line => FilesIO.writeInFile(path,line,true))//WriteInTree
+    contentTree.map(line => IOManager.writeInFile(path,line,true))//WriteInTree
   }
 
 }

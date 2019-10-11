@@ -4,11 +4,12 @@ package fr.cayuelas.commands
 import java.io.File
 import java.nio.file.{Files, Paths}
 
-import fr.cayuelas.filesManager.FilesManager
+import fr.cayuelas.helpers.HelperPaths
+import fr.cayuelas.managers.FilesManager
 
 object Tag_cmd {
 
-  val tagsPath : String = Paths.get(".sgit/refs/tags").toString
+  val tagsPath : String = HelperPaths.tagsPath
   /*
   TAG---------------------
    */
@@ -21,8 +22,9 @@ object Tag_cmd {
   Tags------------------------
    */
   def createTag(nameTag: String): Unit = {
-    if(Files.notExists(Paths.get(s".sgit/refs/tags/${nameTag}"))){
-      new File(tagsPath + File.separator +  nameTag).createNewFile()
+    val path = tagsPath + File.separator + nameTag
+    if(Files.notExists(Paths.get(path))){
+      FilesManager.createNewFile(path)
     } else println(s"Fatal: a branch named ${nameTag} is exits already")
   }
   def displayAllTags(): Unit = {

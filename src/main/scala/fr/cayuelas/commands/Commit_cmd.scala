@@ -3,7 +3,7 @@ package fr.cayuelas.commands
 
 import java.io.File
 
-import fr.cayuelas.filesManager.Stage
+import fr.cayuelas.managers.StageManager
 import fr.cayuelas.objects.{Commit, Tree, Wrapper}
 
 import scala.annotation.tailrec
@@ -12,12 +12,12 @@ import scala.annotation.tailrec
 object Commit_cmd {
 
   def commit(): Unit = {
-    if(Stage.stageEmpty()) println("Nothing to commit")
+    if(StageManager.stageEmpty()) println("Nothing to commit")
     else {
 
       var resHighestTrees: List[Wrapper] = List()
-      val stage: List[Wrapper] = Stage.retrieveStageStatus()
-      val blobsInRoot: List[Wrapper] = Stage.retrieveStageRootBlobs()
+      val stage: List[Wrapper] = StageManager.retrieveStageStatus()
+      val blobsInRoot: List[Wrapper] = StageManager.retrieveStageRootBlobs()
 
       if (stage.length > 0)  resHighestTrees = addTrees(stage, None)
 

@@ -3,13 +3,19 @@ package fr.cayuelas.commands
 import java.io.File
 import java.nio.file.Paths
 
-import fr.cayuelas.filesManager.FilesManager
+import fr.cayuelas.managers.FilesManager
 import fr.cayuelas.objects.Blob
 
 object Add_cmd {
   /*
 ADD -----------
  */
+
+  /**
+   * This function is called in the Dispacher in the Laucher object
+   *General function that transform each param in File and call a function which process the creating blobs processus
+   * @param args : array of String that represents the name of files or folders
+   */
   def add(args: Array[String]) : Unit = {
     if (args.length == 1) println("You need to specify a folder or a file")
    /* else if(args.length == 2 && args(1).equals(".")) {
@@ -24,6 +30,11 @@ ADD -----------
     }
   }
 
+  /**
+   *Function that transform each param in File and call a function which process the creating blobs processus
+   * @param f : File which will be precocessed
+   * If f is a File, f is transformed in Blob else if it's a directory we apply a recursive call else the file doesn't exists
+   */
   def addRoutine(f: File) : Unit = {
       if(f.isFile) Blob.createBlob(f)
       else if (f.isDirectory){
@@ -32,6 +43,11 @@ ADD -----------
     else println(s"fatal: the path ${f.getName} does not correspond to any file")
   }
 
+  /**
+   *Recursive function that call
+   * @param f : File which will be precocessed (it's a Directory)
+   * For each File in the folder, if it's a file then creating blob else recusive call to continue the process et get all the files in subdirectories
+   */
   def recursionAddBlob(f: File): Unit = {
     val path = f.getPath
     val listOfFiles = FilesManager.getListOfContentInDirectory(path)

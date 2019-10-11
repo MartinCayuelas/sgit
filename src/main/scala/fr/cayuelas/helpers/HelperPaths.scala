@@ -1,17 +1,12 @@
 package fr.cayuelas.helpers
 
-
 import java.io.File
-import java.security.MessageDigest
 
 import scala.annotation.tailrec
 
-object HelpersApp {
-  def convertToSha1(string : String): String ={
-    MessageDigest.getInstance("SHA-1").digest(string.getBytes("UTF-8")).map("%02x".format(_)).mkString
-  }
+object HelperPaths {
 
-  //base Repository name sgit
+
   val SgitRepositoryName = ".sgit"
   /**
    * Returns the path of the sgit repository if it exists else returns an empty String
@@ -40,6 +35,16 @@ object HelpersApp {
 
   }
 
-
   def getRelativePathOfFile(absoluteFilePath: String): String = absoluteFilePath.toSeq.diff(sgitPath.toSeq).unwrap
+
+  //Directories absolute paths
+  val objectsPath: String = sgitPath + SgitRepositoryName + File.separator + "objects"
+  val tagsPath: String = sgitPath + SgitRepositoryName + File.separator + "refs" + File.separator + "tags"
+  val branchesPath: String = sgitPath + SgitRepositoryName + File.separator + "refs" + File.separator + "heads"
+  val logsPath: String = sgitPath + SgitRepositoryName + File.separator + "logs"
+  val stagePath: String = sgitPath + SgitRepositoryName + File.separator + "stages"
+
+  //files absolute path
+  val headFile: String = sgitPath + SgitRepositoryName + File.separator + "HEAD"
+
 }

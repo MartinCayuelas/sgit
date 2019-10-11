@@ -1,31 +1,27 @@
-package fr.cayuelas.filesManager
+package fr.cayuelas.managers
 
 import java.io.{File, PrintWriter}
-import java.nio.file.Paths
 
 import better.files.{File => BFile}
 import fr.cayuelas.commands.Branch_cmd
+import fr.cayuelas.helpers.HelperPaths
 import fr.cayuelas.objects.Wrapper
 
-object Stage {
+object StageManager {
 
-  val stagePath : String = Paths.get(".sgit").toString.concat(s"/stages/${ Branch_cmd.getCurrentBranch}")
+  val currentStagePath : String = HelperPaths.stagePath + File.separator + Branch_cmd.getCurrentBranch
 
-  def readStage(): String = {
-    val source = scala.io.Source.fromFile(stagePath)
-    val contentInStage = try source.mkString finally source.close()
-    contentInStage
-  }
+  def readStage(): String = IOManager.readInFile(currentStagePath)
 
   def clearStage(): Unit ={
-    val writer = new PrintWriter(stagePath)
+    val writer = new PrintWriter(currentStagePath)
     writer.print("")
     writer.close()
   }
 
 
   def stageEmpty(): Boolean = {
-    val file = new File(stagePath)
+    val file = new File(currentStagePath)
     file.length() == 0
   }
 
@@ -61,12 +57,12 @@ object Stage {
   }
 
   def deleteLineInStageIfFileAlreadyExists(pathLine: String): Unit = {
-    val file = new File(stagePath)
+    val file = new File(currentStagePath)
     val source = scala.io.Source.fromFile(file)
     val lines = source.getLines.toList
     source.close()
     //Clean the file
-    val writer = new PrintWriter(stagePath)
+    val writer = new PrintWriter(currentStagePath)
     writer.print("")
     writer.close()
 
@@ -74,7 +70,7 @@ object Stage {
     val stageFiltered =  stageContent.filter(x => !x(2).equals(pathLine))
     val stage: List[String] = stageFiltered.map(x => x(0)+" "+x(1)+" "+x(2)+"\n")
 
-    stage.map(line => FilesIO.writeInFile(stagePath,line,true))//WriteInStage
+    stage.map(line => IOManager.writeInFile(currentStagePath,line,true))//WriteInStage
   }
 
 }

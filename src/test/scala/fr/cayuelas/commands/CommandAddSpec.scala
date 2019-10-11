@@ -28,7 +28,7 @@ class CommandAddSpec  extends FunSpec with Matchers {
         initSgitRepository(System.getProperty("user.dir"))
         var path: String = System.getProperty("user.dir")
         new File(path + "f1.txt").createNewFile()
-       FilesIO.writeInFile(path + "f1.txt","f1 with content",append = false)
+       IOManager.writeInFile(path + "f1.txt","f1 with content",append = false)
         var listToTest: Array[String] = Array(Paths.get(System.getProperty("user.dir")+"/t1.txt").toAbsolutePath.toString)
         //When
         Add_cmd.add(listToTest)
@@ -37,7 +37,7 @@ class CommandAddSpec  extends FunSpec with Matchers {
         assert(listToTest.length == listOfBlobsInObject.length)
       }
 
-  }*/
-
+  }
+*/
 
 }

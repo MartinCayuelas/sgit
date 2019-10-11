@@ -1,13 +1,10 @@
 package fr.cayuelas.commands
 
-import java.io.File
-
-import fr.cayuelas.commands.Init_cmd.{initSgitRepository, isInSgitRepository}
-import org.scalatest.{FunSpec, Matchers, Outcome}
+import org.scalatest.{FunSpec, Matchers}
 
 
 class CommandInitSpec  extends FunSpec with Matchers  {
-
+/*
   override def withFixture(test: NoArgTest): Outcome = {
     // Shared setup (run at beginning of each test)
     try test()
@@ -56,7 +53,7 @@ class CommandInitSpec  extends FunSpec with Matchers  {
       initSgitRepository(System.getProperty("user.dir"))
       assert(new File(System.getProperty("user.dir") + "/.sgit/objects/commits").exists())
     }
-  }
+  }*/
 
 
 

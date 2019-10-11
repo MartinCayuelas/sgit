@@ -1,47 +1,53 @@
 package fr.cayuelas
 
-import commands.Init_cmd.{init,isInSgitRepository}
+import commands.Init_cmd.init
 import commands.Add_cmd.add
 import commands.Commit_cmd.commit
 import commands.Branch_cmd.branch
 import commands.Tag_cmd.tag
+import fr.cayuelas.commands.Init_cmd
+import fr.cayuelas.managers.IOManager
 
 object Launcher extends App {
 
   dispatcher(args)
 
   def dispatcher(args: Array[String]): Unit =  {
+    val isInSgitRepository: Boolean = Init_cmd.isInSgitRepository(System.getProperty("user.dir"))
 
     args match {
       //Init
-      case Array("init", _) => println("No argument(s) expected.")
+      case Array("init", _) => IOManager.noArgumentsExpected()
       case Array("init") => init()
       //ADD
-      case Array("add", _*) => if (isInSgitRepository(System.getProperty("user.dir"))) add(args) else println("fatal: neither this nor any of its parent directories is a sgit: .sgit repository")
-      case Array("status", _) => println("No argument(s) expected.")
-      case Array("status") => if (isInSgitRepository(".")) status() else println("fatal: neither this nor any of its parent directories is a sgit: .sgit repository")
+      case Array("add", _*) => if (isInSgitRepository) add(args) else IOManager.notSgitReposiroty()
+        //Status
+      case Array("status", _) => IOManager.noArgumentsExpected()
+      case Array("status") => if (isInSgitRepository) status() else IOManager.notSgitReposiroty()
       //Diff
-      case Array("diff", _) => println("No argument(s) expected.")
-      case Array("diff") => if (isInSgitRepository(".")) diff() else println("fatal: neither this nor any of its parent directories is a sgit: .sgit repository")
+      case Array("diff", _) => IOManager.noArgumentsExpected()
+      case Array("diff") => if (isInSgitRepository) diff() else IOManager.notSgitReposiroty()
       //Commit
-      case Array("commit", _) => println("No argument(s) expected.")
-      case Array("commit") => if (isInSgitRepository("."))commit() else println("fatal: neither this nor any of its parent directories is a sgit: .sgit repository")
+      case Array("commit", _) => IOManager.noArgumentsExpected()
+      case Array("commit") => if (isInSgitRepository) commit() else IOManager.notSgitReposiroty()
       //Log
-      case Array("log", _*) => if (isInSgitRepository(".")) log(args) else println("fatal: neither this nor any of its parent directories is a sgit: .sgit repository")
+      case Array("log", _*) => if (isInSgitRepository) log(args) else IOManager.notSgitReposiroty()
       //Branch
-      case Array("branch", _*)  => if (isInSgitRepository(".")) branch(args) else println("fatal: neither this nor any of its parent directories is a sgit: .sgit repository")
+      case Array("branch", _*)  => if (isInSgitRepository) branch(args) else IOManager.notSgitReposiroty()
       //Checkout
-      case Array("checkout", _*)  => if (isInSgitRepository("."))checkout(args)else println("fatal: neither this nor any of its parent directories is a sgit: .sgit repository")
+      case Array("checkout", _*)  => if (isInSgitRepository) checkout(args)else IOManager.notSgitReposiroty()
       //tag
-      case Array("tag", _*)  => if (isInSgitRepository(".")) tag(args) else println("fatal: neither this nor any of its parent directories is a sgit: .sgit repository")
+      case Array("tag", _*)  => if (isInSgitRepository) tag(args) else IOManager.notSgitReposiroty()
       //Merge
-      case Array("merge", _*) => if (isInSgitRepository(".")) merge(args) else println("fatal: neither this nor any of its parent directories is a sgit: .sgit repository")
+      case Array("merge", _*) => if (isInSgitRepository) merge(args) else IOManager.notSgitReposiroty()
       //Rebase
-      case Array("rebase", _*) => if (isInSgitRepository(".")) rebase(args) else println("fatal: neither this nor any of its parent directories is a sgit: .sgit repository")
+      case Array("rebase", _*) => if (isInSgitRepository) rebase(args) else IOManager.notSgitReposiroty()
       //Default Case
-      case _ => println("This command doesn't exists")
+      case _ => IOManager.notExistingCommand()
     }
   }
+
+
 
   def status() : Unit ={
     println("Status")
