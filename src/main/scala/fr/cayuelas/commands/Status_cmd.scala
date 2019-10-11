@@ -11,7 +11,7 @@ object Status_cmd {
     println(s"On the ${Branch_cmd.getCurrentBranch} branch")
     println("Changes that will be validated : ")
     println()
-    getChangesThatWillBeValidatedNew.map(elem => println(s"   new file : ${elem}"))
+    getChangesThatWillBeValidated.map(elem => println(s"   ${Console.GREEN}"+elem+Console.RESET))
     println()
     println("Changes that will not be validated:")
     println("   (use \"git add <file> ...\" to update what will be validated)")
@@ -27,11 +27,11 @@ object Status_cmd {
    *Method that retrieve the files that will be added in the next commit
    * @return a list[String] containing all changes that will be validated
    */
-  def getChangesThatWillBeValidatedNew: List[String] = {
-
-    StageManager.retrieveLinesBeginningWithStars.map(x => x.split(" ")).map(x => x(2))
-
-
+  def getChangesThatWillBeValidated: List[String] = {
+    StageManager.readStageValidated()
   }
+
+
+
 
 }

@@ -3,8 +3,6 @@ package fr.cayuelas.managers
 
 import java.io.{BufferedWriter, File, FileWriter}
 
-import fr.cayuelas.managers.StageManager.currentStagePath
-
 object IOManager {
 
 
@@ -39,7 +37,7 @@ object IOManager {
    * @return the content of a file in a List
    */
   def readInFileAsLine(pathToFile: String): List[String] = {
-    val file = new File(currentStagePath)
+    val file = new File(pathToFile)
     val source = scala.io.Source.fromFile(file)
     val lines = source.getLines.toList
     source.close()

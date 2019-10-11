@@ -13,20 +13,40 @@ object Blob {
 
   /**
    *Method that creates a blob with the content of the file given in parameter and transforms it in Sha1 string
-   * @param f : File which will be precocessed
+   * Do somme checks. like if the file is already or not in the Stage or in the stageCommit. Then we check if the file is a new version or not
+   * @param f : File which will be processed
    * @return a string that is the id after the process of digest with Sha1 Algorithm
    */
   def createBlob(f: File): String = {
-    val content = IOManager.readInFile(f.getPath)
-    val idSha1 = HelperSha1.convertToSha1(content) //Creates the id in sha1
+    val content: String = IOManager.readInFile(f.getPath)
+    val idSha1: String = HelperSha1.convertToSha1(content) //Creates the id in sha1
+    val relativePath: String = HelperPaths.getRelativePathOfFile(f.getAbsolutePath)
 
-    addBlobInObjects(idSha1, content) //Add blob in osgit/objects/blobs
+    val isInStage: Boolean =StageManager.checkIfFileIsInStage(relativePath, StageManager.currentStagePath)
+    val isInStageCommit: Boolean =StageManager.checkIfFileIsInStage(relativePath, StageManager.stageCommit)
+    val modifiedInStageCommit: Boolean = StageManager.checkModification(relativePath,idSha1,StageManager.stageCommit)
+    val modifiedInStage: Boolean = StageManager.checkModification(relativePath,idSha1,StageManager.currentStagePath)
 
-    val blob = s"*Blob ${idSha1} ${HelperPaths.getRelativePathOfFile(f.getAbsolutePath)}\n"
+    StageManager.deleteLineInStageIfFileAlreadyExists(relativePath,StageManager.stageCommit)
+    StageManager.deleteLineInStageIfFileAlreadyExists(relativePath,StageManager.stageValidated)
 
-    StageManager.deleteLineInStageIfFileAlreadyExists(HelperPaths.getRelativePathOfFile(f.getAbsolutePath))
-    IOManager.writeInFile(StageManager.currentStagePath,blob,append = true) //WriteInStage
+    val blob : String = s"Blob ${idSha1} ${relativePath}\n"
 
+    if(isInStageCommit && !isInStage) {
+      IOManager.writeInFile(StageManager.stageValidated,s"newfile : "+relativePath,append = true)
+      IOManager.writeInFile(StageManager.stageCommit,blob,append = true)
+    }else if(!isInStageCommit && isInStage ){
+      if (modifiedInStage) {
+        IOManager.writeInFile(StageManager.stageCommit,blob,append = true)
+        IOManager.writeInFile(StageManager.stageValidated,s"modified : "+relativePath,append = true)
+      }
+    } else if(isInStage && isInStageCommit){
+      if (modifiedInStageCommit) IOManager.writeInFile(StageManager.stageValidated,s"modified : "+relativePath,append = true)
+    }  else{
+      IOManager.writeInFile(StageManager.stageValidated,s"newfile : "+relativePath,append = true)
+      IOManager.writeInFile(StageManager.stageCommit,blob,append = true)
+    }
+    addBlobInObjects(idSha1, content) //Add blob in .sgit/objects/blobs
     blob
   }
   /**
@@ -35,10 +55,10 @@ object Blob {
    * @param contentBlob : content that will be stored in the file created
    */
   def addBlobInObjects(idSha1: String, contentBlob: String): Unit = {
-    val folder = idSha1.substring(0,2) //The 2 first letters of the id
-    val nameFile = idSha1.substring(2,idSha1.length) //The rest of the id (exclude the 2 firsts letters)
-    val pathFolder = blobsPath + File.separator +  folder
-    val pathFile = blobsPath + File.separator +  folder + File.separator + nameFile
+    val folder: String = idSha1.substring(0,2) //The 2 first letters of the id
+    val nameFile: String  = idSha1.substring(2,idSha1.length) //The rest of the id (exclude the 2 firsts letters)
+    val pathFolder: String  = blobsPath + File.separator +  folder
+    val pathFile: String  = blobsPath + File.separator +  folder + File.separator + nameFile
 
     FilesManager.createNewFolder(pathFolder)
     FilesManager.createNewFile(pathFile)

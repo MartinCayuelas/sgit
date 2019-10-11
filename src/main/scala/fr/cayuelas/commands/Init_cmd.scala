@@ -43,6 +43,8 @@ INIT -----------
    *                 │   │   └── master
    *                 │   └── tags
    *                 └── stages
+   *                 │     ├── stageCommit
+   *                 │     └── stageValidated
    *                 └── master
   */
 
@@ -61,6 +63,8 @@ INIT -----------
       IOManager.writeInFile(HelperPaths.headFile,"ref: refs/heads/master",false)//WriteInHEAD
       LogsManager.createLogFileForBranch() //creates file log for master branch
       FilesManager.createNewFile(StageManager.currentStagePath)// Creates file stage for master branch
+      FilesManager.createNewFile(StageManager.stageCommit)// Creates file for stageCommit
+      FilesManager.createNewFile(StageManager.stageValidated)// Creates file for stageValidated
 
       println(s"Empty Sgit repository initialized in ${path}/.sgit/")
     }

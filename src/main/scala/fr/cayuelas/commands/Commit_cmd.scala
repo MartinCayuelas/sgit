@@ -16,8 +16,8 @@ object Commit_cmd {
     else {
 
       var resHighestTrees: List[Wrapper] = List()
-      val stage: List[Wrapper] = StageManager.retrieveStageStatus()
-      val blobsInRoot: List[Wrapper] = StageManager.retrieveStageRootBlobs()
+      val stage: List[Wrapper] = StageManager.retrieveStageCommitStatus()
+      val blobsInRoot: List[Wrapper] = StageManager.retrieveStageCommitRootBlobs()
 
       if (stage.nonEmpty)  resHighestTrees = createAllTrees(stage, None)
 

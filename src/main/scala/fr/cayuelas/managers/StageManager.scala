@@ -10,7 +10,8 @@ import fr.cayuelas.objects.Wrapper
 object StageManager {
 
   val currentStagePath : String = HelperPaths.stagePath + File.separator + Branch_cmd.getCurrentBranch
-
+  val stageCommit : String = HelperPaths.stagePath + File.separator + "stageCommit"
+  val stageValidated : String = HelperPaths.stagePath + File.separator + "stageValidated"
   /**
    * Method that retrieve the current content in the stage file
    * @return the current content of the stage
@@ -18,32 +19,43 @@ object StageManager {
   def readStage(): String = IOManager.readInFile(currentStagePath)
 
   /**
-   * Function that clears the content of a tree's file
+   * Method that retrieve the current content in the stageCommit file used to do commit
+   * @return the current content of the stageCommit
    */
-  def clearStage(): Unit ={
-    val writer = new PrintWriter(currentStagePath)
+  def readStageCommit(): List[String] = IOManager.readInFileAsLine(stageCommit)
+
+  /**
+   * Method that retrieve the current content in the stageValidated file used to sgit status
+   * @return the current content of the stageValidated
+   */
+  def readStageValidated(): List[String] = IOManager.readInFileAsLine(stageValidated)
+
+
+  /**
+   * Function that clears the content of a stage File
+   * @param path : path of the file that will be cleared
+   */
+  def clearStage(path: String): Unit ={
+    val writer = new PrintWriter(path)
     writer.print("")
     writer.close()
   }
 
   /**
-   * Method that verify if the stage can be commited or not. If there are at least one line beginning with *, it's true else false
+   * Method that verify if the stage can be commited or not. If there are at least one line, it's true else false
    * @return true if the stage can be commited else false
    */
   def canCommit: Boolean = {
-    val lines = IOManager.readInFileAsLine(currentStagePath)
-    var canBeCommitted = false
-    lines.map(e => {if(e.startsWith("*")) canBeCommitted = true})
-    canBeCommitted
+    IOManager.readInFileAsLine(stageCommit).nonEmpty
   }
 
   /**
    * Given the stage, this method check if a file is at the root of .sgit directory or not. The content is filtered given a predicat
    * @return a List of Wrapper containing all the files in same directory as .sgit
    */
-  def retrieveStageRootBlobs(): List[Wrapper]= {
+  def retrieveStageCommitRootBlobs(): List[Wrapper]= {
     //Retrieve useful data
-    val contentInStage = readStage()
+    val contentInStage = IOManager.readInFile(stageCommit)
     //Split lines
     val stage_content = contentInStage.split("\n").map(x => x.split(" "))
     val blobs = stage_content.filter(x => x(2).split("/").length==1).toList
@@ -61,9 +73,9 @@ object StageManager {
    *  3 lists are created so then we zip them together and return only one List[Wrapper]
    * @return a ist of Wrapper containing all the files in subdirectories of .sgit path folder
    */
-  def retrieveStageStatus(): List[Wrapper]= {
+  def retrieveStageCommitStatus(): List[Wrapper]= {
     //Retrieve useful data
-    val contentInStage = readStage()
+    val contentInStage = IOManager.readInFile(stageCommit)
 
     //Split lines
     val stage_content = contentInStage.split("\n").map(x => x.split(" "))
@@ -85,62 +97,53 @@ object StageManager {
    * After the process, the content is rewritten in the file stage
    * @param pathLine : the path of the file that will be added in the stage
    */
-  def deleteLineInStageIfFileAlreadyExists(pathLine: String): Unit = {
-    val lines = IOManager.readInFileAsLine(currentStagePath)
+  def deleteLineInStageIfFileAlreadyExists(pathLine: String, stageToWrite: String): Unit = {
+    val lines = IOManager.readInFileAsLine(stageToWrite)
     //Clean the file
-    val writer = new PrintWriter(currentStagePath)
+    val writer = new PrintWriter(stageToWrite)
     writer.print("")
     writer.close()
     val stageContent = lines.map(x => x.split(" "))
-    val stageFiltered =  stageContent.filter(x => {
-      if (x(2).endsWith("+")) !x(2).substring(0,x(2).length-1).equals(pathLine)
-      else !x(2).equals(pathLine)
-    })
+    val stageFiltered =  stageContent.filter(x => !x(2).equals(pathLine))
     val stage: List[String] = stageFiltered.map(x => x(0)+" "+x(1)+" "+x(2)+"\n")
 
-    stage.map(line => IOManager.writeInFile(currentStagePath,line,true))//WriteInStage
+    stage.map(line => IOManager.writeInFile(stageToWrite,line,true))//WriteInStage
   }
 
 
+  /**
+   * Function that verify if the blob already exists in the stage given his path
+   * @param pathLine : the path of the file that will be added in the stage
+   * @param stage : the stage we want to check
+   * @return true if the file exists in the Stage else false
+   */
+  def checkIfFileIsInStage(pathLine: String, stage: String): Boolean = {
+    val lines = IOManager.readInFileAsLine(stage)
+    var isIn : Boolean = false
+
+    val stageContent = lines.map(x => x.split(" ")).map(elem => if(elem(2).equals(pathLine)) isIn = true)
+    isIn
+  }
 
   /**
-   * Function that remove the * before each line that have one
+   * Function that verify if the blob already exists in the stage given his path and his sha1 id
+   * @param pathLine : the path of the file that will be added in the stage
+   * @param idSha1 : the id of the file
+   * @param stage: the stage in which we want to test
+   * @return true if the file exists in the Stage else false
    */
-  def clearStarsInStage(): Unit = {
+
+  def checkModification(pathLine: String, idSha1: String, stage: String): Boolean = {
+    var modified = false
     val lines = IOManager.readInFileAsLine(currentStagePath)
-    clearStage()
-
-    val newStage = lines.map(e => {
-      if(e.startsWith("*")) e.substring(1,e.length)+"\n"
-      else e+"\n"
+    val stageContent = lines.map(x => x.split(" "))
+    val stageChecked=  stageContent.map(x =>{
+      if(pathLine.equals(x(2)) && !idSha1.equals(x(1))) modified = true
     })
-
-    newStage.map(line => IOManager.writeInFile(currentStagePath,line,true))//WriteInStage
+    modified
   }
 
-  /**
-   * Function that remove the + at the end of each line that have one
-   */
-  def clearPlusInStage(): Unit = {
-    val lines = IOManager.readInFileAsLine(currentStagePath)
-    clearStage()
 
-    val newStage = lines.map(e => {
-      if(e.endsWith("+")) e.substring(0,e.length-1)+"\n"
-      else e+"\n"
-    })
-
-    newStage.map(line => IOManager.writeInFile(currentStagePath,line,true))//WriteInStage
-  }
-
-  /**
-   *
-   * @return
-   */
-  def retrieveLinesBeginningWithStars : List[String] ={
-    val stage = IOManager.readInFileAsLine(currentStagePath)
-    stage.filter(line => line.startsWith("*"))
-  }
 
 
 }

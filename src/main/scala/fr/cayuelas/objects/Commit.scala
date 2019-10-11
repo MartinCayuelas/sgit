@@ -72,10 +72,17 @@ object Commit{
     commit.set_parent(commit.get_last_commitInRefs())
     commit.set_tree(hashTreeFinal)
     commit.set_idCommit(commit.create_id_commit())
-    StageManager.clearStarsInStage()
-    StageManager.clearPlusInStage()
     commit.saveCommitFile(commit.idCommit)
     commit.set_commitInRefs()
-   IOManager.writeInFile(LogsManager.currentLogsPath,commit.get_commitContentInLog,true)//WriteInLogs
+
+    val currentStageCommit = StageManager.readStageCommit()
+    currentStageCommit.map(line => {
+      StageManager.deleteLineInStageIfFileAlreadyExists(line.split(" ")(2),StageManager.currentStagePath)
+      IOManager.writeInFile(StageManager.currentStagePath,line,append = true)
+    }) //WriteInStage
+
+    StageManager.clearStage(StageManager.stageCommit)
+    StageManager.clearStage(StageManager.stageValidated)
+    IOManager.writeInFile(LogsManager.currentLogsPath,commit.get_commitContentInLog,true)//WriteInLogs
   }
 }
