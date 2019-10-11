@@ -29,29 +29,29 @@ class CommandInitSpec  extends FunSpec with Matchers  {
 
   describe("Init_cmd.initSgitRepository") {
     it("should create a .sgit folder with folders and all the structure") {
-      initSgitRepository(System.getProperty("user.dir"))
+     Init_cmd.init()
       assert(new File(System.getProperty("user.dir") + "/.sgit").exists())
     }
     it("should verify if a .sgit folder already exists in parent folder") {
-      initSgitRepository(System.getProperty("user.dir"))
+      Init_cmd.init()
       new File(System.getProperty("user.dir") + "/test").mkdir()
-      assert(isInSgitRepository(System.getProperty("user.dir") + "/test"))
+      assert(Init_cmd.isInSgitRepository(System.getProperty("user.dir") + "/test"))
     }
     it("should verify if a .sgit/objects folder exists") {
-      initSgitRepository(System.getProperty("user.dir"))
-      assert(new File(System.getProperty("user.dir") + "/.sgit/objects").exists())
+      Init_cmd.init()
+      assert(new File(HelperPaths.objectsPath).exists())
     }
     it("should verify if a .sgit/objects/trees folder exists") {
-      initSgitRepository(System.getProperty("user.dir"))
-      assert(new File(System.getProperty("user.dir") + "/.sgit/objects/trees").exists())
+      Init_cmd.init()
+      assert(new File(HelperPaths.objectsPath + File.separator+"trees").exists())
     }
     it("should verify if a .sgit/objects/blobs folder exists") {
-      initSgitRepository(System.getProperty("user.dir"))
-      assert(new File(System.getProperty("user.dir") + "/.sgit/objects/blobs").exists())
+      Init_cmd.init()
+      assert(new File(HelperPaths.objectsPath + File.separator+"blobs").exists())
     }
     it("should verify if a .sgit/objects/commits folder exists") {
-      initSgitRepository(System.getProperty("user.dir"))
-      assert(new File(System.getProperty("user.dir") + "/.sgit/objects/commits").exists())
+      Init_cmd.init()
+      assert(new File(HelperPaths.objectsPath + File.separator+"commits").exists())
     }
   }*/
 
