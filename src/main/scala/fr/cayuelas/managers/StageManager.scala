@@ -18,6 +18,13 @@ object StageManager {
    */
   def readStage(): String = IOManager.readInFile(currentStagePath)
 
+
+  /**
+   * Method that retrieve the current content in the stage file
+   * @return the current content of the stage
+   */
+  def readStageAsLines(): List[String] = IOManager.readInFileAsLine(currentStagePath)
+
   /**
    * Method that retrieve the current content in the stageCommit file used to do commit
    * @return the current content of the stageCommit
@@ -124,10 +131,7 @@ object StageManager {
    */
   def checkIfFileIsInStage(pathLine: String, stage: String): Boolean = {
     val lines = IOManager.readInFileAsLine(stage)
-    var isIn : Boolean = false
-
-    val stageContent = lines.map(x => x.split(" ")).map(elem => if(elem(2).equals(pathLine)) isIn = true)
-    isIn
+    lines.map(x => x.split(" ")).exists(elem => elem(2).equals(pathLine))
   }
 
   /**
@@ -139,13 +143,8 @@ object StageManager {
    */
 
   def checkModification(pathLine: String, idSha1: String, stage: String): Boolean = {
-    var modified = false
-    val lines = IOManager.readInFileAsLine(currentStagePath)
-    val stageContent = lines.map(x => x.split(" "))
-    val stageChecked=  stageContent.map(x =>{
-      if(pathLine.equals(x(2)) && !idSha1.equals(x(1))) modified = true
-    })
-    modified
+    val lines = IOManager.readInFileAsLine(stage)
+    lines.map(x => x.split(" ")).exists(x => pathLine.equals(x(2)) && !idSha1.equals(x(1)))
   }
 
 

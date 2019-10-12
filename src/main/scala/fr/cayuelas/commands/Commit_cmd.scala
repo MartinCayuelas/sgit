@@ -21,7 +21,6 @@ object Commit_cmd {
 
       if (stage.nonEmpty)  resHighestTrees = createAllTrees(stage, None)
 
-
       // Creating the tree for commit
       val hashFinalGhostTree = Tree.createTree(Some(resHighestTrees),Some(blobsInRoot))
       //Creation and process about a Commit object (class)
@@ -43,7 +42,7 @@ object Commit_cmd {
     }
   }
 
-  def getDeeperDirectory(l: List[Wrapper]): (List[Wrapper], List[Wrapper], Option[String],Option[String]) = {
+  def getDeeperDirectory(l: List[Wrapper]): (List[Wrapper], List[Wrapper], Option[String], Option[String]) = {
     var max: Int = 0
     var pathForMax: String = ""
 
@@ -56,7 +55,7 @@ object Commit_cmd {
     val deepest: List[Wrapper]  = l.filter(x => x.path.equals(pathForMax))
     val (fatherPath, oldPath) = getParentPath(pathForMax)
 
-    (deepest, rest, fatherPath,oldPath)
+    (deepest, rest, fatherPath, oldPath)
   }
 
   def getParentPath(path: String): (Option[String],Option[String]) = {

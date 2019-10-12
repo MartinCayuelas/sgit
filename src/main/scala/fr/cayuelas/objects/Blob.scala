@@ -17,37 +17,18 @@ object Blob {
    * @param f : File which will be processed
    * @return a string that is the id after the process of digest with Sha1 Algorithm
    */
-  def createBlob(f: File): String = {
+  def createBlob(f: File): Unit = {
     val content: String = IOManager.readInFile(f.getPath)
     val idSha1: String = HelperSha1.convertToSha1(content) //Creates the id in sha1
     val relativePath: String = HelperPaths.getRelativePathOfFile(f.getAbsolutePath)
 
-    val isInStage: Boolean =StageManager.checkIfFileIsInStage(relativePath, StageManager.currentStagePath)
-    val isInStageCommit: Boolean =StageManager.checkIfFileIsInStage(relativePath, StageManager.stageCommit)
-    val modifiedInStageCommit: Boolean = StageManager.checkModification(relativePath,idSha1,StageManager.stageCommit)
-    val modifiedInStage: Boolean = StageManager.checkModification(relativePath,idSha1,StageManager.currentStagePath)
-
-    StageManager.deleteLineInStageIfFileAlreadyExists(relativePath,StageManager.stageCommit)
-    StageManager.deleteLineInStageIfFileAlreadyExists(relativePath,StageManager.stageValidated)
-
-    val blob : String = s"Blob ${idSha1} ${relativePath}\n"
-
-    if(isInStageCommit && !isInStage) {
-      IOManager.writeInFile(StageManager.stageValidated,s"newfile : "+relativePath,append = true)
-      IOManager.writeInFile(StageManager.stageCommit,blob,append = true)
-    }else if(!isInStageCommit && isInStage ){
-      if (modifiedInStage) {
-        IOManager.writeInFile(StageManager.stageCommit,blob,append = true)
-        IOManager.writeInFile(StageManager.stageValidated,s"modified : "+relativePath,append = true)
-      }
-    } else if(isInStage && isInStageCommit){
-      if (modifiedInStageCommit) IOManager.writeInFile(StageManager.stageValidated,s"modified : "+relativePath,append = true)
-    }  else{
-      IOManager.writeInFile(StageManager.stageValidated,s"newfile : "+relativePath,append = true)
-      IOManager.writeInFile(StageManager.stageCommit,blob,append = true)
+    relativePath.startsWith(".") match {
+      case true => checksAndWriteInFiles(relativePath.substring(2,relativePath.length),idSha1)
+      case false => checksAndWriteInFiles(relativePath,idSha1)
     }
+
     addBlobInObjects(idSha1, content) //Add blob in .sgit/objects/blobs
-    blob
+
   }
   /**
    *Function that creates a blob in .sgit/objects/blobs
@@ -64,4 +45,51 @@ object Blob {
     FilesManager.createNewFile(pathFile)
     IOManager.writeInFile(pathFile,contentBlob,append = false)//WriteInBlob ex: .sgit/objects/blobs/ed/72d396fae9206628714fb2ce00f72e94f2258f
   }
+
+
+  /**
+   * Function that checks exitency in stage and stageCommit and write in files
+   * @param relativePath : path of the blob
+   * @param idSha1 : id's blob
+   */
+  def checksAndWriteInFiles(relativePath: String, idSha1: String): Unit = {
+    val isInStage: Boolean =StageManager.checkIfFileIsInStage(relativePath, StageManager.currentStagePath)
+    val isInStageCommit: Boolean =StageManager.checkIfFileIsInStage(relativePath, StageManager.stageCommit)
+    val modifiedInStageCommit: Boolean = StageManager.checkModification(relativePath,idSha1,StageManager.stageCommit)
+    val modifiedInStage: Boolean = StageManager.checkModification(relativePath,idSha1,StageManager.currentStagePath)
+
+    StageManager.deleteLineInStageIfFileAlreadyExists(relativePath,StageManager.stageCommit)
+    StageManager.deleteLineInStageIfFileAlreadyExists(relativePath,StageManager.stageValidated)
+
+    val blob : String = s"Blob ${idSha1} ${relativePath}\n"
+
+    if(isInStageCommit && !isInStage) {
+
+      IOManager.writeInFile(StageManager.stageValidated,s"newfile : "+relativePath,append = true)
+      IOManager.writeInFile(StageManager.stageCommit,blob,append = true)
+    }else if(!isInStageCommit && isInStage ){
+
+      if (modifiedInStage) {
+
+        IOManager.writeInFile(StageManager.stageCommit,blob,append = true)
+        IOManager.writeInFile(StageManager.stageValidated,s"modified : "+relativePath,append = true)
+      }
+    } else if(isInStage && isInStageCommit){
+      IOManager.writeInFile(StageManager.stageValidated,s"modified : "+relativePath,append = true)
+      IOManager.writeInFile(StageManager.stageCommit,blob,append = true)
+    }  else{
+
+      IOManager.writeInFile(StageManager.stageValidated,s"newfile : "+relativePath,append = true)
+      IOManager.writeInFile(StageManager.stageCommit,blob,append = true)
+    }
+  }
+
+  def createSha1Blob(f: File): String = {
+    val content: String = IOManager.readInFile(f.getPath)
+  HelperSha1.convertToSha1(content) //Creates the id in sha1
+  }
+
+
+
+
 }
