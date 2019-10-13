@@ -17,6 +17,7 @@ object Blob {
    * @return a string that is the id after the process of digest with Sha1 Algorithm
    */
   def createBlob(f: File): Unit = {
+    println(f.getPath)
     val content: String = IOManager.readInFile(f.getPath)
     val idSha1: String = HelperSha1.convertToSha1(content) //Creates the id in sha1
     val relativePath: String = HelperPaths.getRelativePathOfFile(f.getAbsolutePath)
@@ -82,8 +83,11 @@ object Blob {
    * @param f : file to read the content
    * @return a string in sha1
    */
-  def createSha1Blob(f: File): String = {
-    val content: String = IOManager.readInFile(f.getPath)
+  def createSha1Blob(f: String): String = {
+
+
+
+    val content: String = IOManager.readInFile(f)
     HelperSha1.convertToSha1(content) //Creates the id in sha1
   }
 

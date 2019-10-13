@@ -1,11 +1,8 @@
 package fr.cayuelas.commands
 
-import java.io.File
-
 import fr.cayuelas.helpers.HelperPaths
 import fr.cayuelas.managers.{FilesManager, StageManager}
 import fr.cayuelas.objects.Blob
-
 object Status_cmd {
 
   /**
@@ -46,19 +43,20 @@ object Status_cmd {
   def getChangesThatWillNotBeValidated: List[String] = {
 
 
-    getPathsOfFilesTracked.filter(elem =>
+    getPathsOfFilesTracked.filter(
+      elem =>
 
       //Case 1 Not in currentStage and not the same in StageCommit
-      (!StageManager.checkIfFileIsInStage(elem, StageManager.currentStagePath) && StageManager.checkIfFileIsInStage(elem, StageManager.stageCommitPath)  && StageManager.checkModification(elem, Blob.createSha1Blob(new File(elem)), StageManager.stageCommitPath))
+      (!StageManager.checkIfFileIsInStage(elem, StageManager.currentStagePath) && StageManager.checkIfFileIsInStage(elem, StageManager.stageCommitPath)  && StageManager.checkModification(elem, Blob.createSha1Blob(HelperPaths.sgitPath+elem), StageManager.stageCommitPath))
         ||
         //Case 2  Only in stage
         (!StageManager.checkIfFileIsInStage(elem, StageManager.stageCommitPath)&&
-          StageManager.checkIfFileIsInStage(elem, StageManager.currentStagePath) && StageManager.checkModification(elem,Blob.createSha1Blob(new File(elem))
+          StageManager.checkIfFileIsInStage(elem, StageManager.currentStagePath) && StageManager.checkModification(elem,Blob.createSha1Blob(HelperPaths.sgitPath+elem)
           , StageManager.currentStagePath))
         ||
         //Case3 In stageCommit and stage
         (StageManager.checkIfFileIsInStage(elem, StageManager.stageCommitPath) && StageManager.checkIfFileIsInStage(elem, StageManager.currentStagePath)
-          && StageManager.checkModification(elem,Blob.createSha1Blob(new File(elem))
+          && StageManager.checkModification(elem,Blob.createSha1Blob(HelperPaths.sgitPath+elem)
           , StageManager.stageCommitPath))
     )
   }
@@ -73,8 +71,6 @@ object Status_cmd {
     getChangesThatWillNotBeValidated.map(e => println(s"   ${Console.RED}modified : "+e+Console.RESET))
     println
   }
-
-
 
   /**
    * Method that retrieve all the files not tracked
@@ -113,8 +109,6 @@ object Status_cmd {
 
     val stagedSplited= staged.map(x => x.split(" ")) //Split lines
     val pathsInStage = stagedSplited.map(x => x(2))
-
-
 
     pathsInStage.concat(pathsInStageCommit).distinct //Union of the 2 lists of paths
 

@@ -63,17 +63,13 @@ object IOManager {
   /*
   ADD
    */
-
   def specifyFileOrFolder(): Unit = println("You need to specify a folder or a file")
   def printFatalAdd(f: File): Unit = println(s"fatal: the path ${f.getName} does not correspond to any file")
-
   /*
   BRANCH
    */
-
   def printCurrentBranch(): Unit = println(Console.GREEN+"("+Branch_cmd.getCurrentBranch+")")
   def printFatalError(): Unit = println(s"fatal: your current '${Branch_cmd.getCurrentBranch}' branch does not yet contain any commit")
-
   /*
   TAG
    */
