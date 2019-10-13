@@ -18,7 +18,8 @@ object Commit_cmd {
    * If no, the user is informed that there is nothing to commit
    */
 
-  def commit(): Unit = {
+  def commit(args: Array[String]): Unit = {
+
     if (!StageManager.canCommit) IOManager.nothingToCommit()
     else {
       val stage: List[Wrapper] = StageManager.retrieveStageCommitStatus()
@@ -30,7 +31,10 @@ object Commit_cmd {
       }
 
       //Creation and process about a Commit object (class)
-      Commit.commit(hashFinalGhostTree)
+      args match {
+        case Array(_,"-m",_*) => Commit.commit(hashFinalGhostTree, args.filter(_ !="commit").filter(_ !="-m").mkString)
+        case _ =>Commit.commit(hashFinalGhostTree,"NoMessageForThisCommit")
+      }
     }
   }
 

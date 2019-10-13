@@ -30,8 +30,8 @@ object Launcher extends App {
       case Array("diff", _) => IOManager.noArgumentsExpected()
       case Array("diff") => if (isInSgitRepository) diff() else IOManager.notSgitReposiroty()
       //Commit
-      case Array("commit", _) => IOManager.noArgumentsExpected()
-      case Array("commit") => if (isInSgitRepository) commit() else IOManager.notSgitReposiroty()
+      case Array("commit", _*) => if (isInSgitRepository) commit(args) else IOManager.notSgitReposiroty()
+      case Array("commit") => if (isInSgitRepository) commit(args) else IOManager.notSgitReposiroty()
       //Log
       case Array("log", _*) => if (isInSgitRepository) log(args) else IOManager.notSgitReposiroty()
       //Branch

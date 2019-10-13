@@ -41,7 +41,7 @@ object Log_cmd {
    */
   def logFormatting(stringToFormat : String) : String = {
     val splitedString = stringToFormat.split(" ")
-    s"${Console.YELLOW}commit ${splitedString(1)} ${Console.RESET} \nAuthor: ${splitedString(2)}\nDate:   ${splitedString(3)} ${splitedString(4)} ${splitedString(5)} ${splitedString(6)} ${splitedString(8)} +0200\n"
+    s"${Console.YELLOW}commit ${splitedString(1)} ${Console.RESET} \nAuthor: ${splitedString(2)}\nDate:   ${splitedString(3)} ${splitedString(4)} ${splitedString(5)} ${splitedString(6)} ${splitedString(8)} +0200\n\n   ${splitedString(9)}\n"
   }
 
 
