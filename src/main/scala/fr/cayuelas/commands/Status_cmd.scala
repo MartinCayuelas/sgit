@@ -51,19 +51,15 @@ object Status_cmd {
       //Case 1 Not in currentStage and not the same in StageCommit
       (!StageManager.checkIfFileIsInStage(elem, StageManager.currentStagePath) && StageManager.checkIfFileIsInStage(elem, StageManager.stageCommitPath)  && StageManager.checkModification(elem, Blob.createSha1Blob(new File(elem)), StageManager.stageCommitPath))
         ||
-
         //Case 2  Only in stage
-
         (!StageManager.checkIfFileIsInStage(elem, StageManager.stageCommitPath)&&
           StageManager.checkIfFileIsInStage(elem, StageManager.currentStagePath) && StageManager.checkModification(elem,Blob.createSha1Blob(new File(elem))
           , StageManager.currentStagePath))
-
         ||
         //Case3 In stageCommit and stage
         (StageManager.checkIfFileIsInStage(elem, StageManager.stageCommitPath) && StageManager.checkIfFileIsInStage(elem, StageManager.currentStagePath)
           && StageManager.checkModification(elem,Blob.createSha1Blob(new File(elem))
           , StageManager.stageCommitPath))
-
     )
   }
 

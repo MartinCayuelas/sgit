@@ -9,7 +9,6 @@ import fr.cayuelas.managers.{FilesManager, IOManager}
 
 object Tag_cmd {
 
-
   /**
    * Main function for tags that dispatch actions given a paramater
    * @param args : should contains the name of the new tag

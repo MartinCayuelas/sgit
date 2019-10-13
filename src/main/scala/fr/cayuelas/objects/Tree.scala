@@ -26,23 +26,12 @@ case class Tree( contentTree: List[Wrapper] = List.empty, id: String = "") {
    * @return tree's id string digested by sha1
    */
   def createTreeId(contentTree: List[Wrapper]): String = {
-    val content = treeContent(contentTree)
+    val content = contentTree.map(x => x.typeElement+ " " + x.hash+" "+ x.name+ "\n").mkString
+  //  val content = treeContent(contentTree)
     HelperSha1.convertToSha1(content)
   }
 
-  /**
-   * Method tha creates a string for the file of the tree
-   * @param contentTree : content of the tree
-   * @return the string that will be stored in the file in .sgit/objects/trees
-   */
 
-  def treeContent(contentTree: List[Wrapper]): String = {
-    var acc = ""
-    contentTree.map(x => {
-      acc = acc + x.typeElement+ " " + x.hash+" "+ x.name+ "\n"
-    })
-    acc
-  }
 
   /**
    * Function that creates folder and file for the tree in .sgit/objects/trees
@@ -51,7 +40,6 @@ case class Tree( contentTree: List[Wrapper] = List.empty, id: String = "") {
    */
 
   def saveTreeInObjects(idSha1: String, contentTree: List[Wrapper]): Unit = {
-
     val folder = idSha1.substring(0,2)
     val nameFile = idSha1.substring(2,idSha1.length)
     val pathFile = treesPath + File.separator +  folder + File.separator + nameFile
@@ -60,8 +48,7 @@ case class Tree( contentTree: List[Wrapper] = List.empty, id: String = "") {
     FilesManager.createNewFile(pathFile)
 
     clearTreefile(folder,nameFile)
-    IOManager.writeInFile(pathFile,treeContent(contentTree),append = true)//WriteInTree
-
+    contentTree.map(elem => IOManager.writeInFile(pathFile,elem.typeElement+ " " + elem.hash+" "+ elem.name+ "\n",append = true)) //WriteInTree
   }
 
   /**

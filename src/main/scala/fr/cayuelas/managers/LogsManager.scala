@@ -8,7 +8,6 @@ import fr.cayuelas.helpers.HelperPaths
 
 object LogsManager {
 
-
   /**
    * Get the current path for Logs file
    * @return a string containin a path
@@ -27,9 +26,8 @@ object LogsManager {
    * Retrieves Logs
    * @return the content of the logs of the current branch
    */
-  def getCurrentLogs : List[String] = {
-    IOManager.readInFileAsLine(getCurrentPathLogs).reverse
-  }
+  def getCurrentLogs : List[String] = IOManager.readInFileAsLine(getCurrentPathLogs).reverse
+
 
 
 }

@@ -69,11 +69,6 @@ object StageManager {
     blobs.map(e => Wrapper(e(2),e(1),e(0),BFile(e(2)).name))
   }
 
-  //Returns a list containing the path to a file that has been converted to a Blob (because it's in the STAGE) and its Hash
-  //OUTPUT is something like this:
-
-  //(hello/world,29ee69c28399de6f830f3f0f55140ad97c211fc851240901f9e030aaaf2e13a0, blob)
-
   /**
    *Given the stage, this method check if a file is at the root of .sgit directory or not. The content is filtered given a predicat
    * After that, for each line we get the path and retrieve his parent
@@ -122,7 +117,6 @@ object StageManager {
     stage.map(line => IOManager.writeInFile(stageToWrite,line,true))//WriteInStage
   }
 
-
   /**
    * Function that verify if the blob already exists in the stage given his path
    * @param pathLine : the path of the file that will be added in the stage
@@ -141,7 +135,6 @@ object StageManager {
    * @param stage: the stage in which we want to test
    * @return true if the file exists in the Stage else false
    */
-
   def checkModification(pathLine: String, idSha1: String, stage: String): Boolean = {
     val lines = IOManager.readInFileAsLine(stage)
     lines.map(x => x.split(" ")).exists(x => pathLine.equals(x(2)) && !idSha1.equals(x(1)))

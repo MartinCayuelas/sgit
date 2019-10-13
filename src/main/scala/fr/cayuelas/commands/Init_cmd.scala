@@ -68,7 +68,6 @@ INIT -----------
       FilesManager.createNewFile(StageManager.stageValidatedPath)// Creates file for stageValidated
 
       IOManager.emptyRepositoryInitialized(path)
-
     }
     else IOManager.sgitRepoAlreadyExists()
   }

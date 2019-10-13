@@ -7,7 +7,6 @@ import fr.cayuelas.commands.Branch_cmd
 
 object IOManager {
 
-
   /**
    *General function that write in files (For commit, tree, blob, stage)
    * @param path of file in which we want to write
@@ -60,7 +59,6 @@ object IOManager {
    */
   def emptyRepositoryInitialized(path: String): Unit = println(s"Empty Sgit repository initialized in ${path}/.sgit/")
   def sgitRepoAlreadyExists(): Unit = println(s"Sgit repository already exists.")
-
 
   /*
   ADD

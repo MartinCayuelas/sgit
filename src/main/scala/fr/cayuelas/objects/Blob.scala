@@ -10,7 +10,6 @@ object Blob {
   //Blobs's path where each blob is stored in .sgit/objects/blobs
   def blobsPath: String = HelperPaths.objectsPath+File.separator+"blobs"
 
-
   /**
    *Method that creates a blob with the content of the file given in parameter and transforms it in Sha1 string
    * Do somme checks. like if the file is already or not in the Stage or in the stageCommit. Then we check if the file is a new version or not
@@ -26,10 +25,9 @@ object Blob {
       case true => checksAndWriteInFiles(relativePath.substring(2,relativePath.length),idSha1)
       case false => checksAndWriteInFiles(relativePath,idSha1)
     }
-
     addBlobInObjects(idSha1, content) //Add blob in .sgit/objects/blobs
-
   }
+
   /**
    *Function that creates a blob in .sgit/objects/blobs
    * @param idSha1 : id of the blob that will be used to create a folder and a file
@@ -84,7 +82,6 @@ object Blob {
    * @param f : file to read the content
    * @return a string in sha1
    */
-
   def createSha1Blob(f: File): String = {
     val content: String = IOManager.readInFile(f.getPath)
     HelperSha1.convertToSha1(content) //Creates the id in sha1
