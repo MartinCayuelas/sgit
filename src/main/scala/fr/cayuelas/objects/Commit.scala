@@ -45,6 +45,8 @@ case class Commit(idCommit: String="", parent: String="", parentMerge: Option[St
   def set_commitInRefs(): Unit = {
     IOManager.writeInFile(currentRefs,idCommit,append = false) //WriteInRefs
   }
+
+
   def getLastCommit:String = IOManager.readInFile(HelperPaths.branchesPath+File.separator+Branch_cmd.getCurrentBranch)
 
   def printResultCommit(): Unit = {
@@ -52,6 +54,7 @@ case class Commit(idCommit: String="", parent: String="", parentMerge: Option[St
     val resToPrint = "["+Branch_cmd.getCurrentBranch+" "+idCommit.substring(0,8)+"] "+message+s"\n  ${numberOfChanges} files changed"
     println(resToPrint)
   }
+
 
 }
 object Commit{
