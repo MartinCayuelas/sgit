@@ -29,7 +29,7 @@ class CommandInitSpec extends FlatSpec with BeforeAndAfterEach {
       file.delete()
     }
   }
-  
+
   "The init command" should "create the .sgit directory with the good one structure" in {
     assert(new File(".sgit").exists())
     assert(new File(".sgit" + File.separator + "objects").exists())

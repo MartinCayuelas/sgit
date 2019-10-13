@@ -11,6 +11,13 @@ import scala.annotation.tailrec
 
 object Commit_cmd {
 
+  /**
+   * Main function that process the commit.
+   * Checks if it is possible to commit.
+   * If yes, then retrieves all files in root et in subdirectories and call a method to creates all the trees. Then th Commit class do the commit
+   * If no, the user is informed that there is nothing to commit
+   */
+
   def commit(): Unit = {
     if (!StageManager.canCommit) IOManager.nothingToCommit()
     else {
@@ -27,6 +34,12 @@ object Commit_cmd {
     }
   }
 
+  /**
+   * FMethod that creates all the trees for the commit with the non root files
+   * @param l : list to use
+   * @param WrapperWithHashFinal : Potential final hash for the last tree in a list to have it every step
+   * @return a list containing the final hash and the final path
+   */
 
   @tailrec
   def createAllTrees(l: List[Wrapper], WrapperWithHashFinal: Option[List[Wrapper]]): List[Wrapper] = {
