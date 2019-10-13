@@ -47,8 +47,6 @@ case class Commit(idCommit: String="", parent: String="", parentMerge: Option[St
   }
 
 
-  def getLastCommit:String = IOManager.readInFile(HelperPaths.branchesPath+File.separator+Branch_cmd.getCurrentBranch)
-
   def printResultCommit(): Unit = {
     val numberOfChanges = IOManager.readInFileAsLine(StageManager.stageCommitPath).length
     val resToPrint = "["+Branch_cmd.getCurrentBranch+" "+idCommit.substring(0,8)+"] "+message+s"\n  ${numberOfChanges} files changed"
@@ -63,6 +61,7 @@ object Commit{
     val commit = new Commit()
     val commitCopy = commit.copy(parent = commit.get_last_commitInRefs(),tree = hashTreeFinal,idCommit = commit.create_id_commit(),message=messageCommit)
     commitCopy.saveCommitFile(commitCopy.idCommit)
+    println(commitCopy.idCommit)
     commitCopy.set_commitInRefs()
 
     val currentStageCommit = StageManager.readStageCommit()

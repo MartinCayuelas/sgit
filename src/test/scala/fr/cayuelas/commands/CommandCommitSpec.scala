@@ -15,8 +15,8 @@ class CommandCommitSpec  extends FlatSpec with BeforeAndAfterEach {
 
     FilesManager.createNewFile("testFolder" + File.separator + "hello")
     FilesManager.createNewFile("testFolder" + File.separator + "world")
-    IOManager.writeInFile("testFolder" + File.separator + "hello","hello",false)
-    IOManager.writeInFile("testFolder" + File.separator + "world","world",false)
+    IOManager.writeInFile("testFolder" + File.separator + "hello","HELLO",false)
+    IOManager.writeInFile("testFolder" + File.separator + "world","HELP",false)
   }
 
   //delete all files created in the .sgit directory after each test
@@ -112,4 +112,6 @@ class CommandCommitSpec  extends FlatSpec with BeforeAndAfterEach {
     //Then
     assert(contentStageCommit.isEmpty)
   }
+
+
 }
