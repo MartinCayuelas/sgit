@@ -33,7 +33,7 @@ object Commit_cmd {
     if(l.isEmpty) WrapperWithHashFinal.get
     else {
       val (deeper, rest, father,oldPath) = getDeeperDirectory(l)
-      val hash: String = Tree.createTree(None,Some(deeper))
+      val hash: String = Tree.createTree(Some(deeper),None)
       if(father.isEmpty) {
         if (WrapperWithHashFinal.isEmpty) createAllTrees(rest, Some(List(Wrapper(deeper(0).path,hash,"Tree",oldPath.get))))
         else  createAllTrees(rest, Some(Wrapper(deeper(0).path,hash,"Tree",oldPath.get) :: WrapperWithHashFinal.get))

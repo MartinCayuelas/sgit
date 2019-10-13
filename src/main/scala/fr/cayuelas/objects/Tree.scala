@@ -55,11 +55,16 @@ case class Tree( contentTree: List[Wrapper] = List.empty, id: String = "") {
    * MEthod thats accumulated all the content of a given list
    * @param listA : list to get elements
    * @param accumulator: list of all elements accumulated
-   * @return a list of of all ement of the given list accumulated
+   * @return a list of of all elment of the given list accumulated in an Option or NOne
    */
   def accumulateContentTree(listA: Option[List[Wrapper]], accumulator: Option[List[Wrapper]]): Option[List[Wrapper]]= {
-    if (listA.isDefined) accumulateContentTree(Some(listA.get.tail), Some(listA.get.head::accumulator.get))
-    else accumulator
+    listA match {
+      case None => accumulator
+      case Some(s) => {
+        if (!listA.get.isEmpty) accumulateContentTree(Some(listA.get.tail), Some(listA.get.head::accumulator.get))
+        else accumulator
+      }
+    }
   }
 }
 
@@ -74,11 +79,11 @@ object Tree {
   def createTree(nonRootFiles: Option[List[Wrapper]], rootFiles: Option[List[Wrapper]]): String = {
     val tree = new Tree()
 
-    val nonRootFilesContentAccumulated : Option[List[Wrapper]]= tree.accumulateContentTree(nonRootFiles,None)
-    val rootFilesContentAccumulated: Option[List[Wrapper]] = tree.accumulateContentTree(rootFiles,None)
+    val nonRootFilesContentAccumulated : Option[List[Wrapper]] = tree.accumulateContentTree(nonRootFiles,Some(List()))
+    val rootFilesContentAccumulated: Option[List[Wrapper]] = tree.accumulateContentTree(rootFiles,Some(List()))
 
     val newContentTree : List[Wrapper] = nonRootFilesContentAccumulated.getOrElse(List())++rootFilesContentAccumulated.getOrElse(List())
-    val hash : String= tree.createTreeId(newContentTree)
+    val hash : String = tree.createTreeId(newContentTree)
 
     val treeCopy: Tree = tree.copy(id = hash, contentTree = newContentTree)
     treeCopy.saveTreeInObjects(treeCopy.id, treeCopy.contentTree) //Save in objects
