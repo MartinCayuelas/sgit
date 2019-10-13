@@ -39,7 +39,6 @@ class CommandAddSpec  extends FlatSpec with BeforeAndAfterEach {
     file.delete()
   }
 
-
   "the add command" should "create a blob file which correspond to the content of the file added" in {
     //Given
     val sgitPath = HelperPaths.sgitPath
