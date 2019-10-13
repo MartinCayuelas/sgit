@@ -14,8 +14,8 @@ object Init_cmd {
   /*
 INIT -----------
  */
-  def init(): Unit = {
-    initSgitRepository(System.getProperty("user.dir"))
+  def init(strPath : String): Unit = {
+    initSgitRepository(strPath)
   }
   /*
   --------------

@@ -1,60 +1,55 @@
 package fr.cayuelas.commands
 
-import org.scalatest.{FunSpec, Matchers}
+
+import java.io.File
+
+import fr.cayuelas.managers.IOManager
+import org.scalatest.{BeforeAndAfterEach, FlatSpec}
 
 
-class CommandInitSpec  extends FunSpec with Matchers  {
-/*
-  override def withFixture(test: NoArgTest): Outcome = {
-    // Shared setup (run at beginning of each test)
-    try test()
-    finally {
-      val sgit = new File(".sgit")
-      if (sgit.exists()) {
-        delete(new File(".sgit"))
-      }
-      val test = new File("test")
-      if (test.exists()) {
-        delete(new File("test"))
-      }
-    }
+class CommandInitSpec extends FlatSpec with BeforeAndAfterEach {
+
+
+
+  //init an sgit repo before each test
+  override def beforeEach(): Unit = {
+    Init_cmd.init(System.getProperty("user.dir"))
   }
 
-  def delete(file: File): Unit = {
-    if (file.isDirectory) {
-      file.listFiles().map(x => x.delete())
+  //delete all files created in the .sgit directory after each test
+  override def afterEach(): Unit = {
+    val sgit = new File(".sgit")
+    if (sgit.exists()) {
+      delete(new File(".sgit"))
     }
-    file.delete()
+    def delete(file: File): Unit = {
+      if (file.isDirectory) {
+        file.listFiles().foreach(delete)
+      }
+      file.delete()
+    }
+  }
+  
+  "The init command" should "create the .sgit directory with the good one structure" in {
+    assert(new File(".sgit").exists())
+    assert(new File(".sgit" + File.separator + "objects").exists())
+    assert(new File(".sgit" + File.separator + "objects"+ File.separator +"trees").exists())
+    assert(new File(".sgit" + File.separator + "objects"+ File.separator +"commits").exists())
+    assert(new File(".sgit" + File.separator + "objects"+ File.separator +"blobs").exists())
+    assert(new File(".sgit" + File.separator + "logs").exists())
+    assert(new File(".sgit" + File.separator + "logs" +File.separator +"master").exists())
+    assert(new File(".sgit" + File.separator + "stages").exists())
+    assert(new File(".sgit" + File.separator + "HEAD").exists())
   }
 
-  describe("Init_cmd.initSgitRepository") {
-    it("should create a .sgit folder with folders and all the structure") {
-     Init_cmd.init()
-      assert(new File(System.getProperty("user.dir") + "/.sgit").exists())
-    }
-    it("should verify if a .sgit folder already exists in parent folder") {
-      Init_cmd.init()
-      new File(System.getProperty("user.dir") + "/test").mkdir()
-      assert(Init_cmd.isInSgitRepository(System.getProperty("user.dir") + "/test"))
-    }
-    it("should verify if a .sgit/objects folder exists") {
-      Init_cmd.init()
-      assert(new File(HelperPaths.objectsPath).exists())
-    }
-    it("should verify if a .sgit/objects/trees folder exists") {
-      Init_cmd.init()
-      assert(new File(HelperPaths.objectsPath + File.separator+"trees").exists())
-    }
-    it("should verify if a .sgit/objects/blobs folder exists") {
-      Init_cmd.init()
-      assert(new File(HelperPaths.objectsPath + File.separator+"blobs").exists())
-    }
-    it("should verify if a .sgit/objects/commits folder exists") {
-      Init_cmd.init()
-      assert(new File(HelperPaths.objectsPath + File.separator+"commits").exists())
-    }
-  }*/
+  it should "put the right content in the HEAD file" in {
+    val pathHead = ".sgit" + File.separator + "HEAD"
+    val content = IOManager.readInFileAsLine(pathHead).mkString
+    assert(content == "ref: refs/heads/master")
+  }
 
-
+  it should "check if current directory is already initialized with .sgit" in {
+    assert(Init_cmd.isInSgitRepository(System.getProperty("user.dir")))
+  }
 
 }

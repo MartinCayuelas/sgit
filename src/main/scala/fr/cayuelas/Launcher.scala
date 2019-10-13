@@ -20,7 +20,7 @@ object Launcher extends App {
     args match {
       //Init
       case Array("init", _) => IOManager.noArgumentsExpected()
-      case Array("init") => init()
+      case Array("init") => init(System.getProperty("user.dir"))
       //ADD
       case Array("add", _*) => if (isInSgitRepository) add(args) else IOManager.notSgitReposiroty()
         //Status
