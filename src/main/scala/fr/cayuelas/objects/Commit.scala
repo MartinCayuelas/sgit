@@ -8,23 +8,9 @@ import fr.cayuelas.commands.Branch_cmd
 import fr.cayuelas.helpers.{HelperPaths, HelperSha1}
 import fr.cayuelas.managers.{FilesManager, IOManager, LogsManager, StageManager}
 
-case class Commit(var idCommit: String="", var parent: String="", var parentMerge: Option[String]=None, var tree:String="", commiter:String="MartinCayuelas", author: String="MartinCayuelas", var dateCommit:String= Calendar.getInstance().getTime().toString) {
+case class Commit(idCommit: String="", parent: String="", parentMerge: Option[String]=None, tree:String="", commiter:String="MartinCayuelas", author: String="MartinCayuelas", dateCommit:String= Calendar.getInstance().getTime().toString) {
 
   def currentRefs : String = HelperPaths.branchesPath + File.separator + Branch_cmd.getCurrentBranch
-
-  def set_idCommit(id: String): Unit = {
-    this.idCommit = id
-  }
-  def set_parent(p: String): Unit = {
-    this.parent = p
-  }
-  def set_parentMerge(p: String): Unit = {
-    this.parentMerge = Some(p)
-  }
-  def set_tree(newTree: String):Unit = {
-    this.tree = newTree
-
-  }
 
   def create_id_commit(): String = {
     HelperSha1.convertToSha1(get_commitContent())
@@ -38,9 +24,7 @@ case class Commit(var idCommit: String="", var parent: String="", var parentMerg
   def get_commitContentInLog: String = {
     if (parent.length >0)  s"${parent} ${idCommit} ${author} ${dateCommit}\n"
     else   s"0000000000000000000000000000000000000000 ${idCommit} ${author} ${dateCommit}\n"
-
   }
-
   //Set in objects/objects/commits
   def saveCommitFile(idSha1: String): Unit = {
     val path = HelperPaths.objectsPath + File.separator + "commits"
@@ -62,18 +46,14 @@ case class Commit(var idCommit: String="", var parent: String="", var parentMerg
     IOManager.writeInFile(currentRefs,idCommit,false) //WriteInRefs
   }
 
-
-
 }
 object Commit{
   def apply(idCommit: String, parent: String, parentMerge: Option[String], tree: String, commiter: String, author: String, dateCommit: String): Commit = new Commit(idCommit, parent, parentMerge,tree, commiter, author, dateCommit)
   def commit(hashTreeFinal: String): Unit = {
     val commit = new Commit()
-    commit.set_parent(commit.get_last_commitInRefs())
-    commit.set_tree(hashTreeFinal)
-    commit.set_idCommit(commit.create_id_commit())
-    commit.saveCommitFile(commit.idCommit)
-    commit.set_commitInRefs()
+    val commitCopy = commit.copy(parent = commit.get_last_commitInRefs(),tree = hashTreeFinal,idCommit = commit.create_id_commit())
+    commitCopy.saveCommitFile(commitCopy.idCommit)
+    commitCopy.set_commitInRefs()
 
     val currentStageCommit = StageManager.readStageCommit()
     currentStageCommit.map(line => {
@@ -83,6 +63,6 @@ object Commit{
 
     StageManager.clearStage(StageManager.stageCommitPath)
     StageManager.clearStage(StageManager.stageValidatedPath)
-    IOManager.writeInFile(LogsManager.getCurrentPathLogs,commit.get_commitContentInLog,true)//WriteInLogs
+    IOManager.writeInFile(LogsManager.getCurrentPathLogs,commitCopy.get_commitContentInLog,true)//WriteInLogs
   }
 }

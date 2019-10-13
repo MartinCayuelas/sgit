@@ -11,15 +11,6 @@ case class Tree( contentTree: List[Wrapper] = List.empty, id: String = "") {
   //Path to folder of trees
   def treesPath: String = HelperPaths.objectsPath + File.separator + "trees"
 
-  /**
-   *Method that add an element to a content list
-   * @param elem : element that will be added to the content lits
-   * @return a new List[Wrapper] with the old content + a new element in
-   */
-  def addElement(elem: Wrapper): List[Wrapper] = {
-    elem :: this.contentTree
-  }
-
   /**Method that creates the id of a tree given his content
    *
    * @param contentTree : content of the tree
@@ -27,18 +18,14 @@ case class Tree( contentTree: List[Wrapper] = List.empty, id: String = "") {
    */
   def createTreeId(contentTree: List[Wrapper]): String = {
     val content = contentTree.map(x => x.typeElement+ " " + x.hash+" "+ x.name+ "\n").mkString
-  //  val content = treeContent(contentTree)
     HelperSha1.convertToSha1(content)
   }
-
-
 
   /**
    * Function that creates folder and file for the tree in .sgit/objects/trees
    * @param idSha1 : tree's id
    * @param contentTree: tree's content
    */
-
   def saveTreeInObjects(idSha1: String, contentTree: List[Wrapper]): Unit = {
     val folder = idSha1.substring(0,2)
     val nameFile = idSha1.substring(2,idSha1.length)
@@ -64,6 +51,16 @@ case class Tree( contentTree: List[Wrapper] = List.empty, id: String = "") {
     writer.close()
   }
 
+  /**
+   * MEthod thats accumulated all the content of a given list
+   * @param listA : list to get elements
+   * @param accumulator: list of all elements accumulated
+   * @return a list of of all ement of the given list accumulated
+   */
+  def accumulateContentTree(listA: Option[List[Wrapper]], accumulator: Option[List[Wrapper]]): Option[List[Wrapper]]= {
+    if (listA.isDefined) accumulateContentTree(Some(listA.get.tail), Some(listA.get.head::accumulator.get))
+    else accumulator
+  }
 }
 
 object Tree {
@@ -76,21 +73,14 @@ object Tree {
    */
   def createTree(nonRootFiles: Option[List[Wrapper]], rootFiles: Option[List[Wrapper]]): String = {
     val tree = new Tree()
-    var contentTreeH: List[Wrapper] = List().empty
 
-    if (nonRootFiles.isDefined) nonRootFiles.get.map(element => {
-      val nTree: Tree = tree.copy(contentTree = tree.addElement(element))
-      contentTreeH = nTree.contentTree ++ contentTreeH //accumulation of the content
-    })
+    val nonRootFilesContentAccumulated : Option[List[Wrapper]]= tree.accumulateContentTree(nonRootFiles,None)
+    val rootFilesContentAccumulated: Option[List[Wrapper]] = tree.accumulateContentTree(rootFiles,None)
 
-    if (rootFiles.isDefined) rootFiles.get.map(element => {
-      val nTree: Tree = tree.copy(contentTree = tree.addElement(element))
-      contentTreeH = nTree.contentTree ++ contentTreeH //accumulation of the content
-    })
+    val newContentTree : List[Wrapper] = nonRootFilesContentAccumulated.getOrElse(List())++rootFilesContentAccumulated.getOrElse(List())
+    val hash : String= tree.createTreeId(newContentTree)
 
-    val hash = tree.createTreeId(contentTreeH)
-
-    val treeCopy = tree.copy(id = hash, contentTree = contentTreeH)
+    val treeCopy: Tree = tree.copy(id = hash, contentTree = newContentTree)
     treeCopy.saveTreeInObjects(treeCopy.id, treeCopy.contentTree) //Save in objects
     treeCopy.id
   }
