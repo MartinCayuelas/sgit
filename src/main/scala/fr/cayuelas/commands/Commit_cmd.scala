@@ -3,7 +3,7 @@ package fr.cayuelas.commands
 
 import java.io.File
 
-import fr.cayuelas.managers.StageManager
+import fr.cayuelas.managers.{IOManager, StageManager}
 import fr.cayuelas.objects.{Commit, Tree, Wrapper}
 
 import scala.annotation.tailrec
@@ -12,7 +12,7 @@ import scala.annotation.tailrec
 object Commit_cmd {
 
   def commit(): Unit = {
-    if(!StageManager.canCommit) println("Nothing to commit")
+    if(!StageManager.canCommit) IOManager.nothingToCommit()
     else {
 
       var resHighestTrees: List[Wrapper] = List()
@@ -51,7 +51,7 @@ object Commit_cmd {
       pathForMax = line.path
     })
 
-    val rest: List[Wrapper] = l.filter(x => !(x.path.equals(pathForMax)))
+    val rest: List[Wrapper] = l.filter(x => !x.path.equals(pathForMax))
     val deepest: List[Wrapper]  = l.filter(x => x.path.equals(pathForMax))
     val (fatherPath, oldPath) = getParentPath(pathForMax)
 

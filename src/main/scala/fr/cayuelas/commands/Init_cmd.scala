@@ -22,7 +22,7 @@ INIT -----------
    */
 
   //base path
-  val SgitRepositoryName = ".sgit"
+  def SgitRepositoryName: String = ".sgit"
 
   /**
   * initSgitRepository:
@@ -61,15 +61,16 @@ INIT -----------
       listFiles.map(file => FilesManager.createNewFile(sgitPath + File.separator + file))
 
       FilesManager.createNewFile(HelperPaths.branchesPath + File.separator + "master") //Creates file for master branch in refs/heads
-      IOManager.writeInFile(HelperPaths.headFile,"ref: refs/heads/master",false)//WriteInHEAD
+      IOManager.writeInFile(HelperPaths.headFile,"ref: refs/heads/master",append = false)//WriteInHEAD
       LogsManager.createLogFileForBranch() //creates file log for master branch
       FilesManager.createNewFile(StageManager.currentStagePath)// Creates file stage for master branch
-      FilesManager.createNewFile(StageManager.stageCommit)// Creates file for stageCommit
-      FilesManager.createNewFile(StageManager.stageValidated)// Creates file for stageValidated
+      FilesManager.createNewFile(StageManager.stageCommitPath)// Creates file for stageCommit
+      FilesManager.createNewFile(StageManager.stageValidatedPath)// Creates file for stageValidated
 
-      println(s"Empty Sgit repository initialized in ${path}/.sgit/")
+      IOManager.emptyRepositoryInitialized(path)
+
     }
-    else println(s"Sgit repository already exists.")
+    else IOManager.sgitRepoAlreadyExists()
   }
 
   /**

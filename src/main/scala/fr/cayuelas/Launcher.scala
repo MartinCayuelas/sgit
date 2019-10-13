@@ -6,6 +6,7 @@ import commands.Commit_cmd.commit
 import commands.Branch_cmd.branch
 import commands.Tag_cmd.tag
 import commands.Status_cmd.status
+import commands.Log_cmd.log
 import fr.cayuelas.commands.Init_cmd
 import fr.cayuelas.managers.IOManager
 
@@ -54,32 +55,20 @@ object Launcher extends App {
   }
 
 
-  def log(args: Array[String]) : Unit ={
-    if (args.length == 1) println("log")
-    else if(args.length == 2) {
-      args match {
-        case Array(_,"-p") => println("log -p")
-        case Array(_,"--stat") => println("log --stat")
-        case _ => println("Argument not supported.")
-      }
-    }
-    else println("Too many arguments")
-  }
-
 
   def checkout(args: Array[String]): Unit = {
     if (args.length == 2) println(s"Tipping on the branch ${args(1)}")
-    else  println(s"Number of arguments not supported for the command '${args(0)}'.")
+    else  IOManager.numberOfArgumentNotSupported(args(0))
   }
 
   def merge(args: Array[String]): Unit = {
     if (args.length == 2) println(s"merge")
-    else  println(s"Number of arguments not supported for the command '${args(0)}'.")
+    else  IOManager.numberOfArgumentNotSupported(args(0))
   }
   def rebase(args: Array[String]): Unit = {
     if ((args.length == 3) && args(1).equals("-i")) println(s"rebase -i")
     else if (args.length == 2)  println(s"rebase")
-    else  println(s"Number of arguments not supported for the command '${args(0)}'.")
+    else  IOManager.numberOfArgumentNotSupported(args(0))
   }
 
 }

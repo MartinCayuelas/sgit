@@ -3,7 +3,7 @@ package fr.cayuelas.commands
 import java.io.File
 import java.nio.file.Paths
 
-import fr.cayuelas.managers.FilesManager
+import fr.cayuelas.managers.{FilesManager, IOManager}
 import fr.cayuelas.objects.Blob
 
 object Add_cmd {
@@ -17,11 +17,7 @@ ADD -----------
    * @param args : array of String that represents the name of files or folders
    */
   def add(args: Array[String]) : Unit = {
-    if (args.length == 1) println("You need to specify a folder or a file")
-   /* else if(args.length == 2 && args(1).equals(".")) {
-      val file =  Paths.get(".sgit").toFile
-      addRoutine(file)
-    }*/
+    if (args.length == 1) IOManager.specifyFileOrFolder()
     else {
       args.filter(_ != "add").map(arg =>{
         val file =  Paths.get(arg).toFile
@@ -40,7 +36,7 @@ ADD -----------
       else if (f.isDirectory){
         recursionAddBlob(f)
       }
-    else println(s"fatal: the path ${f.getName} does not correspond to any file")
+    else IOManager.printFatalAdd(f)
   }
 
   /**

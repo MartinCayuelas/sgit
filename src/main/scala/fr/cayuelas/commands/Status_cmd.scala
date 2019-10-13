@@ -12,22 +12,9 @@ object Status_cmd {
    * Main function that dispatch the action
    */
   def status() : Unit ={
-    println(s"On the ${Branch_cmd.getCurrentBranch} branch")
-    println("Changes that will be validated : ")
-    println()
-    getChangesThatWillBeValidated.map(elem => println(s"   ${Console.GREEN}"+elem+Console.RESET))
-    println()
-    println("Changes that will not be validated:")
-    println("   (use \"git add <file> ...\" to update what will be validated)")
-    println()
-    getChangesThatWillNotBeValidated.map(e => println(s"   ${Console.RED}modified : "+e+Console.RESET))
-    println()
-    println("Files untracked:")
-    println("   (use \"git add <file> ...\" to include what will be validated)")
-    println()
-    getUntracked.map(e => println(s"   ${Console.RED}"+e+Console.RESET))
-    println()
-
+    printChangesThatWillBeValidated()
+    printChangesThatWillNotBeValidated()
+    printUntrackedFiles()
   }
 
   /**
@@ -38,6 +25,17 @@ object Status_cmd {
     StageManager.readStageValidated()
   }
 
+  /**
+   * Print all the files that will be added in the next commit
+   */
+
+  def printChangesThatWillBeValidated(): Unit = {
+    println(s"On the ${Branch_cmd.getCurrentBranch} branch")
+    println("Changes that will be validated : \n")
+    getChangesThatWillBeValidated.map(elem => println(s"   ${Console.GREEN}"+elem+Console.RESET))
+    println
+
+  }
 
   /**
    *Method that retrieve the files that will not be validated but they are tracked
@@ -51,24 +49,34 @@ object Status_cmd {
     getPathsOfFilesTracked.filter(elem =>
 
       //Case 1 Not in currentStage and not the same in StageCommit
-      (!StageManager.checkIfFileIsInStage(elem, StageManager.currentStagePath) && StageManager.checkIfFileIsInStage(elem, StageManager.stageCommit)  && StageManager.checkModification(elem, Blob.createSha1Blob(new File(elem)), StageManager.stageCommit))
+      (!StageManager.checkIfFileIsInStage(elem, StageManager.currentStagePath) && StageManager.checkIfFileIsInStage(elem, StageManager.stageCommitPath)  && StageManager.checkModification(elem, Blob.createSha1Blob(new File(elem)), StageManager.stageCommitPath))
         ||
 
         //Case 2  Only in stage
 
-        (!StageManager.checkIfFileIsInStage(elem, StageManager.stageCommit)&&
+        (!StageManager.checkIfFileIsInStage(elem, StageManager.stageCommitPath)&&
           StageManager.checkIfFileIsInStage(elem, StageManager.currentStagePath) && StageManager.checkModification(elem,Blob.createSha1Blob(new File(elem))
           , StageManager.currentStagePath))
 
         ||
         //Case3 In stageCommit and stage
-        (StageManager.checkIfFileIsInStage(elem, StageManager.stageCommit) && StageManager.checkIfFileIsInStage(elem, StageManager.currentStagePath)
+        (StageManager.checkIfFileIsInStage(elem, StageManager.stageCommitPath) && StageManager.checkIfFileIsInStage(elem, StageManager.currentStagePath)
           && StageManager.checkModification(elem,Blob.createSha1Blob(new File(elem))
-          , StageManager.stageCommit))
+          , StageManager.stageCommitPath))
 
     )
   }
 
+  /**
+   * Print all the files that will not be validated
+   */
+  def printChangesThatWillNotBeValidated(): Unit = {
+    println("Changes that will not be validated:")
+    println("   (use \"git add <file> ...\" to update what will be validated)\n")
+
+    getChangesThatWillNotBeValidated.map(e => println(s"   ${Console.RED}modified : "+e+Console.RESET))
+    println
+  }
 
 
 
@@ -84,7 +92,22 @@ object Status_cmd {
     listOfAllCleared.diff(getPathsOfFilesTracked) //Différence between the Working directory and the "stage"
   }
 
+  /**
+   * Print all the files not tracked in the stage
+   */
+  def printUntrackedFiles(): Unit = {
+    println("Files untracked:")
+    println("   (use \"git add <file> ...\" to include what will be validated)\n")
 
+    getUntracked.map(e => println(s"   ${Console.RED}"+e+Console.RESET))
+    println
+  }
+
+
+  /**
+   * Methot that retrieves all the files tracked (In stage or in stageCommit)
+   * @return a list of string that represents the files tracked
+   */
   def getPathsOfFilesTracked: List[String] = {
     val staged = StageManager.readStageAsLines()
     val stagedInCommit = StageManager.readStageCommit()

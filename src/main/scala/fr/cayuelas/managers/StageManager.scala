@@ -9,9 +9,9 @@ import fr.cayuelas.objects.Wrapper
 
 object StageManager {
 
-  val currentStagePath : String = HelperPaths.stagePath + File.separator + Branch_cmd.getCurrentBranch
-  val stageCommit : String = HelperPaths.stagePath + File.separator + "stageCommit"
-  val stageValidated : String = HelperPaths.stagePath + File.separator + "stageValidated"
+  def currentStagePath : String = HelperPaths.stagePath + File.separator + Branch_cmd.getCurrentBranch
+  def stageCommitPath : String = HelperPaths.stagePath + File.separator + "stageCommit"
+  def stageValidatedPath : String = HelperPaths.stagePath + File.separator + "stageValidated"
   /**
    * Method that retrieve the current content in the stage file
    * @return the current content of the stage
@@ -29,13 +29,13 @@ object StageManager {
    * Method that retrieve the current content in the stageCommit file used to do commit
    * @return the current content of the stageCommit
    */
-  def readStageCommit(): List[String] = IOManager.readInFileAsLine(stageCommit)
+  def readStageCommit(): List[String] = IOManager.readInFileAsLine(stageCommitPath)
 
   /**
    * Method that retrieve the current content in the stageValidated file used to sgit status
    * @return the current content of the stageValidated
    */
-  def readStageValidated(): List[String] = IOManager.readInFileAsLine(stageValidated)
+  def readStageValidated(): List[String] = IOManager.readInFileAsLine(stageValidatedPath)
 
 
   /**
@@ -53,7 +53,7 @@ object StageManager {
    * @return true if the stage can be commited else false
    */
   def canCommit: Boolean = {
-    IOManager.readInFileAsLine(stageCommit).nonEmpty
+    IOManager.readInFileAsLine(stageCommitPath).nonEmpty
   }
 
   /**
@@ -62,7 +62,7 @@ object StageManager {
    */
   def retrieveStageCommitRootBlobs(): List[Wrapper]= {
     //Retrieve useful data
-    val contentInStage = IOManager.readInFile(stageCommit)
+    val contentInStage = IOManager.readInFile(stageCommitPath)
     //Split lines
     val stage_content = contentInStage.split("\n").map(x => x.split(" "))
     val blobs = stage_content.filter(x => x(2).split("/").length==1).toList
@@ -82,7 +82,7 @@ object StageManager {
    */
   def retrieveStageCommitStatus(): List[Wrapper]= {
     //Retrieve useful data
-    val contentInStage = IOManager.readInFile(stageCommit)
+    val contentInStage = IOManager.readInFile(stageCommitPath)
 
     //Split lines
     val stage_content = contentInStage.split("\n").map(x => x.split(" "))

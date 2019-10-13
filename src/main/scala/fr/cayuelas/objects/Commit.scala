@@ -10,7 +10,7 @@ import fr.cayuelas.managers.{FilesManager, IOManager, LogsManager, StageManager}
 
 case class Commit(var idCommit: String="", var parent: String="", var parentMerge: Option[String]=None, var tree:String="", commiter:String="MartinCayuelas", author: String="MartinCayuelas", var dateCommit:String= Calendar.getInstance().getTime().toString) {
 
-  val currentRefs : String = HelperPaths.branchesPath + File.separator + Branch_cmd.getCurrentBranch
+  def currentRefs : String = HelperPaths.branchesPath + File.separator + Branch_cmd.getCurrentBranch
 
   def set_idCommit(id: String): Unit = {
     this.idCommit = id
@@ -81,8 +81,8 @@ object Commit{
       IOManager.writeInFile(StageManager.currentStagePath,line,append = true)
     }) //WriteInStage
 
-    StageManager.clearStage(StageManager.stageCommit)
-    StageManager.clearStage(StageManager.stageValidated)
-    IOManager.writeInFile(LogsManager.currentLogsPath,commit.get_commitContentInLog,true)//WriteInLogs
+    StageManager.clearStage(StageManager.stageCommitPath)
+    StageManager.clearStage(StageManager.stageValidatedPath)
+    IOManager.writeInFile(LogsManager.getCurrentPathLogs,commit.get_commitContentInLog,true)//WriteInLogs
   }
 }

@@ -5,11 +5,10 @@ import java.io.File
 import java.nio.file.{Files, Paths}
 
 import fr.cayuelas.helpers.HelperPaths
-import fr.cayuelas.managers.FilesManager
+import fr.cayuelas.managers.{FilesManager, IOManager}
 
 object Tag_cmd {
 
-  val tagsPath : String = HelperPaths.tagsPath
 
   /**
    * Main function for tags that dispatch actions given a paramater
@@ -17,7 +16,7 @@ object Tag_cmd {
    */
   def tag(args: Array[String]): Unit = {
     if (args.length == 2)  createTag(args(1))
-    else  println(s"Number of arguments not supported for the command '${args(0)}'.")
+    else  IOManager.numberOfArgumentNotSupported(args(0))
   }
 
   /**
@@ -25,17 +24,17 @@ object Tag_cmd {
    * @param nameTag : name of the new tag
    */
   def createTag(nameTag: String): Unit = {
-    val path = tagsPath + File.separator + nameTag
+    val path = HelperPaths.tagsPath + File.separator + nameTag
     if(Files.notExists(Paths.get(path))){
       FilesManager.createNewFile(path)
-    } else println(s"Fatal: a branch named ${nameTag} is exits already")
+    } else IOManager.printFatalCreation("tag",nameTag)
   }
 
   /**
    * Function which displays all the tags contained in sgit/refs/tags
    */
   def displayAllTags(): Unit = {
-    val listOfTags = FilesManager.getListOfFiles(tagsPath)
+    val listOfTags = FilesManager.getListOfFiles(HelperPaths.tagsPath)
     listOfTags.map(b => println(s"  ${b.getName} (tag)"))
   }
 

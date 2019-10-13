@@ -6,10 +6,10 @@ import java.io.{File, PrintWriter}
 import fr.cayuelas.helpers.{HelperPaths, HelperSha1}
 import fr.cayuelas.managers.{FilesManager, IOManager}
 
-case class Tree(var contentTree: List[Wrapper] = List.empty, var id: String = "") {
+case class Tree( contentTree: List[Wrapper] = List.empty, id: String = "") {
 
   //Path to folder of trees
-  val treesPath: String = HelperPaths.objectsPath + File.separator + "trees"
+  def treesPath: String = HelperPaths.objectsPath + File.separator + "trees"
 
   /**
    *Method that add an element to a content list
@@ -39,7 +39,7 @@ case class Tree(var contentTree: List[Wrapper] = List.empty, var id: String = ""
   def treeContent(contentTree: List[Wrapper]): String = {
     var acc = ""
     contentTree.map(x => {
-       acc = acc + x.typeElement+ " " + x.hash+" "+ x.name+ "\n"
+      acc = acc + x.typeElement+ " " + x.hash+" "+ x.name+ "\n"
     })
     acc
   }
