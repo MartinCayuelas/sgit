@@ -1,8 +1,7 @@
 package fr.cayuelas.commands
 
-import fr.cayuelas.helpers.HelperPaths
+import fr.cayuelas.helpers.{HelperBlob, HelperPaths}
 import fr.cayuelas.managers.{FilesManager, StageManager}
-import fr.cayuelas.objects.Blob
 object Status_cmd {
 
   /**
@@ -41,23 +40,21 @@ object Status_cmd {
    */
 
   def getChangesThatWillNotBeValidated: List[String] = {
-
-
     getPathsOfFilesTracked.filter(
       elem =>
 
-      //Case 1 Not in currentStage and not the same in StageCommit
-      (!StageManager.checkIfFileIsInStage(elem, StageManager.currentStagePath) && StageManager.checkIfFileIsInStage(elem, StageManager.stageCommitPath)  && StageManager.checkModification(elem, Blob.createSha1Blob(HelperPaths.sgitPath+elem), StageManager.stageCommitPath))
-        ||
-        //Case 2  Only in stage
-        (!StageManager.checkIfFileIsInStage(elem, StageManager.stageCommitPath)&&
-          StageManager.checkIfFileIsInStage(elem, StageManager.currentStagePath) && StageManager.checkModification(elem,Blob.createSha1Blob(HelperPaths.sgitPath+elem)
-          , StageManager.currentStagePath))
-        ||
-        //Case3 In stageCommit and stage
-        (StageManager.checkIfFileIsInStage(elem, StageManager.stageCommitPath) && StageManager.checkIfFileIsInStage(elem, StageManager.currentStagePath)
-          && StageManager.checkModification(elem,Blob.createSha1Blob(HelperPaths.sgitPath+elem)
-          , StageManager.stageCommitPath))
+        //Case 1 Not in currentStage and not the same in StageCommit
+        (!StageManager.checkIfFileIsInStage(elem, StageManager.currentStagePath) && StageManager.checkIfFileIsInStage(elem, StageManager.stageCommitPath)  && StageManager.checkModification(elem, HelperBlob.createSha1Blob(HelperPaths.sgitPath+elem), StageManager.stageCommitPath))
+          ||
+          //Case 2  Only in stage
+          (!StageManager.checkIfFileIsInStage(elem, StageManager.stageCommitPath)&&
+            StageManager.checkIfFileIsInStage(elem, StageManager.currentStagePath) && StageManager.checkModification(elem,HelperBlob.createSha1Blob(HelperPaths.sgitPath+elem)
+            , StageManager.currentStagePath))
+          ||
+          //Case3 In stageCommit and stage
+          (StageManager.checkIfFileIsInStage(elem, StageManager.stageCommitPath) && StageManager.checkIfFileIsInStage(elem, StageManager.currentStagePath)
+            && StageManager.checkModification(elem,HelperBlob.createSha1Blob(HelperPaths.sgitPath+elem)
+            , StageManager.stageCommitPath))
     )
   }
 
@@ -94,8 +91,7 @@ object Status_cmd {
     getUntracked.map(e => println(s"   ${Console.RED}"+e+Console.RESET))
     println
   }
-
-
+  
   /**
    * Methot that retrieves all the files tracked (In stage or in stageCommit)
    * @return a list of string that represents the files tracked
@@ -104,11 +100,8 @@ object Status_cmd {
     val staged = StageManager.readStageAsLines()
     val stagedInCommit = StageManager.readStageCommit()
 
-    val stagedInCommitSplited = stagedInCommit.map(x => x.split(" ")) //Split lines
-    val pathsInStageCommit = stagedInCommitSplited.map(x => x(2))
-
-    val stagedSplited= staged.map(x => x.split(" ")) //Split lines
-    val pathsInStage = stagedSplited.map(x => x(2))
+    val pathsInStageCommit = stagedInCommit.map(x => x.split(" ")).map(x => x(2)) //Split lines
+    val pathsInStage = staged.map(x => x.split(" ")).map(x => x(2)) //Split lines
 
     pathsInStage.concat(pathsInStageCommit).distinct //Union of the 2 lists of paths
 

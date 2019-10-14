@@ -53,7 +53,6 @@ case class Commit(idCommit: String="", parent: String="", parentMerge: Option[St
     println(resToPrint)
   }
 
-
 }
 object Commit{
   def apply(idCommit: String, parent: String, parentMerge: Option[String], tree: String, commiter: String, author: String, dateCommit: String): Commit = new Commit(idCommit, parent, parentMerge,tree, commiter, author, dateCommit)
