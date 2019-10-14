@@ -7,7 +7,7 @@ import commands.Branch_cmd.branch
 import commands.Tag_cmd.tag
 import commands.Status_cmd.status
 import commands.Log_cmd.log
-import fr.cayuelas.commands.Init_cmd
+import fr.cayuelas.commands.{Diff_cmd, Init_cmd}
 import fr.cayuelas.managers.IOManager
 
 object Launcher extends App {
@@ -51,7 +51,7 @@ object Launcher extends App {
 
 
   def diff() : Unit ={
-    println("Diff")
+    Diff_cmd.diff()
   }
 
 

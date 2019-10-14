@@ -61,7 +61,6 @@ object Commit{
     val commit = new Commit()
     val commitCopy = commit.copy(parent = commit.get_last_commitInRefs(),tree = hashTreeFinal,idCommit = commit.create_id_commit(),message=messageCommit)
     commitCopy.saveCommitFile(commitCopy.idCommit)
-    println(commitCopy.idCommit)
     commitCopy.set_commitInRefs()
 
     val currentStageCommit = StageManager.readStageCommit()

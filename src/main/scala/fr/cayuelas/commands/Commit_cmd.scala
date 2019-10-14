@@ -65,12 +65,6 @@ object Commit_cmd {
    * @return
    */
   def getDeeperDirectory(l: List[Wrapper]): (List[Wrapper], List[Wrapper], Option[String], Option[String]) = {
-    /*val (_,pathMax)=getMaxAndPathForMax(l,0,"")
-    val rest: List[Wrapper] = l.filter(x => !x.path.equals(pathMax))
-    val deepest: List[Wrapper] = l.filter(x => x.path.equals(pathMax))
-    val (fatherPath, oldPath) = getParentPath(pathMax)
-
-    (deepest, rest, fatherPath, oldPath)*/
 
     var max: Int = 0
     var pathForMax: String = ""
@@ -87,45 +81,16 @@ object Commit_cmd {
     (deepest, rest, fatherPath, oldPath)
   }
 
-
   /**
-   *
-   * @param l
-   * @param max
-   * @param pathForMax
-   * @return
-   */
-
-    //TODO REGLAGE MAX
-  @tailrec
-  def getMaxAndPathForMax(l: List[Wrapper], max: Int, pathForMax: String): (Int, String) = {
-    if (l.isEmpty) (max, pathForMax)
-    else {
-      val newList = l.filter(line => line.path.split("/").length > max)
-      if(newList.nonEmpty) getMaxAndPathForMax(newList, newList.head.path.split("/").length, newList.last.path)
-      else (max, pathForMax)
-    }
-  }
-
-  /**
-   *
-   * @param path
-   * @return
+   * Method the retrieves the parent of a givent path
+   * @param path : the path to be transformed
+   * @return the parent path of the given path and itself
    */
   def getParentPath(path: String): (Option[String], Option[String]) = {
-    val pathSplited: Array[String] = path.split("/")
+    val pathSplited: List[String] = path.split("/").toList
     if (pathSplited.length <= 1) (None, Some(path))
     else {
-      var parentPath: String = ""
-      var first_dir: Boolean = true
-      var index: Int = 0
-      pathSplited.map(x => if (index < pathSplited.length - 1) {
-        if (first_dir) {
-          parentPath = x
-          first_dir = false
-        } else parentPath = parentPath + File.separator + x
-        index = index + 1
-      })
+      val parentPath = pathSplited.init.map(x => x+File.separator).mkString.dropRight(1)
       (Some(parentPath), Some(path))
     }
   }

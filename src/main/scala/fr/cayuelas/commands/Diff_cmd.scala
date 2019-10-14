@@ -4,8 +4,8 @@ object Diff_cmd {
 
 
   def diff() : Unit ={
-    val str1 = "CHOCOLAT"
-    val str2 = "CACHALOT"
+    val str1 = "LUCAS"
+    val str2 = "LICORNE"
 
     val seq1 = str1.split("").toSeq
     val seq2 = str2.split("").toSeq
@@ -25,7 +25,6 @@ object Diff_cmd {
   }
 
   def getPathForDiffUp(elementOne: Seq[String], elementTwo: Seq[String], i: Int, j:Int, path:List[(Int,Int)]): List[(Int,Int)] = {
-
     if ((i == elementOne.length && j == elementTwo.length)) path
     else {
       if ( i < elementOne.length && j == elementTwo.length) {
@@ -40,9 +39,7 @@ object Diff_cmd {
         }else{//T[i] != T[j]
           getPathForDiffUp(elementOne,elementTwo,i+1,j, (i+1,j) :: path)
           getPathForDiffUp(elementOne,elementTwo,i,j+1, (i,j+1) :: path)
-
         }
-
       }
     }
   }
