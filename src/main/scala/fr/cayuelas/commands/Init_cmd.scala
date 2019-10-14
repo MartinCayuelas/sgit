@@ -64,7 +64,7 @@ INIT -----------
       IOManager.writeInFile(HelperPaths.headFile,"ref: refs/heads/master",append = false)//WriteInHEAD
       LogsManager.createLogFileForBranch() //creates file log for master branch
       FilesManager.createNewFile(StageManager.currentStagePath)// Creates file stage for master branch
-      FilesManager.createNewFile(StageManager.stageCommitPath)// Creates file for stageCommit
+      FilesManager.createNewFile(StageManager.stageToCommitPath)// Creates file for stageCommit
       FilesManager.createNewFile(StageManager.stageValidatedPath)// Creates file for stageValidated
 
       IOManager.emptyRepositoryInitialized(path)

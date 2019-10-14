@@ -41,17 +41,17 @@ object Status_cmd {
 
   def getChangesThatWillNotBeValidated: List[String] = getPathsOfFilesTracked.filter(elem =>
       //Case 1 Not in currentStage and not the same in StageCommit
-      (!StageManager.checkIfFileIsInStage(elem, StageManager.currentStagePath) && StageManager.checkModification(elem, HelperBlob.createSha1Blob(HelperPaths.sgitPath+elem), StageManager.stageCommitPath))
+      (!StageManager.checkIfFileIsInStage(elem, StageManager.currentStagePath) && StageManager.checkModification(elem, HelperBlob.createSha1Blob(HelperPaths.sgitPath+elem), StageManager.stageToCommitPath))
         ||
         //Case 2  Only in stage
-        (!StageManager.checkIfFileIsInStage(elem, StageManager.stageCommitPath)&&
+        (!StageManager.checkIfFileIsInStage(elem, StageManager.stageToCommitPath)&&
           StageManager.checkIfFileIsInStage(elem, StageManager.currentStagePath) && StageManager.checkModification(elem,HelperBlob.createSha1Blob(HelperPaths.sgitPath+elem)
           , StageManager.currentStagePath))
         ||
         //Case3 In stageCommit and stage
-        (StageManager.checkIfFileIsInStage(elem, StageManager.stageCommitPath) && StageManager.checkIfFileIsInStage(elem, StageManager.currentStagePath)
+        (StageManager.checkIfFileIsInStage(elem, StageManager.stageToCommitPath) && StageManager.checkIfFileIsInStage(elem, StageManager.currentStagePath)
           && StageManager.checkModification(elem,HelperBlob.createSha1Blob(HelperPaths.sgitPath+elem)
-          , StageManager.stageCommitPath))
+          , StageManager.stageToCommitPath))
   )
 
   /**
@@ -94,7 +94,7 @@ object Status_cmd {
    */
   def getPathsOfFilesTracked: List[String] = {
     val staged = StageManager.readStageAsLines()
-    val stagedInCommit = StageManager.readStageCommit()
+    val stagedInCommit = StageManager.readStageToCommit()
 
     val pathsInStageCommit = stagedInCommit.map(x => x.split(" ")).map(x => x(2)) //Split lines
     val pathsInStage = staged.map(x => x.split(" ")).map(x => x(2)) //Split lines

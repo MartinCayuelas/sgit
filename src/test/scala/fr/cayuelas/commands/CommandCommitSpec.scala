@@ -108,7 +108,7 @@ class CommandCommitSpec  extends FlatSpec with BeforeAndAfterEach {
 
     Commit_cmd.commit(Array("commit"))
 
-    val contentStageCommit = IOManager.readInFileAsLine(StageManager.stageCommitPath)
+    val contentStageCommit = IOManager.readInFileAsLine(StageManager.stageToCommitPath)
     //Then
     assert(contentStageCommit.isEmpty)
   }

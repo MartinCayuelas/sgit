@@ -8,7 +8,9 @@ import scala.annotation.tailrec
 
 object HelperCommit {
 
-
+/*
+PART CREATION OF TREES
+ */
   /**
    * FMethod that creates all the trees for the commit with the non root files
    * @param l : list to use
@@ -74,5 +76,11 @@ object HelperCommit {
       (Some(parentPath), Some(path))
     }
   }
+
+
+  /*
+  PART COMMIT TOOLS
+   */
+
 
 }

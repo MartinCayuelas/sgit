@@ -10,7 +10,7 @@ import fr.cayuelas.objects.Wrapper
 object StageManager {
 
   def currentStagePath : String = HelperPaths.stagePath + File.separator + Branch_cmd.getCurrentBranch
-  def stageCommitPath : String = HelperPaths.stagePath + File.separator + "stageCommit"
+  def stageToCommitPath : String = HelperPaths.stagePath + File.separator + "stageToCommit"
   def stageValidatedPath : String = HelperPaths.stagePath + File.separator + "stageValidated"
   /**
    * Method that retrieve the current content in the stage file
@@ -29,7 +29,7 @@ object StageManager {
    * Method that retrieve the current content in the stageCommit file used to do commit
    * @return the current content of the stageCommit
    */
-  def readStageCommit(): List[String] = IOManager.readInFileAsLine(stageCommitPath)
+  def readStageToCommit(): List[String] = IOManager.readInFileAsLine(stageToCommitPath)
 
   /**
    * Method that retrieve the current content in the stageValidated file used to sgit status
@@ -53,7 +53,7 @@ object StageManager {
    * @return true if the stage can be commited else false
    */
   def canCommit: Boolean = {
-    IOManager.readInFileAsLine(stageCommitPath).nonEmpty
+    IOManager.readInFileAsLine(stageToCommitPath).nonEmpty
   }
 
   /**
@@ -62,7 +62,7 @@ object StageManager {
    */
   def retrieveStageCommitRootBlobs(): List[Wrapper]= {
     //Retrieve useful data
-    val contentInStage = IOManager.readInFile(stageCommitPath)
+    val contentInStage = IOManager.readInFile(stageToCommitPath)
     //Split lines
     val stage_content = contentInStage.split("\n").map(x => x.split(" "))
     val blobs = stage_content.filter(x => x(2).split("/").length==1).toList
@@ -77,7 +77,7 @@ object StageManager {
    */
   def retrieveStageCommitStatus(): List[Wrapper]= {
     //Retrieve useful data
-    val contentInStage = IOManager.readInFile(stageCommitPath)
+    val contentInStage = IOManager.readInFile(stageToCommitPath)
 
     //Split lines
     val stage_content = contentInStage.split("\n").map(x => x.split(" "))

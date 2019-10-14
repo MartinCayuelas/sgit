@@ -1,30 +1,63 @@
 package fr.cayuelas.commands
 
+import fr.cayuelas.helpers.HelperBlob
+import fr.cayuelas.managers.{IOManager, StageManager}
+
 import scala.annotation.tailrec
 
 object Diff_cmd {
 
-
+  /**
+   * Main function of the diff_cmd
+   * Retrieves the stage and use it to perform the deiff over all the files staged
+   */
   def diff(): Unit = {
-    /* val str1 = "LUCAS"
-     val str2 = "LICORNE"
-
-     val seq1 = str1.split("").toSeq
-     val seq2 = str2.split("").toSeq
-
-     val path2 = getPathForDiffUp(seq1, seq2, 0, 0, List((0, 0)))
-     path2.foreach(elem => {
-       println(s"(${elem._1},${elem._2})")
-     })
-     println(path2.size)*/
-
-    val list1 = List("e", "b", "d")
-    val list2 = List("a", "b", "d", "e")
-    val matrix = createMatrix(list1,list2,0,0,Map())
-    println(getDeltas(list1,list2,list1.length-1,list2.length-1,matrix, List()))
-
+    val stagedForCommit = StageManager.readStageToCommit()
+    val stageSplited = stagedForCommit.map(x => x.split(" "))
+    stageSplited.map(file => {
+      val contentBlob = HelperBlob.readContentInBlob(file(1))
+      val contentOfFile = IOManager.readInFileAsLine(file(2))
+      displayDifferenceBetweenTwoFiles(contentBlob,contentOfFile,file(2),file(1))
+    })
   }
 
+  /**
+   * Displays the différence between two files given in parameters
+   * @param contentBlob : content of the blob associated to the file
+   * @param contentOfFile : content of the real file
+   * @param path : path of the file
+   * @param sha1 : sha1 of the blob
+   */
+  def displayDifferenceBetweenTwoFiles(contentBlob: List[String],contentOfFile: List[String], path: String, sha1: String): Unit = {
+    val matrix = createMatrix(contentBlob,contentOfFile,0,0,Map())
+    val deltas = getDeltas(contentBlob,contentOfFile,contentBlob.length-1,contentOfFile.length-1,matrix, List())
+  println(s"diff --sgit a/${path} b/${path}\nindex ${sha1.substring(0,7)}..${sha1.substring(sha1.length-7,sha1.length)}\n--- a/${path}\n+++ b/${path}\n")
+    printDiff(deltas)
+  }
+
+  /**
+   * Prints the différence with the deltas given
+   * In green if content is added else in red
+   * @param deltas
+   */
+  @tailrec
+  def printDiff(deltas: List[String]): Unit = {
+    if(deltas.nonEmpty){
+      if(deltas.head .startsWith("+")) println(Console.GREEN+deltas.head+Console.RESET)
+      else  println(Console.RED+deltas.head+Console.RESET)
+      printDiff(deltas.tail)
+    }
+  }
+
+  /**
+   * Creates a matrix containing the Longest common subsequence
+   * @param oldContent : old list of string ( Old content )
+   * @param newContent : new list of String (new content)
+   * @param i: index for rows
+   * @param j : index for column
+   * @param matrix : Map used to store the subsequence
+   * @return a map containing the Longest common subsequence
+   */
   @tailrec
   def createMatrix(oldContent: List[String], newContent: List[String], i: Int, j: Int, matrix: Map[(Int, Int), Int]): Map[(Int, Int), Int] = {
     //Step 0 -> end
@@ -55,11 +88,21 @@ object Diff_cmd {
     }
   }
 
+  /**
+   * Method that retrieves all the deltas (différences between 2 list of strings) of two given lists and a matrix containing the subsequence
+   * @param oldContent : old list of string ( Old content )
+   * @param newContent : new list of String (new content)
+   * @param i: index for rows
+   * @param j : index for column
+   * @param matrix : Map containing the Longest common subsequence
+   * @param deltas : List containing the resultat and all the trasformations
+   * @return a list containing all the operations effectued (ADD or Remove content)
+   */
   @tailrec
   def getDeltas(oldContent: List[String], newContent: List[String], i: Int, j: Int, matrix: Map[(Int, Int), Int], deltas: List[String]): List[String] = {
-    if(i==0 && j==0) return deltas
-    if(matrix(i,j) == 0 ){
-      if (i==0 && j==0) List("+ "+newContent(j),"- "+oldContent(i))++deltas
+
+    if( i==0 && j==0){
+      if (matrix(i,j) == 0) List("+ "+newContent(j),"- "+oldContent(i))++deltas
       else deltas
     }
     else if(i==0 || matrix(i,j-1)==matrix(i,j)) getDeltas(oldContent,newContent,i,j-1,matrix,"+ "+newContent(j)::deltas)

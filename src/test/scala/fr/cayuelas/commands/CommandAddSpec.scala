@@ -70,7 +70,7 @@ class CommandAddSpec  extends FlatSpec with BeforeAndAfterEach {
     val sha1IdWorld = HelperSha1.convertToSha1(contentFileWorld)
 
 
-    val contentOfStageCommit = IOManager.readInFile(StageManager.stageCommitPath)
+    val contentOfStageCommit = IOManager.readInFile(StageManager.stageToCommitPath)
     val expextedContent = "Blob "+sha1IHello+" "+"testFolder" + File.separator + "hello"+"\n"+"Blob "+sha1IdWorld+" "+"testFolder" + File.separator + "world"+"\n"
     //Then
     assert(contentOfStageCommit == expextedContent)
@@ -83,11 +83,11 @@ class CommandAddSpec  extends FlatSpec with BeforeAndAfterEach {
     val helloFilePath = sgitPath + File.separator + "testFolder" + File.separator + "hello"
     //When
     Add_cmd.add(Array("add",helloFilePath))
-    val previousSha1 = IOManager.readInFileAsLine(StageManager.stageCommitPath).head.split(" ")(1)
+    val previousSha1 = IOManager.readInFileAsLine(StageManager.stageToCommitPath).head.split(" ")(1)
     IOManager.writeInFile(helloFilePath,"HelloWorld", append = true)
 
     Add_cmd.add(Array("add",helloFilePath))
-    val newSha1 = IOManager.readInFileAsLine(StageManager.stageCommitPath).head.split(" ")(1)
+    val newSha1 = IOManager.readInFileAsLine(StageManager.stageToCommitPath).head.split(" ")(1)
     //THEN
     assert(newSha1 != previousSha1)
   }
@@ -95,7 +95,7 @@ class CommandAddSpec  extends FlatSpec with BeforeAndAfterEach {
   it should "never add a file in stageCommit if the user doesn't give file in argument" in {
     //Given And when
     Add_cmd.add(Array("add"))
-    val stageCommit = IOManager.readInFileAsLine(StageManager.stageCommitPath)
+    val stageCommit = IOManager.readInFileAsLine(StageManager.stageToCommitPath)
     //Then
     assert(stageCommit.isEmpty)
   }
@@ -103,7 +103,7 @@ class CommandAddSpec  extends FlatSpec with BeforeAndAfterEach {
   it should "never add a file in stageCommit if the user give a file that doesn't exists" in {
     //Given And when
     Add_cmd.add(Array("add","FileNotExisting"))
-    val stageCommit = IOManager.readInFileAsLine(StageManager.stageCommitPath)
+    val stageCommit = IOManager.readInFileAsLine(StageManager.stageToCommitPath)
     //Then
     assert(stageCommit.isEmpty)
   }

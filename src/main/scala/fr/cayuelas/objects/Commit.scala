@@ -48,8 +48,11 @@ case class Commit(idCommit: String="", parent: String="", parentMerge: Option[St
 
 
   def printResultCommit(): Unit = {
-    val numberOfChanges = IOManager.readInFileAsLine(StageManager.stageCommitPath).length
-    val resToPrint = "["+Branch_cmd.getCurrentBranch+" "+idCommit.substring(0,8)+"] "+message+s"\n  ${numberOfChanges} files changed"
+    val numberOfChanges = IOManager.readInFileAsLine(StageManager.stageToCommitPath).length
+    val resToPrint = numberOfChanges match {
+      case  1 =>"["+Branch_cmd.getCurrentBranch+" "+idCommit.substring(0,8)+"] "+message+s"\n  ${numberOfChanges} file changed"
+      case _ =>"["+Branch_cmd.getCurrentBranch+" "+idCommit.substring(0,8)+"] "+message+s"\n  ${numberOfChanges} files changed"
+    }
     println(resToPrint)
   }
 
@@ -62,14 +65,14 @@ object Commit{
     commitCopy.saveCommitFile(commitCopy.idCommit)
     commitCopy.set_commitInRefs()
 
-    val currentStageCommit = StageManager.readStageCommit()
+    val currentStageCommit = StageManager.readStageToCommit()
     currentStageCommit.map(line => {
       StageManager.deleteLineInStageIfFileAlreadyExists(line.split(" ")(2),StageManager.currentStagePath)
       IOManager.writeInFile(StageManager.currentStagePath,line,append = true)
     }) //WriteInStage
     commitCopy.printResultCommit()
 
-    StageManager.clearStage(StageManager.stageCommitPath)
+    StageManager.clearStage(StageManager.stageToCommitPath)
     StageManager.clearStage(StageManager.stageValidatedPath)
     IOManager.writeInFile(LogsManager.getCurrentPathLogs,commitCopy.get_commitContentInLog,append = true)//WriteInLogs
   }

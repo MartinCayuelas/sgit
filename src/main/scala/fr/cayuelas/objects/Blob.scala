@@ -7,8 +7,6 @@ import fr.cayuelas.managers.{FilesManager, IOManager}
 
 object Blob {
 
-  //Blobs's path where each blob is stored in .sgit/objects/blobs
-  def blobsPath: String = HelperPaths.objectsPath+File.separator+"blobs"
 
   /**
    *Method that creates a blob with the content of the file given in parameter and transforms it in Sha1 string
@@ -36,8 +34,8 @@ object Blob {
   def addBlobInObjects(idSha1: String, contentBlob: String): Unit = {
     val folder: String = idSha1.substring(0,2) //The 2 first letters of the id
     val nameFile: String  = idSha1.substring(2,idSha1.length) //The rest of the id (exclude the 2 firsts letters)
-    val pathFolder: String  = blobsPath + File.separator +  folder
-    val pathFile: String  = blobsPath + File.separator +  folder + File.separator + nameFile
+    val pathFolder: String  = HelperBlob.blobsPath + File.separator +  folder
+    val pathFile: String  = HelperBlob.blobsPath + File.separator +  folder + File.separator + nameFile
 
     FilesManager.createNewFolder(pathFolder)
     FilesManager.createNewFile(pathFile)
