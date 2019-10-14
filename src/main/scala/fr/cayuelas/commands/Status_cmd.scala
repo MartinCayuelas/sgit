@@ -39,24 +39,20 @@ object Status_cmd {
    * @return a list[String] containing all changes that will not be validated
    */
 
-  def getChangesThatWillNotBeValidated: List[String] = {
-    getPathsOfFilesTracked.filter(
-      elem =>
-
-        //Case 1 Not in currentStage and not the same in StageCommit
-        (!StageManager.checkIfFileIsInStage(elem, StageManager.currentStagePath) && StageManager.checkIfFileIsInStage(elem, StageManager.stageCommitPath)  && StageManager.checkModification(elem, HelperBlob.createSha1Blob(HelperPaths.sgitPath+elem), StageManager.stageCommitPath))
-          ||
-          //Case 2  Only in stage
-          (!StageManager.checkIfFileIsInStage(elem, StageManager.stageCommitPath)&&
-            StageManager.checkIfFileIsInStage(elem, StageManager.currentStagePath) && StageManager.checkModification(elem,HelperBlob.createSha1Blob(HelperPaths.sgitPath+elem)
-            , StageManager.currentStagePath))
-          ||
-          //Case3 In stageCommit and stage
-          (StageManager.checkIfFileIsInStage(elem, StageManager.stageCommitPath) && StageManager.checkIfFileIsInStage(elem, StageManager.currentStagePath)
-            && StageManager.checkModification(elem,HelperBlob.createSha1Blob(HelperPaths.sgitPath+elem)
-            , StageManager.stageCommitPath))
-    )
-  }
+  def getChangesThatWillNotBeValidated: List[String] = getPathsOfFilesTracked.filter(elem =>
+      //Case 1 Not in currentStage and not the same in StageCommit
+      (!StageManager.checkIfFileIsInStage(elem, StageManager.currentStagePath) && StageManager.checkModification(elem, HelperBlob.createSha1Blob(HelperPaths.sgitPath+elem), StageManager.stageCommitPath))
+        ||
+        //Case 2  Only in stage
+        (!StageManager.checkIfFileIsInStage(elem, StageManager.stageCommitPath)&&
+          StageManager.checkIfFileIsInStage(elem, StageManager.currentStagePath) && StageManager.checkModification(elem,HelperBlob.createSha1Blob(HelperPaths.sgitPath+elem)
+          , StageManager.currentStagePath))
+        ||
+        //Case3 In stageCommit and stage
+        (StageManager.checkIfFileIsInStage(elem, StageManager.stageCommitPath) && StageManager.checkIfFileIsInStage(elem, StageManager.currentStagePath)
+          && StageManager.checkModification(elem,HelperBlob.createSha1Blob(HelperPaths.sgitPath+elem)
+          , StageManager.stageCommitPath))
+  )
 
   /**
    * Print all the files that will not be validated

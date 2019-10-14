@@ -8,7 +8,7 @@ import fr.cayuelas.commands.Branch_cmd
 import fr.cayuelas.helpers.{HelperPaths, HelperSha1}
 import fr.cayuelas.managers.{FilesManager, IOManager, LogsManager, StageManager}
 
-case class Commit(idCommit: String="", parent: String="", parentMerge: Option[String]=None, tree:String="", message: String="" ,commiter:String="MartinCayuelas", author: String="MartinCayuelas", dateCommit:String= Calendar.getInstance().getTime().toString) {
+case class Commit(idCommit: String="", parent: String="", parentMerge: Option[String]=None, tree:String="", message: String="" ,commiter:String="MartinCayuelas", author: String="MartinCayuelas", dateCommit:String= Calendar.getInstance().getTime.toString) {
 
   def currentRefs : String = HelperPaths.branchesPath + File.separator + Branch_cmd.getCurrentBranch
 
