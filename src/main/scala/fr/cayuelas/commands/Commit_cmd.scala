@@ -66,7 +66,7 @@ object Commit_cmd {
    */
   def getDeeperDirectory(l: List[Wrapper]): (List[Wrapper], List[Wrapper], Option[String], Option[String]) = {
 
-    var max: Int = 0
+    /*var max: Int = 0
     var pathForMax: String = ""
 
     l.map(line => if (line.path.split("/").size >= max) {
@@ -74,12 +74,26 @@ object Commit_cmd {
       pathForMax = line.path
     })
 
-    val rest: List[Wrapper] = l.filter(x => !x.path.equals(pathForMax))
-    val deepest: List[Wrapper]  = l.filter(x => x.path.equals(pathForMax))
-    val (fatherPath, oldPath) = getParentPath(pathForMax)
+    println(pathForMax)
+    println(getPathMax(l,"",0))*/
+
+val pathMax = getPathMax(l,"",0)
+    val rest: List[Wrapper] = l.filter(x => !x.path.equals(pathMax))
+    val deepest: List[Wrapper]  = l.filter(x => x.path.equals(pathMax))
+    val (fatherPath, oldPath) = getParentPath(pathMax)
 
     (deepest, rest, fatherPath, oldPath)
   }
+
+  @tailrec
+  def getPathMax(l: List[Wrapper], pathMax: String, max: Int): String = {
+    if(l.isEmpty) pathMax
+    else {
+      if (l.head.path.split("/").length >= max) getPathMax(l.tail,l.head.path,l.head.path.split("/").length)
+      else getPathMax(l.tail,pathMax,max)
+    }
+  }
+
 
   /**
    * Method the retrieves the parent of a givent path
