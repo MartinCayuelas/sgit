@@ -12,8 +12,7 @@ object Diff_cmd {
    * Retrieves the stage and use it to perform the deiff over all the files staged
    */
   def diff(): Unit = {
-    val stagedForCommit = StageManager.readStageToCommit()
-    val stageSplited = stagedForCommit.map(x => x.split(" "))
+    val stageSplited = StageManager.readStageToCommit().map(x => x.split(" "))
     stageSplited.map(file => {
       val contentBlob = HelperBlob.readContentInBlob(file(1))
       val contentOfFile = IOManager.readInFileAsLine(file(2))
@@ -31,8 +30,20 @@ object Diff_cmd {
   def displayDifferenceBetweenTwoFiles(contentBlob: List[String],contentOfFile: List[String], path: String, sha1: String): Unit = {
     val matrix = createMatrix(contentBlob,contentOfFile,0,0,Map())
     val deltas = getDeltas(contentBlob,contentOfFile,contentBlob.length-1,contentOfFile.length-1,matrix, List())
-  println(s"diff --sgit a/${path} b/${path}\nindex ${sha1.substring(0,7)}..${sha1.substring(sha1.length-7,sha1.length)}\n--- a/${path}\n+++ b/${path}\n")
+    println(s"diff --sgit a/${path} b/${path}\nindex ${sha1.substring(0,7)}..${sha1.substring(sha1.length-7,sha1.length)}\n--- a/${path}\n+++ b/${path}\n")
     printDiff(deltas)
+  }
+
+
+  /**
+   * Methods that calculates the number of deletion or insertion in a file
+   * @param deltas: list of opérations
+   * @return a tuple2 containing the number of Lines inserted and deleted in a file
+   */
+  def calculateDeletionAndInsertion(deltas: List[String]): (Int,Int) ={
+    val insertedLines = deltas.count(x => x.startsWith("+"))
+    val deletedLines = deltas.count(x => x.startsWith("-"))
+    (insertedLines,deletedLines)
   }
 
   /**
