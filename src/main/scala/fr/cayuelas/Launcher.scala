@@ -1,13 +1,14 @@
 package fr.cayuelas
 
-import commands.Init_cmd.init
-import commands.Add_cmd.add
-import commands.Commit_cmd.commit
-import commands.Branch_cmd.branch
-import commands.Tag_cmd.tag
-import commands.Status_cmd.status
-import commands.Log_cmd.log
-import fr.cayuelas.commands.{Diff_cmd, Init_cmd}
+import fr.cayuelas.commands.Add_cmd.add
+import fr.cayuelas.commands.Branch_cmd.branch
+import fr.cayuelas.commands.Commit_cmd.commit
+import fr.cayuelas.commands.Diff_cmd.diff
+import fr.cayuelas.commands.Init_cmd
+import fr.cayuelas.commands.Init_cmd.init
+import fr.cayuelas.commands.Log_cmd.log
+import fr.cayuelas.commands.Status_cmd.status
+import fr.cayuelas.commands.Tag_cmd.tag
 import fr.cayuelas.managers.IOManager
 
 object Launcher extends App {
@@ -50,9 +51,6 @@ object Launcher extends App {
   }
 
 
-  def diff() : Unit ={
-    Diff_cmd.diff()
-  }
 
 
 

@@ -4,7 +4,7 @@ package fr.cayuelas.objects
 import java.io.File
 import java.util.Calendar
 
-import fr.cayuelas.commands.Branch_cmd
+import fr.cayuelas.commands.{Branch_cmd, Diff_cmd}
 import fr.cayuelas.helpers.{HelperPaths, HelperSha1}
 import fr.cayuelas.managers.{FilesManager, IOManager, LogsManager, StageManager}
 
@@ -48,10 +48,11 @@ case class Commit(idCommit: String="", parent: String="", parentMerge: Option[St
 
 
   def printResultCommit(): Unit = {
+    val (inserted,deleted) = Diff_cmd.diffWhenCommitting()
     val numberOfChanges = IOManager.readInFileAsLine(StageManager.stageToCommitPath).length
     val resToPrint = numberOfChanges match {
-      case  1 =>"["+Branch_cmd.getCurrentBranch+" "+idCommit.substring(0,8)+"] "+message+s"\n  ${numberOfChanges} file changed"
-      case _ =>"["+Branch_cmd.getCurrentBranch+" "+idCommit.substring(0,8)+"] "+message+s"\n  ${numberOfChanges} files changed"
+      case  1 =>"["+Branch_cmd.getCurrentBranch+" "+idCommit.substring(0,8)+"] "+message+s"\n  ${numberOfChanges} file changed, ${inserted} insertions(+), ${deleted} deletions(-)"
+      case _ =>"["+Branch_cmd.getCurrentBranch+" "+idCommit.substring(0,8)+"] "+message+s"\n  ${numberOfChanges} files changed, ${inserted} insertions(+), ${deleted} deletions(-)"
     }
     println(resToPrint)
   }
