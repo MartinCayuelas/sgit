@@ -8,6 +8,8 @@ import fr.cayuelas.commands.{Branch_cmd, Diff_cmd}
 import fr.cayuelas.helpers.{HelperPaths, HelperSha1}
 import fr.cayuelas.managers.{FilesManager, IOManager, LogsManager, StageManager}
 
+import scala.annotation.tailrec
+
 case class Commit(idCommit: String="", parent: String="", parentMerge: Option[String]=None, tree:String="", message: String="" ,commiter:String="MartinCayuelas", author: String="MartinCayuelas", dateCommit:String= Calendar.getInstance().getTime.toString) {
 
   def currentRefs : String = HelperPaths.branchesPath + File.separator + Branch_cmd.getCurrentBranch
@@ -47,12 +49,31 @@ case class Commit(idCommit: String="", parent: String="", parentMerge: Option[St
   }
 
 
-  def printResultCommit(): Unit = {
-    val (inserted,deleted) = Diff_cmd.diffWhenCommitting()
+  def printResultCommit(lastCommit: String): Unit = {
+    val (inserted,deleted) = Diff_cmd.diffWhenCommitting(lastCommit)
     val numberOfChanges = IOManager.readInFileAsLine(StageManager.stageToCommitPath).length
     val resToPrint = numberOfChanges match {
       case  1 =>"["+Branch_cmd.getCurrentBranch+" "+idCommit.substring(0,8)+"] "+message+s"\n  ${numberOfChanges} file changed, ${inserted} insertions(+), ${deleted} deletions(-)"
       case _ =>"["+Branch_cmd.getCurrentBranch+" "+idCommit.substring(0,8)+"] "+message+s"\n  ${numberOfChanges} files changed, ${inserted} insertions(+), ${deleted} deletions(-)"
+    }
+    println(resToPrint)
+  }
+
+  def printResultFirstCommit(): Unit = {
+    val listCommitted = IOManager.readInFileAsLine(StageManager.stageToCommitPath)
+    @tailrec
+    def acc(listCommitted: List[String], accumulator: Int): Int ={
+      if (listCommitted.isEmpty) accumulator
+      else {
+        val lines = IOManager.readInFileAsLine(listCommitted.head.split(" ")(2)).length
+        acc(listCommitted.tail,(lines+accumulator))
+      }
+    }
+   val inserted =  acc(listCommitted,0)
+    val numberOfChanges = listCommitted.length
+    val resToPrint = numberOfChanges match {
+      case  1 =>"["+Branch_cmd.getCurrentBranch+" "+idCommit.substring(0,8)+"] "+message+s"\n  ${numberOfChanges} file changed, ${inserted} insertions(+)"
+      case _ =>"["+Branch_cmd.getCurrentBranch+" "+idCommit.substring(0,8)+"] "+message+s"\n  ${numberOfChanges} files changed, ${inserted} insertions(+)"
     }
     println(resToPrint)
   }
@@ -64,15 +85,21 @@ object Commit{
     val commit = new Commit()
     val commitCopy = commit.copy(parent = commit.get_last_commitInRefs(),tree = hashTreeFinal,idCommit = commit.create_id_commit(),message=messageCommit)
     commitCopy.saveCommitFile(commitCopy.idCommit)
-    commitCopy.set_commitInRefs()
 
     val currentStageCommit = StageManager.readStageToCommit()
     currentStageCommit.map(line => {
       StageManager.deleteLineInStageIfFileAlreadyExists(line.split(" ")(2),StageManager.currentStagePath)
       IOManager.writeInFile(StageManager.currentStagePath,line,append = true)
     }) //WriteInStage
-    commitCopy.printResultCommit()
 
+
+    //TODO
+    /*
+    Cas if files as never been commited // See also index out of bounds
+     */
+   // if(!HelperCommit.isFirstCommit)commitCopy.printResultCommit(HelperCommit.get_last_commitInRefs())
+    //else commitCopy.printResultFirstCommit()
+    commitCopy.set_commitInRefs()
     StageManager.clearStage(StageManager.stageToCommitPath)
     StageManager.clearStage(StageManager.stageValidatedPath)
     IOManager.writeInFile(LogsManager.getCurrentPathLogs,commitCopy.get_commitContentInLog,append = true)//WriteInLogs

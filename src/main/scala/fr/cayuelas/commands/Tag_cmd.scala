@@ -4,7 +4,7 @@ package fr.cayuelas.commands
 import java.io.File
 import java.nio.file.{Files, Paths}
 
-import fr.cayuelas.helpers.HelperPaths
+import fr.cayuelas.helpers.{HelperCommit, HelperPaths}
 import fr.cayuelas.managers.{FilesManager, IOManager}
 
 object Tag_cmd {
@@ -26,6 +26,7 @@ object Tag_cmd {
     val path = HelperPaths.tagsPath + File.separator + nameTag
     if(Files.notExists(Paths.get(path))){
       FilesManager.createNewFile(path)
+      IOManager.writeInFile(path,HelperCommit.get_last_commitInRefs(),false)
     } else IOManager.printFatalCreation("tag",nameTag)
   }
 

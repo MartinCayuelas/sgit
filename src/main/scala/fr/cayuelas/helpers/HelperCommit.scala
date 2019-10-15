@@ -2,15 +2,20 @@ package fr.cayuelas.helpers
 
 import java.io.File
 
+import fr.cayuelas.commands.Branch_cmd
+import fr.cayuelas.managers.IOManager
 import fr.cayuelas.objects.{Tree, Wrapper}
 
 import scala.annotation.tailrec
 
 object HelperCommit {
 
-/*
-PART CREATION OF TREES
- */
+  def currentRefs : String = HelperPaths.branchesPath + File.separator + Branch_cmd.getCurrentBranch
+  def commitsPath: String = HelperPaths.objectsPath+File.separator+"commits"
+  def treesPath: String = HelperPaths.objectsPath+File.separator+"trees"
+  /*
+  PART CREATION OF TREES
+   */
   /**
    * FMethod that creates all the trees for the commit with the non root files
    * @param l : list to use
@@ -81,6 +86,97 @@ PART CREATION OF TREES
   /*
   PART COMMIT TOOLS
    */
+
+  //get in refs/heads/branch
+  def get_last_commitInRefs(): String = {
+    IOManager.readInFile(currentRefs)
+  }
+
+  def isFirstCommit: Boolean = {
+    IOManager.readInFile(currentRefs).length == 0
+  }
+  /**
+   *
+   * @param hashCommit : string corresponding to the commit we want to retrieve
+   * @return
+   */
+  def getAllBlobsFromCommit(hashCommit: String): List[(String,String)] ={
+    val firstTree = getFirstTreeFromCommit(hashCommit)
+    val blobs:List[(String,String)] = accumulatorBlobs(firstTree)
+    blobs
+  }
+
+  /**
+   *
+   * @param hashTree
+   * @return
+   */
+  def accumulatorBlobs(hashTree: String): List[(String,String)] ={
+    val(newAcc,treesList) = retrievesBlobsAndTreesInTree(hashTree,"")
+    recursiveRetrievesBlobsInTrees(treesList,newAcc)
+  }
+
+  /**
+   *
+   * @param hashTree
+   * @return
+   */
+  def retrievesBlobsAndTreesInTree(hashTree: String, pathParent: String):  (List[(String,String)],List[(String,String)]) = {
+    val (folder,file) = HelperPaths.getFolderAndFileWithSha1(hashTree)
+    val path = treesPath + File.separator + folder + File.separator  +file
+    val contentOfTree = IOManager.readInFileAsLine(path)
+
+    val blobsSplited = contentOfTree.filter(x => x.startsWith("Blob")).map(b => b.split(" "))
+    val listHashesAndPaths : List[(String,String)]= blobsSplited.map(x => (x(1),pathParent+File.separator+x(2)))
+
+    val newAcc = accumulate(listHashesAndPaths,List())
+    val treesInTree = contentOfTree.filter(x => x.startsWith("Tree")).map(x => x.split(" ")).map(x => (x(1),x(2)))
+
+    (newAcc,treesInTree)
+  }
+
+  /**
+   *
+   * @param listTrees
+   * @param accBlobs
+   * @return
+   */
+  @tailrec
+  def recursiveRetrievesBlobsInTrees(listTrees: List[(String,String)], accBlobs: List[(String,String)] ): List[(String,String)] = {
+    if(listTrees.isEmpty) accBlobs
+    else{
+      val(newAcc,treesList) = retrievesBlobsAndTreesInTree(listTrees.head._1,listTrees.head._2)
+      val newListOfTrees = treesList++listTrees.tail
+      recursiveRetrievesBlobsInTrees(newListOfTrees,newAcc)
+
+    }
+  }
+
+  /**
+   *
+   * @param hashCommit
+   * @return
+   */
+  def getFirstTreeFromCommit(hashCommit: String): String ={
+    val (folder,file) = HelperPaths.getFolderAndFileWithSha1(hashCommit)
+    val firstLine = IOManager.readInFileAsLine(HelperPaths.objectsPath+File.separator+"commits"+File.separator+folder+File.separator+file)(0)
+    firstLine.split(" ")(1)
+  }
+
+  /**
+   *
+   * @param newBlobs
+   * @param acc
+   * @return
+   */
+  @tailrec
+  def accumulate(newBlobs: List[(String,String)], acc: List[(String,String)]  ): List[(String,String)] ={
+    if (newBlobs.isEmpty) acc
+    else {
+      accumulate(newBlobs.tail,newBlobs.head::acc)
+    }
+  }
+
 
 
 }

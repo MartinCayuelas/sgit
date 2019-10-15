@@ -1,6 +1,6 @@
 package fr.cayuelas.commands
 
-import fr.cayuelas.helpers.HelperBlob
+import fr.cayuelas.helpers.{HelperBlob, HelperCommit}
 import fr.cayuelas.managers.{IOManager, StageManager}
 
 import scala.annotation.tailrec
@@ -20,21 +20,32 @@ object Diff_cmd {
     })
   }
 
-  def diffWhenCommitting(): (Int, Int) = {
+  def diffWhenCommitting(lastCommit: String): (Int, Int) = {
     val stageToCommitSplited = StageManager.readStageAsLines().map(x => x.split(" "))
     val hashes = stageToCommitSplited.map(x => x(1))
     val paths = stageToCommitSplited.map(x => x(2))
     val listZippedStageToCommit: List[(String, String)] = hashes.zip(paths)
-    val stageSplited = StageManager.readStageAsLines().map(x => x.split(" "))
-    val hashesS = stageSplited.map(x => x(1))
-    val pathsS = stageSplited.map(x => x(2))
-    val listZippedStage: List[(String, String)] = hashesS.zip(pathsS)
 
-    val listZippedFiltered = listZippedStage.filter(x => listZippedStageToCommit.exists(y => y._2 == x._2))
+    val listBlobLastCommit = HelperCommit.getAllBlobsFromCommit(lastCommit)
 
+    val listZippedFiltered = listBlobLastCommit.filter(x => listZippedStageToCommit.exists(y => y._2 == x._2))
 
     val (inserted, deleted) = accumulateCalculation(listZippedFiltered, (0, 0))
     (inserted, deleted)
+  }
+
+  @tailrec
+  def accumulateCalculationWhenCommitting(listOfHashesAndPaths: List[(String, String)], accumulator: (Int, Int)): (Int, Int) = {
+    if (listOfHashesAndPaths.isEmpty) accumulator
+    else {
+      val contentBlob = HelperBlob.readContentInBlob(listOfHashesAndPaths.head._1)
+      val contentBlob2 = IOManager.readInFileAsLine(listOfHashesAndPaths.head._2)
+      val matrix = createMatrix(contentBlob, contentBlob2, 0, 0, Map())
+      val deltas = getDeltas(contentBlob, contentBlob2, contentBlob.length - 1, contentBlob2.length - 1, matrix, List())
+      val (inserted, deleted) = calculateDeletionAndInsertion(deltas)
+      val newAccumulator = (accumulator._1 + inserted, accumulator._2 + deleted)
+      accumulateCalculationWhenCommitting(listOfHashesAndPaths.tail, newAccumulator)
+    }
   }
 
   /**
@@ -51,7 +62,6 @@ object Diff_cmd {
 
   @tailrec
   def accumulateCalculation(listOfHashesAndPaths: List[(String, String)], accumulator: (Int, Int)): (Int, Int) = {
-    println(accumulator)
     if (listOfHashesAndPaths.isEmpty) accumulator
     else {
       val contentBlob = HelperBlob.readContentInBlob(listOfHashesAndPaths.head._1)
