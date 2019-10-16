@@ -14,7 +14,7 @@ object Diff_cmd {
     stageToCommitSplited.map(file => {
       val contentBlob = HelperBlob.readContentInBlob(file(1))
       val contentOfFile = IOManager.readInFileAsLine(file(2))
-   HelperDiff.displayDifferenceBetweenTwoFiles(contentBlob, contentOfFile, file(2), file(1))
+   HelperDiff.displayDifferenceBetweenTwoFiles(contentBlob, contentOfFile, file(2), file(1),logs = false)
     })
   }
 

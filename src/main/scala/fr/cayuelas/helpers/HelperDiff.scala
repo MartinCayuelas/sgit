@@ -77,24 +77,46 @@ object HelperDiff {
    * @param path          : path of the file
    * @param sha1          : sha1 of the blob
    */
-  def displayDifferenceBetweenTwoFiles(oldContent: List[String], newContent: List[String], path: String, sha1: String): Unit = {
+  def displayDifferenceBetweenTwoFiles(oldContent: List[String], newContent: List[String], path: String, sha1: String, logs: Boolean): Unit = {
+    if(logs) {
+      if (oldContent.isEmpty && newContent.nonEmpty) {
+        val linesCounted = newContent.length
+        println(path+"                            | "+linesCounted +s"${Console.GREEN}+${Console.RESET}")
+      }
+      else if (newContent.isEmpty && oldContent.nonEmpty) {
+        val linesCounted = oldContent.length
+        println(path+"                            | "+linesCounted +s"${Console.RED}-${Console.RESET}")
+      }
+      else {
+        val matrix = createMatrix(oldContent, newContent, 0, 0, Map())
+        val deltas = getDeltas(oldContent, newContent, oldContent.length - 1, newContent.length - 1, matrix, List())
+        if (deltas.nonEmpty) {
+          val (inserted, deleted) = calculateDeletionAndInsertion(deltas)
+          val changes = inserted+deleted
+          println(path+"                            | "+changes +s"${Console.GREEN}  +${Console.RESET}"+s"${Console.RED}-${Console.RESET}")
+        }
+      }
 
-    if (oldContent.isEmpty && newContent.nonEmpty) {
-      IOManager.printDiffForFile(path,sha1)
-      IOManager.printDiff(newContent.map(e => "+ " + e))
-    }
-    else if (newContent.isEmpty && oldContent.nonEmpty) {
-      IOManager.printDiffForFile(path,sha1)
-      IOManager.printDiff(oldContent.map(e => "- " + e))
-    }
-    else {
-      val matrix = createMatrix(oldContent, newContent, 0, 0, Map())
-      val deltas = getDeltas(oldContent, newContent, oldContent.length - 1, newContent.length - 1, matrix, List())
-      if (deltas.nonEmpty) {
+    }else {
+
+      if (oldContent.isEmpty && newContent.nonEmpty) {
         IOManager.printDiffForFile(path,sha1)
-        IOManager.printDiff(deltas)
+        IOManager.printDiff(newContent.map(e => "+ " + e))
+      }
+      else if (newContent.isEmpty && oldContent.nonEmpty) {
+        IOManager.printDiffForFile(path,sha1)
+        IOManager.printDiff(oldContent.map(e => "- " + e))
+      }
+      else {
+        val matrix = createMatrix(oldContent, newContent, 0, 0, Map())
+        val deltas = getDeltas(oldContent, newContent, oldContent.length - 1, newContent.length - 1, matrix, List())
+        if (deltas.nonEmpty) {
+          IOManager.printDiffForFile(path,sha1)
+          IOManager.printDiff(deltas)
+        }
       }
     }
+
   }
   /**
    * Creates a matrix containing the Longest common subsequence
@@ -169,31 +191,27 @@ object HelperDiff {
     }
   }
 
-  /**
-   *
-   * @param commit
-   * @param parentCommit
-   */
-  def diffBetweenTwoCommits(commit: String, parentCommit: String): Unit ={
+
+  def diffBetweenTwoCommits(commit: String, parentCommit: String, logStat: Boolean): Unit ={
     val listBlobCommit: List[(String,String)] = HelperCommit.getAllBlobsFromCommit(commit)
     if(!parentCommit.equals("0000000000000000000000000000000000000000")){
       val listBlobLParentCommit: List[(String,String)] = HelperCommit.getAllBlobsFromCommit(parentCommit)
-      recursiveDisplay(listBlobCommit,listBlobLParentCommit)
-    }else recursiveDisplay(listBlobCommit,List())
+      recursiveDisplay(listBlobCommit,listBlobLParentCommit,logStat)
+    }else recursiveDisplay(listBlobCommit,List(),logStat)
   }
 
   @tailrec
-  def recursiveDisplay(listCommit:List[(String,String)], listParent:List[(String,String)]): (List[(String,String)],List[(String,String)]) = {
+  def recursiveDisplay(listCommit:List[(String,String)], listParent:List[(String,String)], logStat: Boolean): (List[(String,String)],List[(String,String)]) = {
     if(listParent.nonEmpty && listCommit.nonEmpty){
       val contentBlobParent = HelperBlob.readContentInBlob(listParent.head._1)
       val contentBlobCurrent = HelperBlob.readContentInBlob(listCommit.head._1)
-      HelperDiff.displayDifferenceBetweenTwoFiles(contentBlobParent, contentBlobCurrent, listCommit.head._2, listCommit.head._1)
-      recursiveDisplay(listCommit.tail,listParent.tail)
+      HelperDiff.displayDifferenceBetweenTwoFiles(contentBlobParent, contentBlobCurrent, listCommit.head._2, listCommit.head._1,logStat)
+      recursiveDisplay(listCommit.tail,listParent.tail,logStat)
     }else{
       if(listCommit.nonEmpty){
         val contentBlobCurrent = HelperBlob.readContentInBlob(listCommit.head._1)
-        HelperDiff.displayDifferenceBetweenTwoFiles(List(), contentBlobCurrent, listCommit.head._2, listCommit.head._1)
-        recursiveDisplay(listCommit.tail, List())
+        HelperDiff.displayDifferenceBetweenTwoFiles(List(), contentBlobCurrent, listCommit.head._2, listCommit.head._1,logStat)
+        recursiveDisplay(listCommit.tail, List(),logStat)
       }
       else (List(),List())
 

@@ -13,7 +13,7 @@ object Log_cmd {
     else if(args.length == 2) {
       args match {
         case Array(_,"-p") => LogsManager.displayLogOptionP()
-        case Array(_,"--stat") => println("log --stat")
+        case Array(_,"--stat") => LogsManager.displayLogOptionStat()
         case _ => IOManager.argumentNotSupported()
       }
     }

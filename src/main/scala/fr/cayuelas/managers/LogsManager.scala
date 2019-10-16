@@ -68,7 +68,6 @@ object LogsManager {
    *
    */
   def displayLogOptionP(): Unit = {
-
     val logs = getLogsForBranch(HelperBranch.getCurrentBranch)
     logs match {
       case Nil => IOManager.printFatalError()
@@ -82,11 +81,31 @@ object LogsManager {
       if(logs.nonEmpty){
         println(logFormatting(logs.head)) //Format Display
         val (parentCommit,currentCommit): (String,String) =  (logs.head.split(" ")(0),logs.head.split(" ")(1))
-        HelperDiff.diffBetweenTwoCommits(currentCommit,parentCommit)
+        HelperDiff.diffBetweenTwoCommits(currentCommit,parentCommit, logStat = false)
         recursiveLogs(logs.tail)
       }
     }
   }
 
+
+  def displayLogOptionStat(): Unit = {
+    val logs = getLogsForBranch(HelperBranch.getCurrentBranch)
+    logs match {
+      case Nil => IOManager.printFatalError()
+      case _ => {
+        IOManager.printCurrentBranch()
+        recursiveLogs(logs)
+      }
+    }
+    @tailrec
+    def recursiveLogs(logs: List[String]): Unit = {
+      if(logs.nonEmpty){
+        println(logFormatting(logs.head)) //Format Display
+        val (parentCommit,currentCommit): (String,String) =  (logs.head.split(" ")(0),logs.head.split(" ")(1))
+        HelperDiff.diffBetweenTwoCommits(currentCommit,parentCommit,logStat = true)
+        recursiveLogs(logs.tail)
+      }
+    }
+  }
 
 }

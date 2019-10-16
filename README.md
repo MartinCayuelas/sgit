@@ -26,7 +26,7 @@ It's a simple implementation of Git in Scala. This project was realized in 2 and
 -   sgit log  ✅
     Show all commits started with newest
     
--   sgit log -p  ⏳
+-   sgit log -p  ✅
     Show changes overtime
     
 -   sgit log --stat  ⏳

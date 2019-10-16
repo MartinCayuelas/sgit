@@ -86,13 +86,6 @@ object Commit{
     val commitCopy = commit.copy(parent = commit.get_last_commitInRefs(),tree = hashTreeFinal,idCommit = commit.create_id_commit(),message=messageCommit)
     commitCopy.saveCommitFile(commitCopy.idCommit)
 
-
-
-
-    //TODO
-    /*
-    Cas if files as never been commited // See also index out of bounds
-     */
    if(!HelperCommit.isFirstCommit)commitCopy.printResultCommit(HelperCommit.get_last_commitInRefs())
    else commitCopy.printResultFirstCommit()
     commitCopy.set_commitInRefs()

@@ -81,6 +81,9 @@ object HelperCommit {
     }
   }
 
+  /**
+   *
+   */
   def mergeStageToCommitInStage(): Unit = {
     val currentStageCommit = StageManager.readStageToCommit()
     currentStageCommit.map(line => {
