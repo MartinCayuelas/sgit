@@ -18,8 +18,10 @@ object Commit_cmd {
 
     if (!StageManager.canCommit) IOManager.nothingToCommit()
     else {
-      val stage: List[Wrapper] = StageManager.retrieveStageCommitStatus()
-      val blobsInRoot: List[Wrapper] = StageManager.retrieveStageCommitRootBlobs()
+      HelperCommit.mergeStageToCommitInCommit()
+
+      val stage: List[Wrapper] = StageManager.retrieveStageStatus()
+      val blobsInRoot: List[Wrapper] = StageManager.retrieveStageRootBlobs()
 
       val hashFinalGhostTree: String = stage.nonEmpty match {
         case true => Tree.createTree(Some(HelperCommit.createAllTrees(stage, None)), Some(blobsInRoot))
@@ -29,7 +31,7 @@ object Commit_cmd {
       //Creation and process about a Commit object (class)
       args match {
         case Array(_,"-m",_*) => Commit.commit(hashFinalGhostTree, args.filter(_ !="commit").filter(_ !="-m").mkString)
-        case _ =>Commit.commit(hashFinalGhostTree,"NoMessageForThisCommit")
+        case _ => Commit.commit(hashFinalGhostTree,"NoMessageForThisCommit")
       }
     }
   }

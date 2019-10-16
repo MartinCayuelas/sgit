@@ -3,7 +3,7 @@ package fr.cayuelas.helpers
 import java.io.File
 
 import fr.cayuelas.commands.Branch_cmd
-import fr.cayuelas.managers.IOManager
+import fr.cayuelas.managers.{IOManager, StageManager}
 import fr.cayuelas.objects.{Tree, Wrapper}
 
 import scala.annotation.tailrec
@@ -83,6 +83,15 @@ object HelperCommit {
   }
 
 
+  def mergeStageToCommitInCommit(): Unit = {
+    val currentStageCommit = StageManager.readStageToCommit()
+    currentStageCommit.map(line => {
+      StageManager.deleteLineInStageIfFileAlreadyExists(line.split(" ")(2),StageManager.currentStagePath)
+      IOManager.writeInFile(StageManager.currentStagePath,line,append = true)
+    }) //WriteInStage
+  }
+
+
   /*
   PART COMMIT TOOLS
    */
@@ -112,7 +121,7 @@ object HelperCommit {
    * @return
    */
   def accumulatorBlobs(hashTree: String): List[(String,String)] ={
-    val(newAcc,treesList) = retrievesBlobsAndTreesInTree(hashTree,"")
+    val(newAcc,treesList) = retrievesBlobsAndTreesInTree(hashTree,"",List())
     recursiveRetrievesBlobsInTrees(treesList,newAcc)
   }
 
@@ -121,15 +130,19 @@ object HelperCommit {
    * @param hashTree
    * @return
    */
-  def retrievesBlobsAndTreesInTree(hashTree: String, pathParent: String):  (List[(String,String)],List[(String,String)]) = {
+  def retrievesBlobsAndTreesInTree(hashTree: String, pathParent: String, accBlobs: List[(String,String)]):  (List[(String,String)],List[(String,String)]) = {
+    val pathToAdd = pathParent.length match {
+      case 0 => ""
+      case _ => pathParent+File.separator
+    }
     val (folder,file) = HelperPaths.getFolderAndFileWithSha1(hashTree)
     val path = treesPath + File.separator + folder + File.separator  +file
     val contentOfTree = IOManager.readInFileAsLine(path)
 
     val blobsSplited = contentOfTree.filter(x => x.startsWith("Blob")).map(b => b.split(" "))
-    val listHashesAndPaths : List[(String,String)]= blobsSplited.map(x => (x(1),pathParent+File.separator+x(2)))
+    val listHashesAndPaths : List[(String,String)]= blobsSplited.map(x => (x(1),pathToAdd+x(2)))
 
-    val newAcc = accumulate(listHashesAndPaths,List())
+    val newAcc = accumulate(listHashesAndPaths,accBlobs)
     val treesInTree = contentOfTree.filter(x => x.startsWith("Tree")).map(x => x.split(" ")).map(x => (x(1),x(2)))
 
     (newAcc,treesInTree)
@@ -145,7 +158,7 @@ object HelperCommit {
   def recursiveRetrievesBlobsInTrees(listTrees: List[(String,String)], accBlobs: List[(String,String)] ): List[(String,String)] = {
     if(listTrees.isEmpty) accBlobs
     else{
-      val(newAcc,treesList) = retrievesBlobsAndTreesInTree(listTrees.head._1,listTrees.head._2)
+      val(newAcc,treesList) = retrievesBlobsAndTreesInTree(listTrees.head._1,listTrees.head._2,accBlobs)
       val newListOfTrees = treesList++listTrees.tail
       recursiveRetrievesBlobsInTrees(newListOfTrees,newAcc)
 

@@ -60,9 +60,9 @@ object StageManager {
    * Given the stage, this method check if a file is at the root of .sgit directory or not. The content is filtered given a predicat
    * @return a List of Wrapper containing all the files in same directory as .sgit
    */
-  def retrieveStageCommitRootBlobs(): List[Wrapper]= {
+  def retrieveStageRootBlobs(): List[Wrapper]= {
     //Retrieve useful data
-    val contentInStage = IOManager.readInFile(stageToCommitPath)
+    val contentInStage = IOManager.readInFile(currentStagePath)
     //Split lines
     val stage_content = contentInStage.split("\n").map(x => x.split(" "))
     val blobs = stage_content.filter(x => x(2).split("/").length==1).toList
@@ -75,9 +75,9 @@ object StageManager {
    *  3 lists are created so then we zip them together and return only one List[Wrapper]
    * @return a ist of Wrapper containing all the files in subdirectories of .sgit path folder
    */
-  def retrieveStageCommitStatus(): List[Wrapper]= {
+  def retrieveStageStatus(): List[Wrapper]= {
     //Retrieve useful data
-    val contentInStage = IOManager.readInFile(stageToCommitPath)
+    val contentInStage = IOManager.readInFile(currentStagePath)
 
     //Split lines
     val stage_content = contentInStage.split("\n").map(x => x.split(" "))

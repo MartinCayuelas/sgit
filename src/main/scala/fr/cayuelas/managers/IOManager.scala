@@ -79,4 +79,11 @@ COMMIT
  */
   def nothingToCommit(): Unit = println("Nothing to commit")
 
+  /*
+  DIFF
+   */
+  def printDiffForFile(path: String, sha1: String): Unit = {
+    println(s"diff --sgit a/${path} b/${path}\nindex ${sha1.substring(0, 7)}..${sha1.substring(sha1.length - 7, sha1.length)}\n--- a/${path}\n+++ b/${path}\n")
+  }
+
 }

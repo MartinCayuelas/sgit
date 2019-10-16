@@ -60,4 +60,10 @@ object HelperBlob {
     IOManager.readInFileAsLine(HelperBlob.blobsPath+File.separator+folder+File.separator+file)
   }
 
+  def blobExists(sha1: String): Boolean = {
+    val folder = sha1.substring(0,2)
+    val file = sha1.substring(2,sha1.length)
+    new File(HelperBlob.blobsPath+File.separator+folder+File.separator+file).exists()
+  }
+
 }

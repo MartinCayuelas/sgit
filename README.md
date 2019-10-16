@@ -1,6 +1,6 @@
 #  Sgit
 It's a simple implementation of Git in Scala. This project was realized in 2 and a half weeks as part of a functional programming project
-
+ 
 
 #  Installation
 

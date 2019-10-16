@@ -20,33 +20,27 @@ object Diff_cmd {
     })
   }
 
+  /**
+   *
+   * @param lastCommit
+   * @return
+   */
+
   def diffWhenCommitting(lastCommit: String): (Int, Int) = {
-    val stageToCommitSplited = StageManager.readStageAsLines().map(x => x.split(" "))
-    val hashes = stageToCommitSplited.map(x => x(1))
-    val paths = stageToCommitSplited.map(x => x(2))
-    val listZippedStageToCommit: List[(String, String)] = hashes.zip(paths)
+    val stageSplited= StageManager.readStageAsLines().map(x => x.split(" "))
+    val hashes = stageSplited.map(x => x(1))
+    val paths = stageSplited.map(x => x(2))
 
+    val listZippedStageFiltered = hashes.zip(paths).map(x => x._2)
     val listBlobLastCommit = HelperCommit.getAllBlobsFromCommit(lastCommit)
+    val listBlobLastCommitFiltered = listBlobLastCommit.map(x => x._2)
 
-    val listZippedFiltered = listBlobLastCommit.filter(x => listZippedStageToCommit.exists(y => y._2 == x._2))
+    val listFilteredNewsFiles = listZippedStageFiltered.diff(listBlobLastCommitFiltered) //Files neverCommited
 
-    val (inserted, deleted) = accumulateCalculation(listZippedFiltered, (0, 0))
-    (inserted, deleted)
+    val (inserted, deleted) = accumulateCalculation(listBlobLastCommit, (0, 0))
+    (inserted + calculateNewsLinesWhenFileHasNeverBeenCommitted(listFilteredNewsFiles,0), deleted)
   }
 
-  @tailrec
-  def accumulateCalculationWhenCommitting(listOfHashesAndPaths: List[(String, String)], accumulator: (Int, Int)): (Int, Int) = {
-    if (listOfHashesAndPaths.isEmpty) accumulator
-    else {
-      val contentBlob = HelperBlob.readContentInBlob(listOfHashesAndPaths.head._1)
-      val contentBlob2 = IOManager.readInFileAsLine(listOfHashesAndPaths.head._2)
-      val matrix = createMatrix(contentBlob, contentBlob2, 0, 0, Map())
-      val deltas = getDeltas(contentBlob, contentBlob2, contentBlob.length - 1, contentBlob2.length - 1, matrix, List())
-      val (inserted, deleted) = calculateDeletionAndInsertion(deltas)
-      val newAccumulator = (accumulator._1 + inserted, accumulator._2 + deleted)
-      accumulateCalculationWhenCommitting(listOfHashesAndPaths.tail, newAccumulator)
-    }
-  }
 
   /**
    * Methods that calculates the number of deletion or insertion in a file
@@ -60,17 +54,54 @@ object Diff_cmd {
     (insertedLines, deletedLines)
   }
 
+  /**
+   *
+   * @param listPathsNewFiles
+   * @param acc
+   * @return
+   */
+  def calculateNewsLinesWhenFileHasNeverBeenCommitted(listPathsNewFiles: List[String], acc: Int): Int = {
+    if(listPathsNewFiles.isEmpty) acc
+    else{
+      val linesCounted = IOManager.readInFileAsLine(listPathsNewFiles.head).length
+      val newAcc = acc+linesCounted
+      newAcc
+    }
+  }
+
+  /**
+   *
+   * @param listOfHashesAndPaths
+   * @param accumulator
+   * @return
+   */
   @tailrec
   def accumulateCalculation(listOfHashesAndPaths: List[(String, String)], accumulator: (Int, Int)): (Int, Int) = {
     if (listOfHashesAndPaths.isEmpty) accumulator
     else {
       val contentBlob = HelperBlob.readContentInBlob(listOfHashesAndPaths.head._1)
       val contentOfFile = IOManager.readInFileAsLine(listOfHashesAndPaths.head._2)
-      val matrix = createMatrix(contentBlob, contentOfFile, 0, 0, Map())
-      val deltas = getDeltas(contentBlob, contentOfFile, contentBlob.length - 1, contentOfFile.length - 1, matrix, List())
-      val (inserted, deleted) = calculateDeletionAndInsertion(deltas)
-      val newAccumulator = (accumulator._1 + inserted, accumulator._2 + deleted)
-      accumulateCalculation(listOfHashesAndPaths.tail, newAccumulator)
+
+      if (contentBlob.isEmpty && contentOfFile.nonEmpty) {
+        val newAccumulator = ((accumulator._1+contentOfFile.length), accumulator._2 )
+        accumulateCalculation(listOfHashesAndPaths.tail, newAccumulator)
+      }
+      else if (contentOfFile.isEmpty && contentBlob.nonEmpty) {
+        val newAccumulator = (accumulator._1,(accumulator._2 + contentBlob.length))
+        accumulateCalculation(listOfHashesAndPaths.tail, newAccumulator)
+      }
+      else {
+        val matrix = createMatrix(contentBlob, contentOfFile, 0, 0, Map())
+        val deltas = getDeltas(contentBlob, contentOfFile, contentBlob.length - 1, contentOfFile.length - 1, matrix, List())
+        if (deltas.nonEmpty) {
+          val (inserted, deleted) = calculateDeletionAndInsertion(deltas)
+          val newAccumulator = (accumulator._1 + inserted, accumulator._2 + deleted)
+          accumulateCalculation(listOfHashesAndPaths.tail, newAccumulator)
+        }else{
+          val newAccumulator = (accumulator._1 , accumulator._2 )
+          accumulateCalculation(listOfHashesAndPaths.tail, newAccumulator)
+        }
+      }
     }
   }
 
@@ -83,23 +114,22 @@ object Diff_cmd {
    * @param sha1          : sha1 of the blob
    */
   def displayDifferenceBetweenTwoFiles(contentBlob: List[String], contentOfFile: List[String], path: String, sha1: String): Unit = {
+    IOManager.printDiffForFile(path,sha1)
     if (contentBlob.isEmpty && contentOfFile.nonEmpty) {
-      println(s"diff --sgit a/${path} b/${path}\nindex ${sha1.substring(0, 7)}..${sha1.substring(sha1.length - 7, sha1.length)}\n--- a/${path}\n+++ b/${path}\n")
       printDiff(contentOfFile.map(e => "+ " + e))
     }
     else if (contentOfFile.isEmpty && contentBlob.nonEmpty) {
-      println(s"\ndiff --sgit a/${path} b/${path}\nindex ${sha1.substring(0, 7)}..${sha1.substring(sha1.length - 7, sha1.length)}\n--- a/${path}\n+++ b/${path}\n")
       printDiff(contentBlob.map(e => "- " + e))
     }
     else {
       val matrix = createMatrix(contentBlob, contentOfFile, 0, 0, Map())
       val deltas = getDeltas(contentBlob, contentOfFile, contentBlob.length - 1, contentOfFile.length - 1, matrix, List())
       if (deltas.nonEmpty) {
-        println(s"diff --sgit a/${path} b/${path}\nindex ${sha1.substring(0, 7)}..${sha1.substring(sha1.length - 7, sha1.length)}\n--- a/${path}\n+++ b/${path}\n")
         printDiff(deltas)
       }
     }
   }
+
 
 
   /**
@@ -172,7 +202,7 @@ object Diff_cmd {
    */
   @tailrec
   def getDeltas(oldContent: List[String], newContent: List[String], i: Int, j: Int, matrix: Map[(Int, Int), Int], deltas: List[String]): List[String] = {
-    if (i == 0 && j == 0) {
+    if (i <= 0 && j <= 0) {
       if (matrix(i, j) == 0) List("+ " + newContent(j), "- " + oldContent(i)) ++ deltas
       else deltas
     }

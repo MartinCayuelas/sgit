@@ -5,7 +5,7 @@ import java.io.File
 import java.util.Calendar
 
 import fr.cayuelas.commands.{Branch_cmd, Diff_cmd}
-import fr.cayuelas.helpers.{HelperPaths, HelperSha1}
+import fr.cayuelas.helpers.{HelperCommit, HelperPaths, HelperSha1}
 import fr.cayuelas.managers.{FilesManager, IOManager, LogsManager, StageManager}
 
 import scala.annotation.tailrec
@@ -50,6 +50,7 @@ case class Commit(idCommit: String="", parent: String="", parentMerge: Option[St
 
 
   def printResultCommit(lastCommit: String): Unit = {
+
     val (inserted,deleted) = Diff_cmd.diffWhenCommitting(lastCommit)
     val numberOfChanges = IOManager.readInFileAsLine(StageManager.stageToCommitPath).length
     val resToPrint = numberOfChanges match {
@@ -77,7 +78,6 @@ case class Commit(idCommit: String="", parent: String="", parentMerge: Option[St
     }
     println(resToPrint)
   }
-
 }
 object Commit{
   def apply(idCommit: String, parent: String, parentMerge: Option[String], tree: String, commiter: String, author: String, dateCommit: String): Commit = new Commit(idCommit, parent, parentMerge,tree, commiter, author, dateCommit)
@@ -86,19 +86,15 @@ object Commit{
     val commitCopy = commit.copy(parent = commit.get_last_commitInRefs(),tree = hashTreeFinal,idCommit = commit.create_id_commit(),message=messageCommit)
     commitCopy.saveCommitFile(commitCopy.idCommit)
 
-    val currentStageCommit = StageManager.readStageToCommit()
-    currentStageCommit.map(line => {
-      StageManager.deleteLineInStageIfFileAlreadyExists(line.split(" ")(2),StageManager.currentStagePath)
-      IOManager.writeInFile(StageManager.currentStagePath,line,append = true)
-    }) //WriteInStage
+
 
 
     //TODO
     /*
     Cas if files as never been commited // See also index out of bounds
      */
-   // if(!HelperCommit.isFirstCommit)commitCopy.printResultCommit(HelperCommit.get_last_commitInRefs())
-    //else commitCopy.printResultFirstCommit()
+   if(!HelperCommit.isFirstCommit)commitCopy.printResultCommit(HelperCommit.get_last_commitInRefs())
+   else commitCopy.printResultFirstCommit()
     commitCopy.set_commitInRefs()
     StageManager.clearStage(StageManager.stageToCommitPath)
     StageManager.clearStage(StageManager.stageValidatedPath)
