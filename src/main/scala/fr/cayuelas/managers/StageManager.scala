@@ -3,13 +3,12 @@ package fr.cayuelas.managers
 import java.io.{File, PrintWriter}
 
 import better.files.{File => BFile}
-import fr.cayuelas.commands.Branch_cmd
-import fr.cayuelas.helpers.HelperPaths
+import fr.cayuelas.helpers.{HelperBranch, HelperPaths}
 import fr.cayuelas.objects.Wrapper
 
 object StageManager {
 
-  def currentStagePath : String = HelperPaths.stagePath + File.separator + Branch_cmd.getCurrentBranch
+  def currentStagePath : String = HelperPaths.stagePath + File.separator + HelperBranch.getCurrentBranch
   def stageToCommitPath : String = HelperPaths.stagePath + File.separator + "stageToCommit"
   def stageValidatedPath : String = HelperPaths.stagePath + File.separator + "stageValidated"
   /**

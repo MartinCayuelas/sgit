@@ -2,7 +2,6 @@ package fr.cayuelas.helpers
 
 import java.io.File
 
-import fr.cayuelas.commands.Branch_cmd
 import fr.cayuelas.managers.{IOManager, StageManager}
 import fr.cayuelas.objects.{Tree, Wrapper}
 
@@ -10,7 +9,7 @@ import scala.annotation.tailrec
 
 object HelperCommit {
 
-  def currentRefs : String = HelperPaths.branchesPath + File.separator + Branch_cmd.getCurrentBranch
+  def currentRefs : String = HelperPaths.branchesPath + File.separator + HelperBranch.getCurrentBranch
   def commitsPath: String = HelperPaths.objectsPath+File.separator+"commits"
   def treesPath: String = HelperPaths.objectsPath+File.separator+"trees"
   /*
@@ -82,8 +81,7 @@ object HelperCommit {
     }
   }
 
-
-  def mergeStageToCommitInCommit(): Unit = {
+  def mergeStageToCommitInStage(): Unit = {
     val currentStageCommit = StageManager.readStageToCommit()
     currentStageCommit.map(line => {
       StageManager.deleteLineInStageIfFileAlreadyExists(line.split(" ")(2),StageManager.currentStagePath)

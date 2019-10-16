@@ -13,12 +13,11 @@ object Commit_cmd {
    * If yes, then retrieves all files in root et in subdirectories and call a method to creates all the trees. Then th Commit class do the commit
    * If no, the user is informed that there is nothing to commit
    */
-
   def commit(args: Array[String]): Unit = {
 
     if (!StageManager.canCommit) IOManager.nothingToCommit()
     else {
-      HelperCommit.mergeStageToCommitInCommit()
+      HelperCommit.mergeStageToCommitInStage()
 
       val stage: List[Wrapper] = StageManager.retrieveStageStatus()
       val blobsInRoot: List[Wrapper] = StageManager.retrieveStageRootBlobs()
@@ -27,7 +26,6 @@ object Commit_cmd {
         case true => Tree.createTree(Some(HelperCommit.createAllTrees(stage, None)), Some(blobsInRoot))
         case false => Tree.createTree(Some(List()), Some(blobsInRoot))
       }
-
       //Creation and process about a Commit object (class)
       args match {
         case Array(_,"-m",_*) => Commit.commit(hashFinalGhostTree, args.filter(_ !="commit").filter(_ !="-m").mkString)
@@ -35,5 +33,4 @@ object Commit_cmd {
       }
     }
   }
-
 }

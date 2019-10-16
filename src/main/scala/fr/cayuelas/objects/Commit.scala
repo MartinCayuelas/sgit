@@ -4,15 +4,15 @@ package fr.cayuelas.objects
 import java.io.File
 import java.util.Calendar
 
-import fr.cayuelas.commands.{Branch_cmd, Diff_cmd}
-import fr.cayuelas.helpers.{HelperCommit, HelperPaths, HelperSha1}
+import fr.cayuelas.commands.Diff_cmd
+import fr.cayuelas.helpers.{HelperBranch, HelperCommit, HelperPaths, HelperSha1}
 import fr.cayuelas.managers.{FilesManager, IOManager, LogsManager, StageManager}
 
 import scala.annotation.tailrec
 
 case class Commit(idCommit: String="", parent: String="", parentMerge: Option[String]=None, tree:String="", message: String="" ,commiter:String="MartinCayuelas", author: String="MartinCayuelas", dateCommit:String= Calendar.getInstance().getTime.toString) {
 
-  def currentRefs : String = HelperPaths.branchesPath + File.separator + Branch_cmd.getCurrentBranch
+  def currentRefs : String = HelperPaths.branchesPath + File.separator + HelperBranch.getCurrentBranch
 
   def create_id_commit(): String = {
     HelperSha1.convertToSha1(get_commitContent())
@@ -54,8 +54,8 @@ case class Commit(idCommit: String="", parent: String="", parentMerge: Option[St
     val (inserted,deleted) = Diff_cmd.diffWhenCommitting(lastCommit)
     val numberOfChanges = IOManager.readInFileAsLine(StageManager.stageToCommitPath).length
     val resToPrint = numberOfChanges match {
-      case  1 =>"["+Branch_cmd.getCurrentBranch+" "+idCommit.substring(0,8)+"] "+message+s"\n  ${numberOfChanges} file changed, ${inserted} insertions(+), ${deleted} deletions(-)"
-      case _ =>"["+Branch_cmd.getCurrentBranch+" "+idCommit.substring(0,8)+"] "+message+s"\n  ${numberOfChanges} files changed, ${inserted} insertions(+), ${deleted} deletions(-)"
+      case  1 =>"["+HelperBranch.getCurrentBranch+" "+idCommit.substring(0,8)+"] "+message+s"\n  ${numberOfChanges} file changed, ${inserted} insertions(+), ${deleted} deletions(-)"
+      case _ =>"["+HelperBranch.getCurrentBranch+" "+idCommit.substring(0,8)+"] "+message+s"\n  ${numberOfChanges} files changed, ${inserted} insertions(+), ${deleted} deletions(-)"
     }
     println(resToPrint)
   }
@@ -73,8 +73,8 @@ case class Commit(idCommit: String="", parent: String="", parentMerge: Option[St
    val inserted =  acc(listCommitted,0)
     val numberOfChanges = listCommitted.length
     val resToPrint = numberOfChanges match {
-      case  1 =>"["+Branch_cmd.getCurrentBranch+" "+idCommit.substring(0,8)+"] "+message+s"\n  ${numberOfChanges} file changed, ${inserted} insertions(+)"
-      case _ =>"["+Branch_cmd.getCurrentBranch+" "+idCommit.substring(0,8)+"] "+message+s"\n  ${numberOfChanges} files changed, ${inserted} insertions(+)"
+      case  1 =>"["+HelperBranch.getCurrentBranch+" "+idCommit.substring(0,8)+"] "+message+s"\n  ${numberOfChanges} file changed, ${inserted} insertions(+)"
+      case _ =>"["+HelperBranch.getCurrentBranch+" "+idCommit.substring(0,8)+"] "+message+s"\n  ${numberOfChanges} files changed, ${inserted} insertions(+)"
     }
     println(resToPrint)
   }

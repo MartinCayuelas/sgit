@@ -3,7 +3,9 @@ package fr.cayuelas.managers
 
 import java.io.{BufferedWriter, File, FileWriter}
 
-import fr.cayuelas.commands.Branch_cmd
+import fr.cayuelas.helpers.HelperBranch
+
+import scala.annotation.tailrec
 
 object IOManager {
 
@@ -68,8 +70,8 @@ object IOManager {
   /*
   BRANCH
    */
-  def printCurrentBranch(): Unit = println(Console.GREEN+"("+Branch_cmd.getCurrentBranch+")")
-  def printFatalError(): Unit = println(s"fatal: your current '${Branch_cmd.getCurrentBranch}' branch does not yet contain any commit")
+  def printCurrentBranch(): Unit = println(Console.GREEN+"("+HelperBranch.getCurrentBranch+")")
+  def printFatalError(): Unit = println(s"fatal: your current '${HelperBranch.getCurrentBranch}' branch does not yet contain any commit")
   /*
   TAG
    */
@@ -84,6 +86,20 @@ COMMIT
    */
   def printDiffForFile(path: String, sha1: String): Unit = {
     println(s"diff --sgit a/${path} b/${path}\nindex ${sha1.substring(0, 7)}..${sha1.substring(sha1.length - 7, sha1.length)}\n--- a/${path}\n+++ b/${path}\n")
+  }
+  /**
+   * Prints the différence with the deltas given
+   * In green if content is added else in red
+   *
+   * @param deltas : List containing the différences
+   */
+  @tailrec
+  def printDiff(deltas: List[String]): Unit = {
+    if (deltas.nonEmpty) {
+      if (deltas.head.startsWith("+")) println(Console.GREEN + deltas.head + Console.RESET)
+      else println(Console.RED + deltas.head + Console.RESET)
+      printDiff(deltas.tail)
+    }
   }
 
 }

@@ -1,6 +1,6 @@
 package fr.cayuelas.commands
 
-import fr.cayuelas.helpers.{HelperBlob, HelperPaths}
+import fr.cayuelas.helpers.{HelperBlob, HelperBranch, HelperPaths}
 import fr.cayuelas.managers.{FilesManager, StageManager}
 object Status_cmd {
 
@@ -26,7 +26,7 @@ object Status_cmd {
    */
 
   def printChangesThatWillBeValidated(): Unit = {
-    println(s"On the ${Branch_cmd.getCurrentBranch} branch")
+    println(s"On the ${HelperBranch.getCurrentBranch} branch")
     println("Changes that will be validated : \n")
     getChangesThatWillBeValidated.map(elem => println(s"   ${Console.GREEN}"+elem+Console.RESET))
     println

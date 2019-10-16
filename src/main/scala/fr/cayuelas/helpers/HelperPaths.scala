@@ -53,6 +53,11 @@ object HelperPaths {
   def headFile: String = sgitPath + SgitRepositoryName + File.separator + "HEAD"
 
 
+  /**
+   *
+   * @param sha1
+   * @return
+   */
   def getFolderAndFileWithSha1(sha1: String): (String,String)= {
     val folder = sha1.substring(0,2)
     val file = sha1.substring(2,sha1.length)
