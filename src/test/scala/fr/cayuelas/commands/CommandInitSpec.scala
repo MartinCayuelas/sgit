@@ -49,7 +49,7 @@ class CommandInitSpec extends FlatSpec with BeforeAndAfterEach {
   }
 
   it should "check if current directory is already initialized with .sgit" in {
-    assert(Init_cmd.isInSgitRepository(System.getProperty("user.dir")))
+    assert(Init_cmd.isInSgtRepository(System.getProperty("user.dir")))
   }
 
 }

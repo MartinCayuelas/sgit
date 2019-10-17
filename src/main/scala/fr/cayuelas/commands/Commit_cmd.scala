@@ -3,7 +3,7 @@ package fr.cayuelas.commands
 
 import fr.cayuelas.helpers.HelperCommit
 import fr.cayuelas.managers.{IOManager, StageManager}
-import fr.cayuelas.objects.{Commit, Tree, Wrapper}
+import fr.cayuelas.objects.{Tree, Wrapper}
 
 
 object Commit_cmd {
@@ -28,8 +28,8 @@ object Commit_cmd {
       }
       //Creation and process about a Commit object (class)
       args match {
-        case Array(_,"-m",_*) => Commit.commit(hashFinalGhostTree, args.filter(_ !="commit").filter(_ !="-m").mkString)
-        case _ => Commit.commit(hashFinalGhostTree,"NoMessageForThisCommit")
+        case Array(_,"-m",_*) => HelperCommit.commit(hashFinalGhostTree, args.filter(_ !="commit").filter(_ !="-m").mkString)
+        case _ => HelperCommit.commit(hashFinalGhostTree,"NoMessageForThisCommit")
       }
     }
   }

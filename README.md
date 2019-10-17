@@ -29,8 +29,8 @@ It's a simple implementation of Git in Scala. This project was realized in 2 and
 -   sgit log -p  ✅
     Show changes overtime
     
--   sgit log --stat  ⏳
-    Show stats about changes overtime  
+-   sgit log --stat ✅
+   Show stats about changes overtime  
       
     
 ## Branches and Tags

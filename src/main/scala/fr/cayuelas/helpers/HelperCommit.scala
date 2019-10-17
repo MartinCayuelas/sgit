@@ -2,8 +2,9 @@ package fr.cayuelas.helpers
 
 import java.io.File
 
-import fr.cayuelas.managers.{IOManager, StageManager}
-import fr.cayuelas.objects.{Tree, Wrapper}
+import fr.cayuelas.commands.Diff_cmd
+import fr.cayuelas.managers.{FilesManager, IOManager, LogsManager, StageManager}
+import fr.cayuelas.objects.{Commit, Tree, Wrapper}
 
 import scala.annotation.tailrec
 
@@ -12,6 +13,24 @@ object HelperCommit {
   def currentRefs : String = HelperPaths.branchesPath + File.separator + HelperBranch.getCurrentBranch
   def commitsPath: String = HelperPaths.objectsPath+File.separator+"commits"
   def treesPath: String = HelperPaths.objectsPath+File.separator+"trees"
+
+
+
+  def commit(hashTreeFinal: String, messageCommit: String): Unit = {
+    val commit = new Commit()
+    val lastCommit =  HelperCommit.getLastCommitInRefs()
+    val commitCopy = commit.copy(parent = lastCommit,tree = hashTreeFinal,idCommit = HelperCommit.createIdCommit(commit),message=messageCommit)
+    HelperCommit.saveCommitFile(commitCopy)
+
+    if(!HelperCommit.isFirstCommit) HelperCommit.printResultCommit(lastCommit,commitCopy)
+    else HelperCommit.printResultFirstCommit(commitCopy)
+    HelperCommit.setCommitInRefs(commitCopy.idCommit)
+    StageManager.clearStage(StageManager.stageToCommitPath)
+    StageManager.clearStage(StageManager.stageValidatedPath)
+
+    IOManager.writeInFile(LogsManager.getCurrentPathLogs,HelperCommit.getCommitContentForLog(commitCopy),append = true)//WriteInLogs
+  }
+
   /*
   PART CREATION OF TREES
    */
@@ -98,8 +117,74 @@ object HelperCommit {
    */
 
   //get in refs/heads/branch
-  def get_last_commitInRefs(): String = {
+  def getLastCommitInRefs(): String = {
     IOManager.readInFile(currentRefs)
+  }
+
+  //Set in refs/heads/branch
+  def setCommitInRefs(idCommit: String): Unit = {
+    IOManager.writeInFile(currentRefs,idCommit,append = false) //WriteInRefs
+  }
+  def getCommitContentInFileObject(commit : Commit): List[String] = {
+    List(s"Tree ${commit.tree}\n",s"author ${commit.author} -- ${commit.dateCommit}\n")
+  }
+  //Set in objects/objects/commits
+  def saveCommitFile(commit: Commit): Unit = {
+    val path = HelperPaths.objectsPath + File.separator + "commits"
+    val folder = commit.idCommit.substring(0,2)
+    val nameFile = commit.idCommit.substring(2,commit.idCommit.length)
+    FilesManager.createNewFolder(path + File.separator +  folder)
+    FilesManager.createNewFile(path + File.separator +  folder + File.separator + nameFile)
+
+    getCommitContentInFileObject(commit).map(line => IOManager.writeInFile(path + File.separator +  folder + File.separator + nameFile,line,true)) //WriteInCommitFile
+  }
+
+
+
+  def printResultCommit(lastCommit: String, commit: Commit): Unit = {
+
+    val (inserted,deleted) = Diff_cmd.diffWhenCommitting(lastCommit)
+    val numberOfChanges = IOManager.readInFileAsLine(StageManager.stageToCommitPath).length
+    val resToPrint = numberOfChanges match {
+      case  1 =>"["+HelperBranch.getCurrentBranch+" "+commit.idCommit.substring(0,8)+"] "+commit.message+s"\n  ${numberOfChanges} file changed, ${inserted} insertions(+), ${deleted} deletions(-)"
+      case _ =>"["+HelperBranch.getCurrentBranch+" "+commit.idCommit.substring(0,8)+"] "+commit.message+s"\n  ${numberOfChanges} files changed, ${inserted} insertions(+), ${deleted} deletions(-)"
+    }
+    println(resToPrint)
+  }
+
+  def printResultFirstCommit(commit: Commit): Unit = {
+    val listCommitted = IOManager.readInFileAsLine(StageManager.stageToCommitPath)
+    @tailrec
+    def acc(listCommitted: List[String], accumulator: Int): Int ={
+      if (listCommitted.isEmpty) accumulator
+      else {
+        val path = HelperPaths.sgitPath+listCommitted.head.split(" ")(2)
+        val lines = IOManager.readInFileAsLine(path).length
+        acc(listCommitted.tail,(lines+accumulator))
+      }
+    }
+    val inserted =  acc(listCommitted,0)
+    val numberOfChanges = listCommitted.length
+
+    val resToPrint = numberOfChanges match {
+      case  1 =>"["+HelperBranch.getCurrentBranch+" "+commit.idCommit.substring(0,8)+"] "+commit.message+s"\n  ${numberOfChanges} file changed, ${inserted} insertions(+)"
+      case _ =>"["+HelperBranch.getCurrentBranch+" "+commit.idCommit.substring(0,8)+"] "+commit.message+s"\n  ${numberOfChanges} files changed, ${inserted} insertions(+)"
+    }
+    println(resToPrint)
+  }
+
+
+  def getCommitContent(commit: Commit):String = {
+    s"Tree ${commit.tree} author ${commit.author} -- ${commit.dateCommit}"
+  }
+  def getCommitContentForLog(commit: Commit): String = {
+    if (commit.parent.length >0)  s"${commit.parent} ${commit.idCommit} ${commit.author} ${commit.dateCommit} ${commit.message}\n"
+    else s"0000000000000000000000000000000000000000 ${commit.idCommit} ${commit.author} ${commit.dateCommit} ${commit.message}\n"
+  }
+
+
+  def createIdCommit(commit: Commit): String = {
+    HelperSha1.convertToSha1(HelperCommit.getCommitContent(commit))
   }
 
   def isFirstCommit: Boolean = {
@@ -191,6 +276,14 @@ object HelperCommit {
     }
   }
 
+
+  //TODO
+ /* def getCommmitInLogs(sha1: String, branch: String): List[String] = {
+    val logs = LogsManager.getLogsForBranch(HelperPaths.branchesPath+File.separator+branch)
+   // val log : String = logs.filter(l => l.split(" ")(1)==sha1).take(0)
+  //  log.split(" ").toList
+
+  }*/
 
 
 }

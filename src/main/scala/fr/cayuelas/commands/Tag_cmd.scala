@@ -26,7 +26,7 @@ object Tag_cmd {
     val path = HelperPaths.tagsPath + File.separator + nameTag
     if(Files.notExists(Paths.get(path))){
       FilesManager.createNewFile(path)
-      IOManager.writeInFile(path,HelperCommit.get_last_commitInRefs(),false)
+      IOManager.writeInFile(path,HelperCommit.getLastCommitInRefs(),false)
     } else IOManager.printFatalCreation("tag",nameTag)
   }
 

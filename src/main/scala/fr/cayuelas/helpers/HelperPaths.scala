@@ -7,7 +7,7 @@ import scala.annotation.tailrec
 object HelperPaths {
 
 
-  def SgitRepositoryName: String = ".sgit"
+  def sgitRepositoryName: String = ".sgit"
   /**
    * Returns the path of the sgit repository if it exists else returns an empty String
    */
@@ -29,7 +29,7 @@ object HelperPaths {
 
     if (directory == null || !directory.isDirectory) None
     else {
-      if (new File(directory.getAbsolutePath + File.separator + SgitRepositoryName).exists()) Some(directory.getAbsolutePath)
+      if (new File(directory.getAbsolutePath + File.separator + sgitRepositoryName).exists()) Some(directory.getAbsolutePath)
       else getSgitPath(directory.getParentFile)
     }
 
@@ -43,14 +43,14 @@ object HelperPaths {
   def getRelativePathOfFile(absoluteFilePath: String): String = absoluteFilePath.toSeq.diff(sgitPath.toSeq).unwrap
 
   //Directories absolute paths
-  def objectsPath: String = sgitPath + SgitRepositoryName + File.separator + "objects"
-  def tagsPath: String = sgitPath + SgitRepositoryName + File.separator + "refs" + File.separator + "tags"
-  def branchesPath: String = sgitPath + SgitRepositoryName + File.separator + "refs" + File.separator + "heads"
-  def logsPath: String = sgitPath + SgitRepositoryName + File.separator + "logs"
-  def stagePath: String = sgitPath + SgitRepositoryName + File.separator + "stages"
+  def objectsPath: String = sgitPath + sgitRepositoryName + File.separator + "objects"
+  def tagsPath: String = sgitPath + sgitRepositoryName + File.separator + "refs" + File.separator + "tags"
+  def branchesPath: String = sgitPath + sgitRepositoryName + File.separator + "refs" + File.separator + "heads"
+  def logsPath: String = sgitPath + sgitRepositoryName + File.separator + "logs"
+  def stagePath: String = sgitPath + sgitRepositoryName + File.separator + "stages"
 
   //files absolute path
-  def headFile: String = sgitPath + SgitRepositoryName + File.separator + "HEAD"
+  def headFile: String = sgitPath + sgitRepositoryName + File.separator + "HEAD"
 
 
   /**

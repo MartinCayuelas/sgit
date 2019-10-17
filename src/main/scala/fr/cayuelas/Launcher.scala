@@ -16,35 +16,37 @@ object Launcher extends App {
   dispatcher(args)
 
   def dispatcher(args: Array[String]): Unit =  {
-    val isInSgitRepository: Boolean = Init_cmd.isInSgitRepository(System.getProperty("user.dir"))
+    val isInSgitRepository: Boolean = Init_cmd.isInSgtRepository(System.getProperty("user.dir"))
 
     args match {
       //Init
       case Array("init", _) => IOManager.noArgumentsExpected()
       case Array("init") => init(System.getProperty("user.dir"))
+
+      case Array(_*) if (!isInSgitRepository) => IOManager.notSgitReposiroty()
       //ADD
-      case Array("add", _*) => if (isInSgitRepository) add(args) else IOManager.notSgitReposiroty()
+      case Array("add", _*) => add(args)
         //Status
       case Array("status", _) => IOManager.noArgumentsExpected()
-      case Array("status") => if (isInSgitRepository) status() else IOManager.notSgitReposiroty()
+      case Array("status") => status()
       //Diff
       case Array("diff", _) => IOManager.noArgumentsExpected()
-      case Array("diff") => if (isInSgitRepository) diff() else IOManager.notSgitReposiroty()
+      case Array("diff") =>  diff()
       //Commit
-      case Array("commit", _*) => if (isInSgitRepository) commit(args) else IOManager.notSgitReposiroty()
-      case Array("commit") => if (isInSgitRepository) commit(args) else IOManager.notSgitReposiroty()
+      case Array("commit", _*) => commit(args)
+      case Array("commit") => commit(args)
       //Log
-      case Array("log", _*) => if (isInSgitRepository) log(args) else IOManager.notSgitReposiroty()
+      case Array("log", _*) => log(args)
       //Branch
-      case Array("branch", _*)  => if (isInSgitRepository) branch(args) else IOManager.notSgitReposiroty()
+      case Array("branch", _*)  =>  branch(args)
       //Checkout
-      case Array("checkout", _*)  => if (isInSgitRepository) checkout(args)else IOManager.notSgitReposiroty()
+      case Array("checkout", _*)  => checkout(args)
       //tag
-      case Array("tag", _*)  => if (isInSgitRepository) tag(args) else IOManager.notSgitReposiroty()
+      case Array("tag", _*)  => tag(args)
       //Merge
-      case Array("merge", _*) => if (isInSgitRepository) merge(args) else IOManager.notSgitReposiroty()
+      case Array("merge", _*) => merge(args)
       //Rebase
-      case Array("rebase", _*) => if (isInSgitRepository) rebase(args) else IOManager.notSgitReposiroty()
+      case Array("rebase", _*) => rebase(args)
       //Default Case
       case _ => IOManager.notExistingCommand()
     }

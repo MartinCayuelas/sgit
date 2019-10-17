@@ -12,8 +12,8 @@ object Log_cmd {
     if (args.length == 1) LogsManager.displayLogs()
     else if(args.length == 2) {
       args match {
-        case Array(_,"-p") => LogsManager.displayLogOptionP()
-        case Array(_,"--stat") => LogsManager.displayLogOptionStat()
+        case Array(_,"-p") => LogsManager.displayLogsOption(false)
+        case Array(_,"--stat") => LogsManager.displayLogsOption(true)
         case _ => IOManager.argumentNotSupported()
       }
     }

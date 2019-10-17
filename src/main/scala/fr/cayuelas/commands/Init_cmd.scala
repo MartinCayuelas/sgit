@@ -15,14 +15,14 @@ object Init_cmd {
 INIT -----------
  */
   def init(strPath : String): Unit = {
-    initSgitRepository(strPath)
+    initRepository(strPath)
   }
   /*
   --------------
    */
 
   //base path
-  def SgitRepositoryName: String = ".sgit"
+  def sgitRepositoryName: String = ".sgit"
 
   /**
   * initSgitRepository:
@@ -49,14 +49,14 @@ INIT -----------
    *                 └── master
   */
 
-  def initSgitRepository(path: String): Unit = {
+  def initRepository(path: String): Unit = {
     val listFolders = List("objects", s"objects${File.separator}blobs", s"objects${File.separator}trees", s"objects${File.separator}commits", "refs", s"refs${File.separator}heads", s"refs${File.separator}tags", "logs", "stages")
     val listFiles:List[String] = List("HEAD")
     val path = Paths.get(System.getProperty("user.dir")).toString
-    val sgitPath = path + File.separator + SgitRepositoryName
+    val sgitPath = path + File.separator + sgitRepositoryName
 
-    if (!isInSgitRepository(path)) {
-      FilesManager.createNewFolder(SgitRepositoryName) //Creates .sgit
+    if (!isInSgtRepository(path)) {
+      FilesManager.createNewFolder(sgitRepositoryName) //Creates .sgit
       listFolders.map(folder => FilesManager.createNewFolder(sgitPath + File.separator + folder))
       listFiles.map(file => FilesManager.createNewFile(sgitPath + File.separator + file))
 
@@ -79,15 +79,15 @@ INIT -----------
    * @return true if a .sgit folder already exists in a parent folder else false
    *
    */
-  def isInSgitRepository(path: String): Boolean = {
+  def isInSgtRepository(path: String): Boolean = {
     @tailrec
-    def searchForSgitRepo(currentPath: String): Boolean = {
+    def searchForSgtRepo(currentPath: String): Boolean = {
       val currentSgitFile = new File(s"${currentPath}${File.separator}.sgit")
       val currentFile = new File(currentPath)
-      if (currentFile.getParent != null) currentSgitFile.exists() || searchForSgitRepo(currentFile.getParent)
+      if (currentFile.getParent != null) currentSgitFile.exists() || searchForSgtRepo(currentFile.getParent)
       else currentSgitFile.exists()
     }
-    searchForSgitRepo(path)
+    searchForSgtRepo(path)
   }
 
 

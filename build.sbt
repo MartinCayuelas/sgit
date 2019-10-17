@@ -17,4 +17,13 @@ assemblyMergeStrategy in assembly := {
   case PathList("META-INF", xs @ _*) => MergeStrategy.discard
   case x => MergeStrategy.first
 }
+
+import sbtsonar.SonarPlugin.autoImport.sonarProperties
+
+sonarProperties ++= Map(
+  "sonar.host.url" -> "http://localhost:9000",
+  "sonar.sources" -> "src/main/scala",
+  "sonar.tests" -> "src/test/scala"
+)
+
 parallelExecution in Test := false
