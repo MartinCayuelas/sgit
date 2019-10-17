@@ -44,8 +44,7 @@ object HelperDiff {
     if (listOfHashesAndPaths.isEmpty) accumulator
     else {
       val contentBlob = HelperBlob.readContentInBlob(listOfHashesAndPaths.head._1)
-      val contentOfFile = IOManager.readInFileAsLine(listOfHashesAndPaths.head._2)
-
+      val contentOfFile = IOManager.readInFileAsLine(HelperPaths.sgitPath+listOfHashesAndPaths.head._2)
       if (contentBlob.isEmpty && contentOfFile.nonEmpty) {
         val newAccumulator = ((accumulator._1+contentOfFile.length), accumulator._2 )
         accumulateCalculation(listOfHashesAndPaths.tail, newAccumulator)

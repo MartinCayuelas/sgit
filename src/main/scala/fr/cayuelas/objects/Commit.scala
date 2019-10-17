@@ -66,7 +66,8 @@ case class Commit(idCommit: String="", parent: String="", parentMerge: Option[St
     def acc(listCommitted: List[String], accumulator: Int): Int ={
       if (listCommitted.isEmpty) accumulator
       else {
-        val lines = IOManager.readInFileAsLine(listCommitted.head.split(" ")(2)).length
+        val path = HelperPaths.sgitPath+listCommitted.head.split(" ")(2)
+        val lines = IOManager.readInFileAsLine(path).length
         acc(listCommitted.tail,(lines+accumulator))
       }
     }
