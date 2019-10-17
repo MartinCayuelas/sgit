@@ -9,11 +9,11 @@ It's a simple implementation of Git in Scala. This project was realized in 2 and
 
 ## Create:
     
--   sgit init ✅
+-   sgit init ✅ 
     
 ## Local Changes:
     
--   sgit status ✅
+-   sgit status ✅ 
    
 -   sgit diff ✅
     
