@@ -197,6 +197,7 @@ object HelperDiff {
    * @param listCommit
    * @param listParent
    * @param logStat
+   * @param res
    * @return
    */
   @tailrec

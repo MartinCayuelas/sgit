@@ -1,8 +1,8 @@
 package fr.cayuelas.commands
 import java.io.File
 
-import fr.cayuelas.helpers.HelperPaths
-import fr.cayuelas.managers.{FilesManager, IOManager, StageManager}
+import fr.cayuelas.helpers.{HelperBranch, HelperCommit, HelperPaths}
+import fr.cayuelas.managers.{FilesManager, IOManager, LogsManager, StageManager}
 import org.scalatest.{BeforeAndAfterEach, FlatSpec}
 
 
@@ -64,6 +64,24 @@ class CommandCommitSpec  extends FlatSpec with BeforeAndAfterEach {
     assert(contentStage.nonEmpty)
   }
 
+  "the stage" should "be different after 2 commits" in {
+    //Given
+    val sgitPath = HelperPaths.sgitPath
+    val helloFilePath = sgitPath + File.separator + "testFolder" + File.separator + "hello"
+    val worldFilePath= sgitPath + File.separator + "testFolder" + File.separator + "world"
+    Add_cmd.add(Array("add",helloFilePath))
+
+    Commit_cmd.commit(Array("commit"))
+    val stage =  IOManager.readInFileAsLine(StageManager.currentStagePath)
+
+    Add_cmd.add(Array("add",worldFilePath))
+
+    Commit_cmd.commit(Array("commit"))
+    val stage2 =  IOManager.readInFileAsLine(StageManager.currentStagePath)
+
+    assert(stage != stage2)
+  }
+
   "the objects/commits repository" should "no be empty after a commit" in {
     //Given
     val sgitPath = HelperPaths.sgitPath
@@ -112,6 +130,22 @@ class CommandCommitSpec  extends FlatSpec with BeforeAndAfterEach {
     //Then
     assert(contentStageCommit.isEmpty)
   }
+
+  it should "be a log created with the good hash" in {
+    //Given
+    val sgitPath = HelperPaths.sgitPath
+    val helloFilePath = sgitPath + File.separator + "testFolder" + File.separator + "hello"
+
+    Add_cmd.add(Array("add",helloFilePath))
+    Commit_cmd.commit(Array("commit","-m","commit1"))
+    val commitId = HelperCommit.getLastCommitInRefs()
+    val logs = LogsManager.getLogsForBranch(HelperBranch.getCurrentBranch)
+    val hashCommit = logs(0).split(" ")(1)
+    //Then
+    assert(logs.length == 1)
+    assert(commitId == hashCommit)
+  }
+
 
 
 }
