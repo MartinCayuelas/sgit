@@ -27,7 +27,7 @@ object HelperDiff {
   def calculateNewsLinesWhenFileHasNeverBeenCommitted(listPathsNewFiles: List[String], acc: Int): Int = {
     if(listPathsNewFiles.isEmpty) acc
     else{
-      val linesCounted = IOManager.readInFileAsLine(listPathsNewFiles.head).length
+      val linesCounted = IOManager.readInFileAsLine(HelperPaths.sgitPath+listPathsNewFiles.head).length
       val newAcc = acc+linesCounted
       newAcc
     }
