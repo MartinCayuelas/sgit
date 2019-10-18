@@ -2,11 +2,13 @@ package fr.cayuelas.commands
 
 import java.io.File
 
-import fr.cayuelas.helpers.{HelperBranch, HelperCommit, HelperPaths}
-import fr.cayuelas.managers.{FilesManager, IOManager}
+import fr.cayuelas.helpers.{HelperBlob, HelperCommit, HelperDiff, HelperPaths}
+import fr.cayuelas.managers.LogsManager.retrieveChanges
+import fr.cayuelas.managers.{FilesManager, IOManager, LogsManager}
 import org.scalatest.{BeforeAndAfterEach, FlatSpec}
 
-class CommandBranchSpec   extends FlatSpec with BeforeAndAfterEach {
+
+class CommandLogSpec  extends FlatSpec with BeforeAndAfterEach {
 
   //init an .sgit repo and testFolder repo before each test
   override def beforeEach(): Unit = {
@@ -39,7 +41,7 @@ class CommandBranchSpec   extends FlatSpec with BeforeAndAfterEach {
     file.delete()
   }
 
-  "The branch command" should "create a file in .sgit/refs/heads" in {
+  "the log command" should "display all the logs" in {
     //Given
     val sgitPath = HelperPaths.sgitPath
     val helloFilePath = sgitPath + File.separator + "testFolder" + File.separator + "hello"
@@ -47,46 +49,47 @@ class CommandBranchSpec   extends FlatSpec with BeforeAndAfterEach {
     Add_cmd.add(Array("add",helloFilePath))
 
     Commit_cmd.commit(Array("commit"))
-    HelperBranch.createBranch("testBranch")
-    assert(new File(HelperPaths.branchesPath+File.separator+"testBranch").exists())
-    assert(FilesManager.getListOfFiles(HelperPaths.branchesPath).length == 2)
+
+    val numberOfLogs = IOManager.readInFileAsLine(HelperPaths.logsPath+File.separator+"master")
+    assert(numberOfLogs.length == 1)
+
   }
 
-  it should "be the right content in the file created" in {
+  it should "be the right number of files changed, total insertions and total deletions diplayed for a commit when log --stat" in {
     //Given
     val sgitPath = HelperPaths.sgitPath
     val helloFilePath = sgitPath + File.separator + "testFolder" + File.separator + "hello"
 
     Add_cmd.add(Array("add",helloFilePath))
-
     Commit_cmd.commit(Array("commit"))
-    HelperBranch.createBranch("testBranch")
-    assert(new File(HelperPaths.branchesPath+File.separator+"testBranch").exists())
-    val contentNewBranchFile = IOManager.readInFile(HelperPaths.branchesPath+File.separator+"testBranch")
-    assert(contentNewBranchFile == HelperCommit.getLastCommitInRefs())
+
+    val logs = IOManager.readInFileAsLine(HelperPaths.logsPath+File.separator+"master")
+
+    val (parentCommit,currentCommit): (String,String) =  (logs.head.split(" ")(0),logs.head.split(" ")(1))
+    val (inserted,deleted)  = HelperDiff.diffBetweenTwoCommits(currentCommit,parentCommit,true)
+    val filesChanged = retrieveChanges(currentCommit,parentCommit)
+
+    assert(filesChanged == 1)
+    assert(inserted == 1)
+    assert(deleted == 0)
   }
 
-  it should "not create a new branch if already exists" in {
+
+  it should "be the right number  of insertions and  deletions diplayed for a file when log --stat" in {
     //Given
     val sgitPath = HelperPaths.sgitPath
     val helloFilePath = sgitPath + File.separator + "testFolder" + File.separator + "hello"
-    //When
+
     Add_cmd.add(Array("add",helloFilePath))
     Commit_cmd.commit(Array("commit"))
-    HelperBranch.createBranch("master")
-    //Then
-    assert(new File(HelperPaths.branchesPath+File.separator+"master").exists())
-    assert(FilesManager.getListOfFiles(HelperPaths.branchesPath).length == 1)
+
+    val listBlobCommit: List[(String,String)] = HelperCommit.getAllBlobsFromCommit(HelperCommit.getLastCommitInRefs())
+    val contentBlobCurrent = HelperBlob.readContentInBlob(listBlobCommit.head._1)
+    val resFunc = LogsManager.displayStatsLog(List(), contentBlobCurrent, listBlobCommit.head._2, listBlobCommit.head._1)
+    val resInsertedDeleted = Some((resFunc._1,resFunc._2))
+
+    assert(resInsertedDeleted.get._1 == 1)
+    assert(resInsertedDeleted.get._2 == 0)
   }
-
-  it should "not create a new branch if there is no commit" in {
-    HelperBranch.createBranch("testBranch")
-    assert(!new File(HelperPaths.branchesPath+File.separator+"testBranch").exists())
-
-  }
-
-
-
-
 
 }

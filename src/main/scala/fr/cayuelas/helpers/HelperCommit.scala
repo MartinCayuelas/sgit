@@ -22,7 +22,7 @@ object HelperCommit {
     val commitCopy = commit.copy(parent = lastCommit,tree = hashTreeFinal,idCommit = HelperCommit.createIdCommit(commit),message=messageCommit)
     HelperCommit.saveCommitFile(commitCopy)
 
-    if(!HelperCommit.isFirstCommit) HelperCommit.printResultCommit(lastCommit,commitCopy)
+    if(HelperCommit.existsCommit) HelperCommit.printResultCommit(lastCommit,commitCopy)
     else HelperCommit.printResultFirstCommit(commitCopy)
     HelperCommit.setCommitInRefs(commitCopy.idCommit)
     StageManager.clearStage(StageManager.stageToCommitPath)
@@ -187,9 +187,12 @@ object HelperCommit {
     HelperSha1.convertToSha1(HelperCommit.getCommitContent(commit))
   }
 
-  def isFirstCommit: Boolean = {
-    IOManager.readInFile(currentRefs).length == 0
+
+
+  def existsCommit: Boolean= {
+    IOManager.readInFile(currentRefs).length > 0
   }
+
   /**
    *
    * @param hashCommit : string corresponding to the commit we want to retrieve

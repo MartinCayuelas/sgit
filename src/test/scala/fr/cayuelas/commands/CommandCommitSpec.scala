@@ -146,6 +146,20 @@ class CommandCommitSpec  extends FlatSpec with BeforeAndAfterEach {
     assert(commitId == hashCommit)
   }
 
+  it should "be the good number of files changed when committing" in {
+    //Given
+    val sgitPath = HelperPaths.sgitPath
+    val helloFilePath = sgitPath + File.separator + "testFolder" + File.separator + "hello"
+    val worldFilePath = sgitPath + File.separator + "testFolder" + File.separator + "world"
+    Add_cmd.add(Array("add",helloFilePath))
+    val numberOfChanges = IOManager.readInFileAsLine(StageManager.stageToCommitPath).length
+    Commit_cmd.commit(Array("commit","-m","commit1"))
+    assert(numberOfChanges == 1)
 
+    Add_cmd.add(Array("add",helloFilePath,worldFilePath))
+    val numberOfChanges2 = IOManager.readInFileAsLine(StageManager.stageToCommitPath).length
+    Commit_cmd.commit(Array("commit","-m","commit1"))
+    assert(numberOfChanges2 == 1)
 
+  }
 }

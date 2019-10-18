@@ -13,13 +13,15 @@ object HelperBranch {
    *
    */
   def createBranch(nameBranch: String): Unit = {
+    if (HelperCommit.existsCommit){
+      val path = HelperPaths.branchesPath + File.separator + nameBranch
+      if(Files.notExists(Paths.get(path))){
+        FilesManager.createNewFile(path)
+        IOManager.writeInFile(path,HelperCommit.getLastCommitInRefs(),append = false)
+        createStageForBranch(nameBranch) //Creates a new file in /objects/stage/branchName>
+      } else IOManager.printFatalCreation("branch",nameBranch)
+    }else IOManager.printErrorNoCommitExisting()
 
-    val path = HelperPaths.branchesPath + File.separator + nameBranch
-    if(Files.notExists(Paths.get(path))){
-      FilesManager.createNewFile(path)
-      IOManager.writeInFile(path,HelperCommit.getLastCommitInRefs(),append = false)
-      createStageForBranch(nameBranch) //Creates a new file in /objects/stage/branchName>
-    } else IOManager.printFatalCreation("branch",nameBranch)
   }
 
   /**

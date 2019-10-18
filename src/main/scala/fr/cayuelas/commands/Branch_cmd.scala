@@ -1,7 +1,7 @@
 package fr.cayuelas.commands
 
 
-import fr.cayuelas.helpers.HelperBranch
+import fr.cayuelas.helpers.{HelperBranch, HelperTag}
 import fr.cayuelas.managers.IOManager
 
 object Branch_cmd {
@@ -19,7 +19,7 @@ object Branch_cmd {
     if ((args.length == 2) && args(1).equals("-av")) {
       HelperBranch.displayAllBranches()
       println("   ------------")
-      Tag_cmd.displayAllTags()
+      HelperTag.displayAllTags()
     }
     else if (args.length == 2) HelperBranch.createBranch(args(1))
     else IOManager.numberOfArgumentNotSupported(args(0))

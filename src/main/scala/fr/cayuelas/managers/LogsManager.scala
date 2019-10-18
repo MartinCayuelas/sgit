@@ -112,8 +112,6 @@ object LogsManager {
 
 
 
-
-
   def retrieveChanges(lastCommit : String, parentLastCommit: String): Int = {
     if(parentLastCommit.equals("0000000000000000000000000000000000000000")){
       HelperCommit.getAllBlobsFromCommit(lastCommit).length

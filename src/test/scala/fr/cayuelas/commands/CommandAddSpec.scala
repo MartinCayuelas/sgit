@@ -77,6 +77,19 @@ class CommandAddSpec  extends FlatSpec with BeforeAndAfterEach {
 
   }
 
+  it should "add multiple files in the objects/blobs directory if mutiples files are added at the same time" in {
+    //Given
+    val sgitPath = HelperPaths.sgitPath
+    val helloFilePath = sgitPath + File.separator + "testFolder" + File.separator + "hello"
+    val worldFilePath = sgitPath + File.separator + "testFolder" + File.separator + "world"
+    //When
+    Add_cmd.add(Array("add",helloFilePath,worldFilePath))
+
+    val numberOfBlobs = FilesManager.getListOfContentInDirectory(HelperPaths.objectsPath+File.separator+"blobs")
+    assert(numberOfBlobs.length == 2)
+  }
+
+
   it should "updates the stageCommit in there is modification" in {
     //Given
     val sgitPath = HelperPaths.sgitPath

@@ -80,6 +80,7 @@ object IOManager {
 COMMIT
  */
   def nothingToCommit(): Unit = println("Nothing to commit")
+  def printErrorNoCommitExisting(): Unit = println("There is no commit yet, you must commit something before")
 
   /*
   DIFF
