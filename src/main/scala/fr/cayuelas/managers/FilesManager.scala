@@ -35,6 +35,18 @@ object FilesManager {
   }
 
   /**
+   * Deletes a file given is name
+   * @param fileName : the name's file to delete
+   */
+  def deleteFile(fileName: String): Unit = {
+    val file = new File(fileName)
+    if (file.exists) {
+      file.delete()
+    }
+  }
+
+
+  /**
    * Method that creates a folder given a path (String)
    * @param pathNewFolder : the path of the new folder that will be created
    * @return true if it's created else false

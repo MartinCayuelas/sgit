@@ -9,6 +9,7 @@ import fr.cayuelas.commands.Init_cmd.init
 import fr.cayuelas.commands.Log_cmd.log
 import fr.cayuelas.commands.Status_cmd.status
 import fr.cayuelas.commands.Tag_cmd.tag
+import fr.cayuelas.commands.Checkout_cmd.checkout
 import fr.cayuelas.managers.IOManager
 
 object Launcher extends App {
@@ -50,15 +51,6 @@ object Launcher extends App {
       //Default Case
       case _ => IOManager.notExistingCommand()
     }
-  }
-
-
-
-
-
-  def checkout(args: Array[String]): Unit = {
-    if (args.length == 2) println(s"Tipping on the branch ${args(1)}")
-    else  IOManager.numberOfArgumentNotSupported(args(0))
   }
 
   def merge(args: Array[String]): Unit = {

@@ -3,7 +3,7 @@ package fr.cayuelas.helpers
 import java.io.File
 import java.nio.file.{Files, Paths}
 
-import fr.cayuelas.managers.{FilesManager, IOManager, StageManager}
+import fr.cayuelas.managers.{FilesManager, IOManager, LogsManager}
 
 object HelperBranch {
   /**
@@ -19,6 +19,7 @@ object HelperBranch {
         FilesManager.createNewFile(path)
         IOManager.writeInFile(path,HelperCommit.getLastCommitInRefs(),append = false)
         createStageForBranch(nameBranch) //Creates a new file in /objects/stage/branchName>
+        LogsManager.createLogFileForBranch(nameBranch)
       } else IOManager.printFatalCreation("branch",nameBranch)
     }else IOManager.printErrorNoCommitExisting()
 
@@ -29,8 +30,10 @@ object HelperBranch {
    * @param nameBranch: name of the new stage
    */
   def createStageForBranch(nameBranch: String): Unit = {
-    val path = Paths.get(StageManager.currentStagePath)
+    val path = Paths.get(HelperPaths.stagePath+File.separator+nameBranch)
     if(Files.notExists(path)) FilesManager.createNewFile(path.toString)
+    val stageMaster =IOManager.readInFileAsLine(HelperPaths.stagePath+File.separator+"master")
+    stageMaster.map(line =>  IOManager.writeInFile(HelperPaths.stagePath+File.separator+nameBranch,line+"\n",true))
   }
 
   /**
@@ -65,4 +68,14 @@ object HelperBranch {
       println(s"  ${fileToFormat.getName} (branch)")
     }
   }
+
+  def isABranch(nameBranch: String): Boolean = {
+    val branches = FilesManager.getListOfFiles(HelperPaths.branchesPath)
+    branches.exists(b => b.getName == nameBranch)
+  }
+
+  def setNewBranchInHEAD(nameBranch: String): Unit = {
+    IOManager.writeInFile(HelperPaths.headFile,s"ref: refs/heads/${nameBranch}",append = false)
+  }
+
 }

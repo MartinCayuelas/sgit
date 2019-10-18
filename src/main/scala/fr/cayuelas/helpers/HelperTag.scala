@@ -28,4 +28,9 @@ object HelperTag {
     listOfTags.map(b => println(s"  ${b.getName} (tag)"))
   }
 
+  def isATag(nameTag: String): Boolean = {
+    val tags = FilesManager.getListOfFiles(HelperPaths.tagsPath)
+    tags.exists(t => t.getName == nameTag)
+  }
+
 }

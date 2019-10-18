@@ -91,5 +91,5 @@ class CommandLogSpec  extends FlatSpec with BeforeAndAfterEach {
     assert(resInsertedDeleted.get._1 == 1)
     assert(resInsertedDeleted.get._2 == 0)
   }
-
+  
 }

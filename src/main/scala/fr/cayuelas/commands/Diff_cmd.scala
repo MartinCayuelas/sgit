@@ -2,6 +2,7 @@ package fr.cayuelas.commands
 
 import fr.cayuelas.helpers.{HelperBlob, HelperCommit, HelperDiff, HelperPaths}
 import fr.cayuelas.managers.{IOManager, StageManager}
+import fr.cayuelas.objects.Wrapper
 
 object Diff_cmd {
 
@@ -30,8 +31,8 @@ object Diff_cmd {
     val paths = stageSplited.map(x => x(2))
 
     val listZippedStageFiltered = hashes.zip(paths).map(x => x._2)
-    val listBlobLastCommit = HelperCommit.getAllBlobsFromCommit(lastCommit)
-    val listBlobLastCommitFiltered = listBlobLastCommit.map(x => x._2)
+    val listBlobLastCommit: List[Wrapper] = HelperCommit.getAllBlobsFromCommit(lastCommit).map(blob => Wrapper(blob._2,blob._1,"Blob",""))
+    val listBlobLastCommitFiltered = listBlobLastCommit.map(x => x.path)
 
     val listFilteredNewsFiles = listZippedStageFiltered.diff(listBlobLastCommitFiltered) //Files neverCommited
 

@@ -61,7 +61,7 @@ case class Tree( contentTree: List[Wrapper] = List.empty, id: String = "") {
     listA match {
       case None => accumulator
       case Some(s) => {
-        if (!listA.get.isEmpty) accumulateContentTree(Some(listA.get.tail), Some(listA.get.head::accumulator.get))
+        if (listA.get.nonEmpty) accumulateContentTree(Some(listA.get.tail), Some(listA.get.head::accumulator.get))
         else accumulator
       }
     }

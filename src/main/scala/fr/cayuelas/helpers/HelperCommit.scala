@@ -187,7 +187,10 @@ object HelperCommit {
     HelperSha1.convertToSha1(HelperCommit.getCommitContent(commit))
   }
 
-
+  def isACommit(commit: String): Boolean = {
+    val (folder, file) = HelperPaths.getFolderAndFileWithSha1(commit)
+    new File(HelperPaths.objectsPath+File.separator+"commits"+File.separator+folder++File.separator+file).exists()
+  }
 
   def existsCommit: Boolean= {
     IOManager.readInFile(currentRefs).length > 0
@@ -278,15 +281,4 @@ object HelperCommit {
       accumulate(newBlobs.tail,newBlobs.head::acc)
     }
   }
-
-
-  //TODO
- /* def getCommmitInLogs(sha1: String, branch: String): List[String] = {
-    val logs = LogsManager.getLogsForBranch(HelperPaths.branchesPath+File.separator+branch)
-   // val log : String = logs.filter(l => l.split(" ")(1)==sha1).take(0)
-  //  log.split(" ").toList
-
-  }*/
-
-
 }

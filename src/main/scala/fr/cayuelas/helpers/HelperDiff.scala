@@ -1,6 +1,7 @@
 package fr.cayuelas.helpers
 
 import fr.cayuelas.managers.{IOManager, LogsManager}
+import fr.cayuelas.objects.Wrapper
 
 import scala.annotation.tailrec
 
@@ -24,6 +25,7 @@ object HelperDiff {
    * @param acc
    * @return
    */
+  @tailrec
   def calculateNewsLinesWhenFileHasNeverBeenCommitted(listPathsNewFiles: List[String], acc: Int): Int = {
     if(listPathsNewFiles.isEmpty) acc
     else{
@@ -40,11 +42,11 @@ object HelperDiff {
    * @return
    */
   @tailrec
-  def accumulateCalculation(listOfHashesAndPaths: List[(String, String)], accumulator: (Int, Int)): (Int, Int) = {
+  def accumulateCalculation(listOfHashesAndPaths: List[Wrapper], accumulator: (Int, Int)): (Int, Int) = {
     if (listOfHashesAndPaths.isEmpty) accumulator
     else {
-      val contentBlob = HelperBlob.readContentInBlob(listOfHashesAndPaths.head._1)
-      val contentOfFile = IOManager.readInFileAsLine(HelperPaths.sgitPath+listOfHashesAndPaths.head._2)
+      val contentBlob = HelperBlob.readContentInBlob(listOfHashesAndPaths.head.hash)
+      val contentOfFile = IOManager.readInFileAsLine(HelperPaths.sgitPath+listOfHashesAndPaths.head.path)
       if (contentBlob.isEmpty && contentOfFile.nonEmpty) {
         val newAccumulator = ((accumulator._1+contentOfFile.length), accumulator._2 )
         accumulateCalculation(listOfHashesAndPaths.tail, newAccumulator)
@@ -54,8 +56,7 @@ object HelperDiff {
         accumulateCalculation(listOfHashesAndPaths.tail, newAccumulator)
       }
       else {
-        val matrix = createMatrix(contentBlob, contentOfFile, 0, 0, Map())
-        val deltas = getDeltas(contentBlob, contentOfFile, contentBlob.length - 1, contentOfFile.length - 1, matrix, List())
+        val deltas = getDeltas(contentBlob, contentOfFile, contentBlob.length - 1, contentOfFile.length - 1, createMatrix(contentBlob, contentOfFile, 0, 0, Map()), List())
         if (deltas.nonEmpty) {
           val (inserted, deleted) = calculateDeletionAndInsertion(deltas)
           val newAccumulator = (accumulator._1 + inserted, accumulator._2 + deleted)
@@ -67,8 +68,6 @@ object HelperDiff {
       }
     }
   }
-
-
 
   /**
    * Displays the différence between two files given in parameters
@@ -82,15 +81,14 @@ object HelperDiff {
 
     if (oldContent.isEmpty && newContent.nonEmpty) {
       IOManager.printDiffForFile(path,sha1)
-      IOManager.printDiff(newContent.map(e => "+ " + e))
+      IOManager.printDiff(newContent.map("+ "+ _))
     }
     else if (newContent.isEmpty && oldContent.nonEmpty) {
       IOManager.printDiffForFile(path,sha1)
-      IOManager.printDiff(oldContent.map(e => "- " + e))
+      IOManager.printDiff(oldContent.map("- " +_))
     }
     else {
-      val matrix = createMatrix(oldContent, newContent, 0, 0, Map())
-      val deltas = getDeltas(oldContent, newContent, oldContent.length - 1, newContent.length - 1, matrix, List())
+      val deltas = getDeltas(oldContent, newContent, oldContent.length - 1, newContent.length - 1, createMatrix(oldContent, newContent, 0, 0, Map()), List())
       if (deltas.nonEmpty) {
         IOManager.printDiffForFile(path,sha1)
         IOManager.printDiff(deltas)
@@ -179,9 +177,9 @@ object HelperDiff {
    * @param logStat
    */
   def diffBetweenTwoCommits(commit: String, parentCommit: String, logStat: Boolean): (Int,Int) ={
-    val listBlobCommit: List[(String,String)] = HelperCommit.getAllBlobsFromCommit(commit)
+    val listBlobCommit:  List[Wrapper] = HelperCommit.getAllBlobsFromCommit(commit).map(blob => Wrapper(blob._2,blob._1,"Blob",""))
     if(!parentCommit.equals("0000000000000000000000000000000000000000")){
-      val listBlobLParentCommit: List[(String,String)] = HelperCommit.getAllBlobsFromCommit(parentCommit)
+      val listBlobLParentCommit: List[Wrapper] = HelperCommit.getAllBlobsFromCommit(parentCommit).map(blob => Wrapper(blob._2,blob._1,"Blob",""))
       val res = recursiveDisplay(listBlobCommit,listBlobLParentCommit,logStat, None)
       val (inserted,deleted) = res._3.getOrElse(0,0)
       (inserted,deleted)
@@ -201,32 +199,32 @@ object HelperDiff {
    * @return
    */
   @tailrec
-  def recursiveDisplay(listBlobCommit:List[(String,String)], listBlobParent:List[(String,String)], logStat: Boolean, res: Option[(Int,Int)]): (List[(String,String)],List[(String,String)],Option[(Int,Int)]) = {
+  def recursiveDisplay(listBlobCommit: List[Wrapper], listBlobParent: List[Wrapper], logStat: Boolean, res: Option[(Int,Int)]): (List[(String,String)],List[(String,String)],Option[(Int,Int)]) = {
     val resOption= res.getOrElse(0,0)
     val ins = resOption._1
     val deleted = resOption._2
     if(listBlobParent.nonEmpty && listBlobCommit.nonEmpty){
-      val contentBlobParent = HelperBlob.readContentInBlob(listBlobParent.head._1)
-      val contentBlobCurrent = HelperBlob.readContentInBlob(listBlobCommit.head._1)
+      val contentBlobParent = HelperBlob.readContentInBlob(listBlobParent.head.hash)
+      val contentBlobCurrent = HelperBlob.readContentInBlob(listBlobCommit.head.hash)
       if(logStat) {
-        val resFunc = LogsManager.displayStatsLog(contentBlobParent, contentBlobCurrent, listBlobCommit.head._2, listBlobCommit.head._1)
+        val resFunc = LogsManager.displayStatsLog(contentBlobParent, contentBlobCurrent, listBlobCommit.head.path, listBlobCommit.head.hash)
         val resInsertedDeleted = Some((resFunc._1+ins,resFunc._2+deleted))
         recursiveDisplay(listBlobCommit.tail,listBlobParent.tail,logStat,resInsertedDeleted)
       }
       else{
-        HelperDiff.displayDifferenceBetweenTwoFiles(contentBlobParent, contentBlobCurrent, listBlobCommit.head._2, listBlobCommit.head._1)
+        HelperDiff.displayDifferenceBetweenTwoFiles(contentBlobParent, contentBlobCurrent, listBlobCommit.head.path, listBlobCommit.head.hash)
         recursiveDisplay(listBlobCommit.tail,listBlobParent.tail,logStat,None)
       }
     }else{
       if(listBlobCommit.nonEmpty){
-        val contentBlobCurrent = HelperBlob.readContentInBlob(listBlobCommit.head._1)
+        val contentBlobCurrent = HelperBlob.readContentInBlob(listBlobCommit.head.hash)
         if(logStat){
-          val resFunc = LogsManager.displayStatsLog(List(), contentBlobCurrent, listBlobCommit.head._2, listBlobCommit.head._1)
+          val resFunc = LogsManager.displayStatsLog(List(), contentBlobCurrent, listBlobCommit.head.path, listBlobCommit.head.hash)
           val resInsertedDeleted = Some((resFunc._1+ins,resFunc._2+deleted))
           recursiveDisplay(listBlobCommit.tail,List(),logStat,resInsertedDeleted)
         }
         else{
-          HelperDiff.displayDifferenceBetweenTwoFiles(List(), contentBlobCurrent, listBlobCommit.head._2, listBlobCommit.head._1)
+          HelperDiff.displayDifferenceBetweenTwoFiles(List(), contentBlobCurrent, listBlobCommit.head.path, listBlobCommit.head.hash)
           recursiveDisplay(listBlobCommit.tail, List(),logStat,None)
         }
       }

@@ -51,6 +51,44 @@ class CommandBranchSpec   extends FlatSpec with BeforeAndAfterEach {
     assert(new File(HelperPaths.branchesPath+File.separator+"testBranch").exists())
     assert(FilesManager.getListOfFiles(HelperPaths.branchesPath).length == 2)
   }
+  it should "create a file in logs" in {
+    //Given
+    val sgitPath = HelperPaths.sgitPath
+    val helloFilePath = sgitPath + File.separator + "testFolder" + File.separator + "hello"
+
+    Add_cmd.add(Array("add",helloFilePath))
+
+    Commit_cmd.commit(Array("commit"))
+    HelperBranch.createBranch("testBranch")
+    assert(new File(HelperPaths.logsPath+File.separator+"testBranch").exists())
+  }
+
+  it should "create a file in stages folder" in {
+    //Given
+    val sgitPath = HelperPaths.sgitPath
+    val helloFilePath = sgitPath + File.separator + "testFolder" + File.separator + "hello"
+
+    Add_cmd.add(Array("add",helloFilePath))
+
+    Commit_cmd.commit(Array("commit"))
+    HelperBranch.createBranch("testBranch")
+    assert(new File(HelperPaths.stagePath+File.separator+"testBranch").exists())
+  }
+
+
+  it should "copy the content of the current stage branch to the new file stage branch" in {
+    //Given
+    val sgitPath = HelperPaths.sgitPath
+    val helloFilePath = sgitPath + File.separator + "testFolder" + File.separator + "hello"
+
+    Add_cmd.add(Array("add",helloFilePath))
+
+    Commit_cmd.commit(Array("commit"))
+    HelperBranch.createBranch("testBranch")
+    val stageMaster =IOManager.readInFileAsLine(HelperPaths.stagePath+File.separator+"master")
+    val testBranchStage =IOManager.readInFileAsLine(HelperPaths.stagePath+File.separator+"testBranch")
+    assert(stageMaster == testBranchStage)
+  }
 
   it should "be the right content in the file created" in {
     //Given

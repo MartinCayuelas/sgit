@@ -3,8 +3,6 @@ package fr.cayuelas.managers
 
 import java.io.{BufferedWriter, File, FileWriter}
 
-import fr.cayuelas.helpers.HelperBranch
-
 import scala.annotation.tailrec
 
 object IOManager {
@@ -70,15 +68,15 @@ object IOManager {
   /*
   BRANCH
    */
-  def printCurrentBranch(): Unit = println(Console.GREEN+"("+HelperBranch.getCurrentBranch+")")
-  def printFatalError(): Unit = println(s"fatal: your current '${HelperBranch.getCurrentBranch}' branch does not yet contain any commit")
+  def printBranch(nameBranch: String): Unit = println("\n"+Console.GREEN+"("+nameBranch+")")
+  def printFatalError(nameBranch: String): Unit = println(s"fatal: your current '${nameBranch}' branch does not yet contain any log")
   /*
   TAG
    */
   def printFatalCreation(typeE: String, name: String): Unit = println(s"Fatal: a ${typeE} named ${name} is exits already")
-/*
-COMMIT
- */
+  /*
+  COMMIT
+   */
   def nothingToCommit(): Unit = println("Nothing to commit")
   def printErrorNoCommitExisting(): Unit = println("There is no commit yet, you must commit something before")
 
@@ -103,5 +101,11 @@ COMMIT
     }
   }
 
+  /*
+  CHECKOUT
+   */
+  def printSuccessCheckoutBranch(nameBranch: String): Unit = println(s"Tipping on the branch ${nameBranch}")
 
+  def printErrorCheckout(): Unit = println("There is no branch or tag or commit corresponding. Please try again with a rigth name")
+  def printErrorOnCheckoutSameBranch(nameBranch: String): Unit = println(s"You are already on the branch ${nameBranch}")
 }

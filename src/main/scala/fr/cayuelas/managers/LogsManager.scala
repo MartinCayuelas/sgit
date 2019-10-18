@@ -19,8 +19,8 @@ object LogsManager {
   /**
    * Function that creates a new File in .sgit/objects/logs for a new branch
    */
-  def createLogFileForBranch(): Unit = {
-    val path = Paths.get(getCurrentPathLogs)
+  def createLogFileForBranch(nameBranch: String): Unit = {
+    val path = Paths.get(HelperPaths.logsPath+File.separator+nameBranch)
     if(Files.notExists(path)) new File(path.toString).createNewFile()
   }
 
@@ -48,9 +48,9 @@ object LogsManager {
   def listLogsForBranch(nameBranch: String): Unit = {
     val  listLogs = LogsManager.getLogsForBranch(nameBranch)
     listLogs match {
-      case Nil => IOManager.printFatalError()
+      case Nil => IOManager.printFatalError(nameBranch)
       case _ => {
-        IOManager.printCurrentBranch()
+        IOManager.printBranch(nameBranch)
         listLogs.map(log => println(logFormatting(log)))
       }
     }
@@ -84,9 +84,9 @@ object LogsManager {
   def displayOption(logStat: Boolean, nameBranch: String): Unit = {
     val logs = getLogsForBranch(nameBranch)
     logs match {
-      case Nil => IOManager.printFatalError()
+      case Nil => IOManager.printFatalError(nameBranch)
       case _ => {
-        IOManager.printCurrentBranch()
+        IOManager.printBranch(nameBranch)
         recursiveLogs(logs)
       }
     }
