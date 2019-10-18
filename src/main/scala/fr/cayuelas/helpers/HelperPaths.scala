@@ -34,7 +34,6 @@ object HelperPaths {
     }
 
   }
-
   /**
    *Method taht calculates the relative apth of a file
    * @param absoluteFilePath  the absolute path of a file in String
@@ -51,7 +50,6 @@ object HelperPaths {
 
   //files absolute path
   def headFile: String = sgitPath + sgitRepositoryName + File.separator + "HEAD"
-
 
   /**
    *
