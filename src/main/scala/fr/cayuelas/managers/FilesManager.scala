@@ -44,8 +44,7 @@ object FilesManager {
       file.delete()
     }
   }
-
-
+  
   /**
    * Method that creates a folder given a path (String)
    * @param pathNewFolder : the path of the new folder that will be created

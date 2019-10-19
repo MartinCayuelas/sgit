@@ -54,12 +54,22 @@ object HelperBlob {
     HelperSha1.convertToSha1(content) //Creates the id in sha1
   }
 
+  /**
+   * Reads the content of a given blob's sha1
+   * @param sha1 : id of the file that we want to readIn
+   * @return the content of the blob in a list of strings
+   */
   def readContentInBlob(sha1: String): List[String] = {
     val folder = sha1.substring(0,2)
     val file = sha1.substring(2,sha1.length)
     IOManager.readInFileAsLine(HelperBlob.blobsPath+File.separator+folder+File.separator+file)
   }
 
+  /**
+   * Checks if the given sha1 is part of a blob
+   * @param sha1: id of a blob
+   * @return true if the blob exists else false
+   */
   def blobExists(sha1: String): Boolean = {
     val folder = sha1.substring(0,2)
     val file = sha1.substring(2,sha1.length)

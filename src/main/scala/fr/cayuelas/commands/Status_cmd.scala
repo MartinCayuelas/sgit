@@ -6,7 +6,7 @@ object Status_cmd {
   /**
    * Main function that dispatch the action
    */
-  def status() : Unit ={
+  def status() : Unit = {
     HelperStatus.printChangesThatWillBeValidated()
     HelperStatus.printChangesThatWillNotBeValidated()
     HelperStatus.printUntrackedFiles()

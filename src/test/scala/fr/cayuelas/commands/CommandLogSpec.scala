@@ -2,9 +2,11 @@ package fr.cayuelas.commands
 
 import java.io.File
 
+import fr.cayuelas.helpers.HelperDiff.{createMatrix, getDeltas}
 import fr.cayuelas.helpers.{HelperBlob, HelperCommit, HelperDiff, HelperPaths}
 import fr.cayuelas.managers.LogsManager.retrieveChanges
 import fr.cayuelas.managers.{FilesManager, IOManager, LogsManager}
+import fr.cayuelas.objects.Wrapper
 import org.scalatest.{BeforeAndAfterEach, FlatSpec}
 
 
@@ -83,13 +85,30 @@ class CommandLogSpec  extends FlatSpec with BeforeAndAfterEach {
     Add_cmd.add(Array("add",helloFilePath))
     Commit_cmd.commit(Array("commit"))
 
-    val listBlobCommit: List[(String,String)] = HelperCommit.getAllBlobsFromCommit(HelperCommit.getLastCommitInRefs())
-    val contentBlobCurrent = HelperBlob.readContentInBlob(listBlobCommit.head._1)
-    val resFunc = LogsManager.displayStatsLog(List(), contentBlobCurrent, listBlobCommit.head._2, listBlobCommit.head._1)
+    val listBlobCommit: List[Wrapper] = HelperCommit.getAllBlobsFromCommit(HelperCommit.getLastCommitInRefs())
+    val contentBlobCurrent = HelperBlob.readContentInBlob(listBlobCommit.head.hash)
+    val resFunc = LogsManager.displayStatsLog(List(), contentBlobCurrent, listBlobCommit.head.path, listBlobCommit.head.hash)
     val resInsertedDeleted = Some((resFunc._1,resFunc._2))
 
     assert(resInsertedDeleted.get._1 == 1)
     assert(resInsertedDeleted.get._2 == 0)
   }
-  
+
+  it should "be the right deltas diplayed when log -p" in {
+    //Given
+    val sgitPath = HelperPaths.sgitPath
+    val helloFilePath = sgitPath + File.separator + "testFolder" + File.separator + "hello"
+
+    Add_cmd.add(Array("add",helloFilePath))
+    Commit_cmd.commit(Array("commit"))
+
+    val listBlobCommit: List[Wrapper] = HelperCommit.getAllBlobsFromCommit(HelperCommit.getLastCommitInRefs())
+    val contentBlobCurrent = HelperBlob.readContentInBlob(listBlobCommit.head.hash)
+
+    val deltas = getDeltas(List(""), contentBlobCurrent, 0, contentBlobCurrent.length - 1, createMatrix(List(""), contentBlobCurrent, 0, 0, Map()), List())
+
+    assert(deltas.count(x=> x.startsWith("+")) == 1)
+  }
+
+
 }

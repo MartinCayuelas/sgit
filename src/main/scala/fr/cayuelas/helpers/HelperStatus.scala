@@ -1,6 +1,6 @@
 package fr.cayuelas.helpers
 
-import fr.cayuelas.managers.{FilesManager, StageManager}
+import fr.cayuelas.managers.{FilesManager, IOManager, StageManager}
 
 object HelperStatus {
   /**
@@ -16,11 +16,8 @@ object HelperStatus {
    */
 
   def printChangesThatWillBeValidated(): Unit = {
-    println(s"On the ${HelperBranch.getCurrentBranch} branch")
-    println("Changes that will be validated : \n")
-    getChangesThatWillBeValidated.map(elem => println(s"   ${Console.GREEN}"+elem+Console.RESET))
-    println
-
+    IOManager.printToBEValdiatedInfos(HelperBranch.getCurrentBranch)
+    getChangesThatWillBeValidated.map(elem => IOManager.printElemValidated(elem))
   }
 
   /**
@@ -48,11 +45,8 @@ object HelperStatus {
    * Print all the files that will not be validated
    */
   def printChangesThatWillNotBeValidated(): Unit = {
-    println("Changes that will not be validated:")
-    println("   (use \"git add <file> ...\" to update what will be validated)\n")
-
-    getChangesThatWillNotBeValidated.map(e => println(s"   ${Console.RED}modified : "+e+Console.RESET))
-    println
+    IOManager.printNotValidatedInfos()
+    getChangesThatWillNotBeValidated.map(e => IOManager.printElemNotValidated(e))
   }
 
   /**
@@ -60,8 +54,8 @@ object HelperStatus {
    * @return a list[String] containing all Files not tracked in the stage
    */
 
-  def getUntracked: List[String] = {
-    val listOfAll = FilesManager.getListOfContentInDirectory(HelperPaths.sgitPath)
+  def getUntracked(path :String): List[String] = {
+    val listOfAll = FilesManager.getListOfContentInDirectory(path)
     val listOfAllCleared = listOfAll.map(e => HelperPaths.getRelativePathOfFile(e.getAbsolutePath))
 
     listOfAllCleared.diff(getPathsOfFilesTracked) //Différence between the Working directory and the "stage"
@@ -71,11 +65,8 @@ object HelperStatus {
    * Print all the files not tracked in the stage
    */
   def printUntrackedFiles(): Unit = {
-    println("Files untracked:")
-    println("   (use \"git add <file> ...\" to include what will be validated)\n")
-
-    getUntracked.map(e => println(s"   ${Console.RED}"+e+Console.RESET))
-    println
+    IOManager.printUntrackedInfos()
+    getUntracked(HelperPaths.sgitPath).map(e => IOManager.printElemNUntracked(e))
   }
 
   /**

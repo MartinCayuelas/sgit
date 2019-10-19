@@ -20,9 +20,9 @@ object Diff_cmd {
   }
 
   /**
-   *
-   * @param lastCommit
-   * @return
+   * Function that processes the diff between the stage beeing committed and the last commit in refs
+   * @param lastCommit : Last commit in refs
+   * @return the number of lines inserted and deleted over all the files between last commit and new content that will be committed
    */
 
   def diffWhenCommitting(lastCommit: String): (Int, Int) = {
@@ -31,7 +31,7 @@ object Diff_cmd {
     val paths = stageSplited.map(x => x(2))
 
     val listZippedStageFiltered = hashes.zip(paths).map(x => x._2)
-    val listBlobLastCommit: List[Wrapper] = HelperCommit.getAllBlobsFromCommit(lastCommit).map(blob => Wrapper(blob._2,blob._1,"Blob",""))
+    val listBlobLastCommit: List[Wrapper] = HelperCommit.getAllBlobsFromCommit(lastCommit)
     val listBlobLastCommitFiltered = listBlobLastCommit.map(x => x.path)
 
     val listFilteredNewsFiles = listZippedStageFiltered.diff(listBlobLastCommitFiltered) //Files neverCommited

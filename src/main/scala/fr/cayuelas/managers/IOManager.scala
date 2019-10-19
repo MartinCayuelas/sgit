@@ -26,7 +26,7 @@ object IOManager {
    * @return the content of a file in a String (Could be an empty string if the file is empty)
    */
 
-  def readInFile(pathToFile: String): String ={
+  def readInFile(pathToFile: String): String = {
     val source = scala.io.Source.fromFile(pathToFile)
     val content = try source.mkString finally source.close()
     content
@@ -70,6 +70,19 @@ object IOManager {
    */
   def printBranch(nameBranch: String): Unit = println("\n"+Console.GREEN+"("+nameBranch+")")
   def printFatalError(nameBranch: String): Unit = println(s"fatal: your current '${nameBranch}' branch does not yet contain any log")
+  def printNonCurrentBranch(nameBranch: String): Unit = println(s"* ${nameBranch} (branch)")
+  def printCurrentBranch(nameBranch: String): Unit = println(s"* ${nameBranch} (branch)")
+
+  /*
+  STATUS
+   */
+  def printToBEValdiatedInfos(nameBranch: String): Unit = println(s"On the ${nameBranch} branch\nChanges that will be validated : \n")
+  def printNotValidatedInfos(): Unit = println("\nChanges that will not be validated:\n   (use \"git add <file> ...\" to update what will be validated)\n")
+  def printUntrackedInfos(): Unit = println("\nFiles untracked:\n   (use \"git add <file> ...\" to include what will be validated)\n")
+  def printElemValidated(elem: String) : Unit =  println(s"   ${Console.GREEN}"+elem+Console.RESET)
+  def printElemNotValidated(e: String) : Unit =  println(s"   ${Console.RED}modified : "+e+Console.RESET)
+  def printElemNUntracked(e: String) : Unit =    println(s"   ${Console.RED}"+e+Console.RESET)
+
   /*
   TAG
    */
@@ -98,6 +111,23 @@ object IOManager {
       if (deltas.head.startsWith("+")) println(Console.GREEN + deltas.head + Console.RESET)
       else println(Console.RED + deltas.head + Console.RESET)
       printDiff(deltas.tail)
+    }
+  }
+
+  /*
+  LOGS
+   */
+  /**
+   *Print the stat (insertion and deletion) for a file
+   * @param path: path of the file
+   * @param typePrint: if it is insertion or deletion
+   * @param changes number of changes (insertion +deletion)
+   */
+  def printLineStat(path: String, typePrint: String, changes: Int): Unit ={
+    typePrint match {
+      case x if x.equals("+") =>println(path + " "*15+"|" + changes + Console.GREEN +"+"*changes+Console.RESET)
+      case y if y.equals("-") => println(path + "                            | " + changes + Console.RED +"-"*changes+Console.RESET)
+      case _ =>  println(path + " "*15+"|"  + changes + s"${Console.GREEN}  +${Console.RESET}" + s"${Console.RED}-${Console.RESET}")
     }
   }
 

@@ -66,9 +66,9 @@ object LogsManager {
   }
 
   /**
-   *
-   * @param logStat
-   */
+   *Call the displayOption method for all the branches
+   * @param logStat: boolean used to do the right action (true= log stat --stat, false log stat -p
+   * */
   def displayLogsOption(logStat: Boolean): Unit = {
     val branches = FilesManager.getListOfFiles(HelperPaths.branchesPath)
     branches.map(b => {
@@ -77,9 +77,9 @@ object LogsManager {
   }
 
   /**
-   *
-   * @param logStat
-   * @param nameBranch
+   *Display logs recursively given an option boolean
+   * @param logStat: Boolean for option
+   * @param nameBranch: name of the branch we display
    */
   def displayOption(logStat: Boolean, nameBranch: String): Unit = {
     val logs = getLogsForBranch(nameBranch)
@@ -111,6 +111,12 @@ object LogsManager {
   }
 
 
+  /**
+   *Retrieves number of changed files
+   * @param lastCommit: hash of the commit
+   * @param parentLastCommit: hash of the parent commit
+   * @return the number of files Changed
+   */
 
   def retrieveChanges(lastCommit : String, parentLastCommit: String): Int = {
     if(parentLastCommit.equals("0000000000000000000000000000000000000000")){
@@ -123,7 +129,6 @@ object LogsManager {
     }
   }
 
-
   /**
    *
    * @param oldContent
@@ -134,12 +139,12 @@ object LogsManager {
   def displayStatsLog(oldContent: List[String], newContent: List[String], path: String, sha1: String): (Int,Int) = {
     if (oldContent.isEmpty && newContent.nonEmpty) {
       val linesCounted = newContent.length
-      printLineStat(oldContent,newContent,path,"+",linesCounted)
+      IOManager.printLineStat(path,"+",linesCounted)
       (linesCounted,0)
     }
     else if (newContent.isEmpty && oldContent.nonEmpty) {
       val linesCounted = oldContent.length
-      printLineStat(oldContent,newContent,path,"-",linesCounted)
+      IOManager. printLineStat(path,"-",linesCounted)
       (0,linesCounted)
     }
     else {
@@ -148,29 +153,11 @@ object LogsManager {
       if (deltas.nonEmpty) {
         val (inserted, deleted) = calculateDeletionAndInsertion(deltas)
         val changes = inserted + deleted
-        printLineStat(oldContent,newContent,path,"+-",changes)
+        IOManager. printLineStat(path,"+-",changes)
         (inserted,deleted)
       }else (0,0)
     }
   }
-
-  /**
-   *
-   * @param oldContent
-   * @param newContent
-   * @param path
-   * @param typePrint
-   * @param changes
-   */
-  def printLineStat(oldContent: List[String], newContent: List[String], path: String, typePrint: String, changes: Int): Unit ={
-    typePrint match {
-      case x if x.equals("+") =>println(path + " "*15+"|" + changes + Console.GREEN +"+"*changes+Console.RESET)
-      case y if y.equals("-") => println(path + "                            | " + changes + Console.RED +"-"*changes+Console.RESET)
-      case _ =>  println(path + " "*15+"|"  + changes + s"${Console.GREEN}  +${Console.RESET}" + s"${Console.RED}-${Console.RESET}")
-    }
-  }
-
-
 
 
 }

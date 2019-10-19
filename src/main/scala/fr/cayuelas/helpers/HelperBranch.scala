@@ -62,18 +62,25 @@ object HelperBranch {
    */
 
   def formatAndDisplayBranch(fileToFormat: File): Unit = {
-    if (getCurrentBranch.equals(fileToFormat.getName)) {
-      println(s"* ${fileToFormat.getName} (branch)")
-    } else {
-      println(s"  ${fileToFormat.getName} (branch)")
-    }
+    if (getCurrentBranch.equals(fileToFormat.getName)) IOManager.printCurrentBranch(fileToFormat.getName)
+    else IOManager.printNonCurrentBranch(fileToFormat.getName)
   }
+
+  /**
+   *Checks if the branch name given exists
+   * @param nameBranch
+   * @return true if the branch exists else false
+   */
 
   def isABranch(nameBranch: String): Boolean = {
     val branches = FilesManager.getListOfFiles(HelperPaths.branchesPath)
     branches.exists(b => b.getName == nameBranch)
   }
 
+  /**
+   *Writes in the HEAD file the new ref to the new branch
+   * @param nameBranch : new name
+   */
   def setNewBranchInHEAD(nameBranch: String): Unit = {
     IOManager.writeInFile(HelperPaths.headFile,s"ref: refs/heads/${nameBranch}",append = false)
   }

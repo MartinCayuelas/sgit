@@ -14,7 +14,12 @@ object HelperCommit {
   def commitsPath: String = HelperPaths.objectsPath+File.separator+"commits"
   def treesPath: String = HelperPaths.objectsPath+File.separator+"trees"
 
-
+  /**
+   * Do the process of commit with getting informations about the commit and writes new content inf files
+   * After that print the deifféreces between the new commit and the last commit
+   * @param hashTreeFinal: highest tree's hash
+   * @param messageCommit: message of the commit
+   */
 
   def commit(hashTreeFinal: String, messageCommit: String): Unit = {
     val commit = new Commit()
@@ -101,7 +106,7 @@ object HelperCommit {
   }
 
   /**
-   *
+   * Merge the content of the stageToCommit in the real stage
    */
   def mergeStageToCommitInStage(): Unit = {
     val currentStageCommit = StageManager.readStageToCommit()
@@ -139,7 +144,11 @@ object HelperCommit {
     getCommitContentInFileObject(commit).map(line => IOManager.writeInFile(path + File.separator +  folder + File.separator + nameFile,line,true)) //WriteInCommitFile
   }
 
-
+  /**
+   *Do the diff between the last commit and the current stage and display to the user the number of changes
+   * @param lastCommit: id of the last commit in refs
+   * @param commit : commit used to get some information like the id and the message
+   */
 
   def printResultCommit(lastCommit: String, commit: Commit): Unit = {
 
@@ -151,6 +160,11 @@ object HelperCommit {
     }
     println(resToPrint)
   }
+
+  /**
+   *Do the diff between the current  commit and the current stage and display to the user the number of changes. There is only insertion when first commit
+   * @param commit : commit used to get some information like the id and the message
+   */
 
   def printResultFirstCommit(commit: Commit): Unit = {
     val listCommitted = IOManager.readInFileAsLine(StageManager.stageToCommitPath)
@@ -173,56 +187,76 @@ object HelperCommit {
     println(resToPrint)
   }
 
-
+  /**
+   * Get the content of a given commit
+   * @param commit: commit to use
+   * @return the content of a tree
+   */
   def getCommitContent(commit: Commit):String = {
     s"Tree ${commit.tree} author ${commit.author} -- ${commit.dateCommit}"
   }
+
+  /**
+   * Creates the content of the future log
+   * @param commit: commit to write in logs
+   * @return the content that will be written in the logs
+   */
   def getCommitContentForLog(commit: Commit): String = {
     if (commit.parent.length >0)  s"${commit.parent} ${commit.idCommit} ${commit.author} ${commit.dateCommit} ${commit.message}\n"
     else s"0000000000000000000000000000000000000000 ${commit.idCommit} ${commit.author} ${commit.dateCommit} ${commit.message}\n"
   }
 
-
+  /**
+   *Creates the id of a commit with his content
+   * @param commit: commit used to do the convertion
+   * @return the id of the new commit
+   */
   def createIdCommit(commit: Commit): String = {
     HelperSha1.convertToSha1(HelperCommit.getCommitContent(commit))
   }
 
+  /**
+   *Verify if the commit exists
+   * @param commit: id string
+   * @return true if the given string corresponds to a commit
+   */
   def isACommit(commit: String): Boolean = {
     val (folder, file) = HelperPaths.getFolderAndFileWithSha1(commit)
     new File(HelperPaths.objectsPath+File.separator+"commits"+File.separator+folder++File.separator+file).exists()
   }
 
+  //Verify if exists commit in ref (Like if it is the first commit or not)
   def existsCommit: Boolean= {
     IOManager.readInFile(currentRefs).length > 0
   }
 
   /**
-   *
+   *Retrieves all blobs for a commit
    * @param hashCommit : string corresponding to the commit we want to retrieve
-   * @return
+   * @return a list of element that are all the blobs contained by the commit given
    */
-  def getAllBlobsFromCommit(hashCommit: String): List[(String,String)] ={
+  def getAllBlobsFromCommit(hashCommit: String): List[Wrapper] ={
     val firstTree = getFirstTreeFromCommit(hashCommit)
-    val blobs:List[(String,String)] = accumulatorBlobs(firstTree)
+    val blobs:List[Wrapper] = accumulatorBlobs(firstTree)
     blobs
   }
 
   /**
-   *
-   * @param hashTree
-   * @return
+   *Accumulates blobs for a tree
+   * @param hashTree: hash of a tree
+   * @return an accumulator containing a list of element blobs
    */
-  def accumulatorBlobs(hashTree: String): List[(String,String)] ={
+  def accumulatorBlobs(hashTree: String): List[Wrapper] ={
     val(newAcc,treesList) = retrievesBlobsAndTreesInTree(hashTree,"",List())
     recursiveRetrievesBlobsInTrees(treesList,newAcc)
   }
 
   /**
-   *
-   * @param hashTree
-   * @return
+   * retrieves blobs and trees for a tree
+   * @param hashTree : hash of a tree
+   * @return a tuple containing all blobs and trees contained by a given tree
    */
-  def retrievesBlobsAndTreesInTree(hashTree: String, pathParent: String, accBlobs: List[(String,String)]):  (List[(String,String)],List[(String,String)]) = {
+  def retrievesBlobsAndTreesInTree(hashTree: String, pathParent: String, accBlobs: List[Wrapper]):  (List[Wrapper], List[Wrapper]) = {
     val pathToAdd = pathParent.length match {
       case 0 => ""
       case _ => pathParent+File.separator
@@ -232,25 +266,25 @@ object HelperCommit {
     val contentOfTree = IOManager.readInFileAsLine(path)
 
     val blobsSplited = contentOfTree.filter(x => x.startsWith("Blob")).map(b => b.split(" "))
-    val listHashesAndPaths : List[(String,String)]= blobsSplited.map(x => (x(1),pathToAdd+x(2)))
+    val listHashesAndPaths : List[Wrapper]= blobsSplited.map(x => Wrapper(pathToAdd+x(2),x(1),"Blob",""))
 
     val newAcc = accumulate(listHashesAndPaths,accBlobs)
-    val treesInTree = contentOfTree.filter(x => x.startsWith("Tree")).map(x => x.split(" ")).map(x => (x(1),x(2)))
+    val treesInTree = contentOfTree.filter(x => x.startsWith("Tree")).map(x => x.split(" ")).map(x => Wrapper(x(2),x(1),"Tree",""))
 
     (newAcc,treesInTree)
   }
 
   /**
-   *
-   * @param listTrees
-   * @param accBlobs
-   * @return
+   *Retrieves recursively blobs in trees
+   * @param listTrees: trees that we will parcour
+   * @param accBlobs : accumulator of blobs element
+   * @return all the blobs in all the trees given in parameter
    */
   @tailrec
-  def recursiveRetrievesBlobsInTrees(listTrees: List[(String,String)], accBlobs: List[(String,String)] ): List[(String,String)] = {
+  def recursiveRetrievesBlobsInTrees(listTrees: List[Wrapper], accBlobs: List[Wrapper] ): List[Wrapper] = {
     if(listTrees.isEmpty) accBlobs
     else{
-      val(newAcc,treesList) = retrievesBlobsAndTreesInTree(listTrees.head._1,listTrees.head._2,accBlobs)
+      val(newAcc,treesList) = retrievesBlobsAndTreesInTree(listTrees.head.hash,listTrees.head.path,accBlobs)
       val newListOfTrees = treesList++listTrees.tail
       recursiveRetrievesBlobsInTrees(newListOfTrees,newAcc)
 
@@ -258,24 +292,24 @@ object HelperCommit {
   }
 
   /**
-   *
-   * @param hashCommit
-   * @return
+   *Get the first tree (the highest) of a given commit
+   * @param hashCommit : hash of the commit
+   * @return the hash of the first tree in a commit
    */
-  def getFirstTreeFromCommit(hashCommit: String): String ={
+  def getFirstTreeFromCommit(hashCommit: String): String = {
     val (folder,file) = HelperPaths.getFolderAndFileWithSha1(hashCommit)
     val firstLine = IOManager.readInFileAsLine(HelperPaths.objectsPath+File.separator+"commits"+File.separator+folder+File.separator+file)(0)
     firstLine.split(" ")(1)
   }
 
   /**
-   *
-   * @param newBlobs
-   * @param acc
-   * @return
+   *Accumulate all the blobs given in parameter
+   * @param newBlobs : blobs to be accumulated
+   * @param acc: accumulator of blobs
+   * @return a new list with all the blobs accumulated
    */
   @tailrec
-  def accumulate(newBlobs: List[(String,String)], acc: List[(String,String)]  ): List[(String,String)] ={
+  def accumulate(newBlobs: List[Wrapper], acc: List[Wrapper]): List[Wrapper] ={
     if (newBlobs.isEmpty) acc
     else {
       accumulate(newBlobs.tail,newBlobs.head::acc)

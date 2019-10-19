@@ -73,7 +73,7 @@ INIT -----------
   }
 
   /**
-   * Method that create all the necessary folders for sgit
+   * Function that creates all the necessary folders for sgit
    *
    * @param path : the path we want to check
    * @return true if a .sgit folder already exists in a parent folder else false

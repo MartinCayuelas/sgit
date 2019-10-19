@@ -7,95 +7,6 @@ import scala.annotation.tailrec
 
 object HelperDiff {
 
-  /**
-   * Methods that calculates the number of deletion or insertion in a file
-   *
-   * @param deltas : list of opérations
-   * @return a tuple2 containing the number of Lines inserted and deleted in a file
-   */
-  def calculateDeletionAndInsertion(deltas: List[String]): (Int, Int) = {
-    val insertedLines = deltas.count(x => x.startsWith("+"))
-    val deletedLines = deltas.count(x => x.startsWith("-"))
-    (insertedLines, deletedLines)
-  }
-
-  /**
-   *
-   * @param listPathsNewFiles
-   * @param acc
-   * @return
-   */
-  @tailrec
-  def calculateNewsLinesWhenFileHasNeverBeenCommitted(listPathsNewFiles: List[String], acc: Int): Int = {
-    if(listPathsNewFiles.isEmpty) acc
-    else{
-      val linesCounted = IOManager.readInFileAsLine(HelperPaths.sgitPath+listPathsNewFiles.head).length
-      val newAcc = acc+linesCounted
-      calculateNewsLinesWhenFileHasNeverBeenCommitted(listPathsNewFiles.tail,newAcc)
-    }
-  }
-
-  /**
-   *
-   * @param listOfHashesAndPaths
-   * @param accumulator
-   * @return
-   */
-  @tailrec
-  def accumulateCalculation(listOfHashesAndPaths: List[Wrapper], accumulator: (Int, Int)): (Int, Int) = {
-    if (listOfHashesAndPaths.isEmpty) accumulator
-    else {
-      val contentBlob = HelperBlob.readContentInBlob(listOfHashesAndPaths.head.hash)
-      val contentOfFile = IOManager.readInFileAsLine(HelperPaths.sgitPath+listOfHashesAndPaths.head.path)
-      if (contentBlob.isEmpty && contentOfFile.nonEmpty) {
-        val newAccumulator = ((accumulator._1+contentOfFile.length), accumulator._2 )
-        accumulateCalculation(listOfHashesAndPaths.tail, newAccumulator)
-      }
-      else if (contentOfFile.isEmpty && contentBlob.nonEmpty) {
-        val newAccumulator = (accumulator._1,(accumulator._2 + contentBlob.length))
-        accumulateCalculation(listOfHashesAndPaths.tail, newAccumulator)
-      }
-      else {
-        val deltas = getDeltas(contentBlob, contentOfFile, contentBlob.length - 1, contentOfFile.length - 1, createMatrix(contentBlob, contentOfFile, 0, 0, Map()), List())
-        if (deltas.nonEmpty) {
-          val (inserted, deleted) = calculateDeletionAndInsertion(deltas)
-          val newAccumulator = (accumulator._1 + inserted, accumulator._2 + deleted)
-          accumulateCalculation(listOfHashesAndPaths.tail, newAccumulator)
-        }else{
-          val newAccumulator = (accumulator._1 , accumulator._2 )
-          accumulateCalculation(listOfHashesAndPaths.tail, newAccumulator)
-        }
-      }
-    }
-  }
-
-  /**
-   * Displays the différence between two files given in parameters
-   *
-   * @param oldContent   : content of the blob associated to the file
-   * @param newContent : content of the real file
-   * @param path          : path of the file
-   * @param sha1          : sha1 of the blob
-   */
-  def displayDifferenceBetweenTwoFiles(oldContent: List[String], newContent: List[String], path: String, sha1: String): Unit = {
-
-    if (oldContent.isEmpty && newContent.nonEmpty) {
-      IOManager.printDiffForFile(path,sha1)
-      IOManager.printDiff(newContent.map("+ "+ _))
-    }
-    else if (newContent.isEmpty && oldContent.nonEmpty) {
-      IOManager.printDiffForFile(path,sha1)
-      IOManager.printDiff(oldContent.map("- " +_))
-    }
-    else {
-      val deltas = getDeltas(oldContent, newContent, oldContent.length - 1, newContent.length - 1, createMatrix(oldContent, newContent, 0, 0, Map()), List())
-      if (deltas.nonEmpty) {
-        IOManager.printDiffForFile(path,sha1)
-        IOManager.printDiff(deltas)
-      }
-    }
-  }
-
 
   /**
    * Creates a matrix containing the Longest common subsequence
@@ -169,17 +80,106 @@ object HelperDiff {
       else getDeltas(oldContent, newContent, i - 1, j - 1, matrix, deltas)
     }
   }
+  /**
+   * Methods that calculates the number of deletion or insertion in a file
+   *
+   * @param deltas : list of opérations
+   * @return a tuple2 containing the number of Lines inserted and deleted in a file
+   */
+  def calculateDeletionAndInsertion(deltas: List[String]): (Int, Int) = {
+    val insertedLines = deltas.count(x => x.startsWith("+"))
+    val deletedLines = deltas.count(x => x.startsWith("-"))
+    (insertedLines, deletedLines)
+  }
 
   /**
+   *Calcul the number of inserted lines for files never committed
+   * @param listPathsNewFiles: list of new files
+   * @param acc: accumulator of lines
+   * @return the number of new lines
+   */
+  @tailrec
+  def calculateNewsLinesWhenFileHasNeverBeenCommitted(listPathsNewFiles: List[String], acc: Int): Int = {
+    if(listPathsNewFiles.isEmpty) acc
+    else{
+      val linesCounted = IOManager.readInFileAsLine(HelperPaths.sgitPath+listPathsNewFiles.head).length
+      val newAcc = acc+linesCounted
+      calculateNewsLinesWhenFileHasNeverBeenCommitted(listPathsNewFiles.tail,newAcc)
+    }
+  }
+
+  /**
+   * Accumulate the number of modifications
+   * @param listOfHashesAndPaths: list of files to analyse
+   * @param accumulator: accumulator of inserted and deleted
+   * @return the number of lines inserted and deleted
+   */
+  @tailrec
+  def accumulateCalculation(listOfHashesAndPaths: List[Wrapper], accumulator: (Int, Int)): (Int, Int) = {
+    if (listOfHashesAndPaths.isEmpty) accumulator
+    else {
+      val contentBlob = HelperBlob.readContentInBlob(listOfHashesAndPaths.head.hash)
+      val contentOfFile = IOManager.readInFileAsLine(HelperPaths.sgitPath+listOfHashesAndPaths.head.path)
+      if (contentBlob.isEmpty && contentOfFile.nonEmpty) {
+        val newAccumulator = ((accumulator._1+contentOfFile.length), accumulator._2 )
+        accumulateCalculation(listOfHashesAndPaths.tail, newAccumulator)
+      }
+      else if (contentOfFile.isEmpty && contentBlob.nonEmpty) {
+        val newAccumulator = (accumulator._1,(accumulator._2 + contentBlob.length))
+        accumulateCalculation(listOfHashesAndPaths.tail, newAccumulator)
+      }
+      else {
+        val deltas = getDeltas(contentBlob, contentOfFile, contentBlob.length - 1, contentOfFile.length - 1, createMatrix(contentBlob, contentOfFile, 0, 0, Map()), List())
+        if (deltas.nonEmpty) {
+          val (inserted, deleted) = calculateDeletionAndInsertion(deltas)
+          val newAccumulator = (accumulator._1 + inserted, accumulator._2 + deleted)
+          accumulateCalculation(listOfHashesAndPaths.tail, newAccumulator)
+        }else{
+          val newAccumulator = (accumulator._1 , accumulator._2 )
+          accumulateCalculation(listOfHashesAndPaths.tail, newAccumulator)
+        }
+      }
+    }
+  }
+
+  /**
+   * Displays the difference between two files given in parameters
    *
-   * @param commit
-   * @param parentCommit
-   * @param logStat
+   * @param oldContent   : content of the blob associated to the file
+   * @param newContent : content of the real file
+   * @param path          : path of the file
+   * @param sha1          : sha1 of the blob
+   */
+  def displayDifferenceBetweenTwoFiles(oldContent: List[String], newContent: List[String], path: String, sha1: String): Unit = {
+
+    if (oldContent.isEmpty && newContent.nonEmpty) {
+      IOManager.printDiffForFile(path,sha1)
+      IOManager.printDiff(newContent.map("+ "+ _))
+    }
+    else if (newContent.isEmpty && oldContent.nonEmpty) {
+      IOManager.printDiffForFile(path,sha1)
+      IOManager.printDiff(oldContent.map("- " +_))
+    }
+    else {
+      val deltas = getDeltas(oldContent, newContent, oldContent.length - 1, newContent.length - 1, createMatrix(oldContent, newContent, 0, 0, Map()), List())
+      if (deltas.nonEmpty) {
+        IOManager.printDiffForFile(path,sha1)
+        IOManager.printDiff(deltas)
+      }
+    }
+  }
+
+  /**
+   *Do the diff between two commits and display the result with an othen function
+   * @param commit: hash of the current commit
+   * @param parentCommit: hash of the parent commit
+   * @param logStat: boolean that indactes if it is log --stat or -p
+   * @return lines inserted and deleted between two commits
    */
   def diffBetweenTwoCommits(commit: String, parentCommit: String, logStat: Boolean): (Int,Int) ={
-    val listBlobCommit:  List[Wrapper] = HelperCommit.getAllBlobsFromCommit(commit).map(blob => Wrapper(blob._2,blob._1,"Blob",""))
+    val listBlobCommit:  List[Wrapper] = HelperCommit.getAllBlobsFromCommit(commit)
     if(!parentCommit.equals("0000000000000000000000000000000000000000")){
-      val listBlobLParentCommit: List[Wrapper] = HelperCommit.getAllBlobsFromCommit(parentCommit).map(blob => Wrapper(blob._2,blob._1,"Blob",""))
+      val listBlobLParentCommit: List[Wrapper] = HelperCommit.getAllBlobsFromCommit(parentCommit)
       val res = recursiveDisplay(listBlobCommit,listBlobLParentCommit,logStat, None)
       val (inserted,deleted) = res._3.getOrElse(0,0)
       (inserted,deleted)
@@ -191,15 +191,15 @@ object HelperDiff {
   }
 
   /**
-   *
-   * @param listBlobCommit
-   * @param listBlobParent
-   * @param logStat
-   * @param res
-   * @return
+   *Function for call the right function of display depending of the logStat boolean
+   * @param listBlobCommit: list of blobs of the commit
+   * @param listBlobParent: list of blobs of the parent commit
+   * @param logStat: boolean that indicates if it is log --stat or -p
+   * @param res: accumulator of lines isnerted and deleted
+   * @return an accumulation of modifications
    */
   @tailrec
-  def recursiveDisplay(listBlobCommit: List[Wrapper], listBlobParent: List[Wrapper], logStat: Boolean, res: Option[(Int,Int)]): (List[(String,String)],List[(String,String)],Option[(Int,Int)]) = {
+  def recursiveDisplay(listBlobCommit: List[Wrapper], listBlobParent: List[Wrapper], logStat: Boolean, res: Option[(Int,Int)]): (List[Wrapper],List[Wrapper],Option[(Int,Int)]) = {
     val resOption= res.getOrElse(0,0)
     val ins = resOption._1
     val deleted = resOption._2
@@ -231,6 +231,4 @@ object HelperDiff {
       else (List(),List(),res)
     }
   }
-
-
 }

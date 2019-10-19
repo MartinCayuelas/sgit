@@ -28,6 +28,11 @@ object HelperTag {
     listOfTags.map(b => println(s"  ${b.getName} (tag)"))
   }
 
+  /**
+   * Checks if the givn string is a tag or not
+   * @param nameTag
+   * @return true if the given string correspond to a tag, else false
+   */
   def isATag(nameTag: String): Boolean = {
     val tags = FilesManager.getListOfFiles(HelperPaths.tagsPath)
     tags.exists(t => t.getName == nameTag)

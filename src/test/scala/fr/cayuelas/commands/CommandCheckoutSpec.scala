@@ -46,7 +46,6 @@ class CommandCheckoutSpec  extends FlatSpec with BeforeAndAfterEach {
     val helloFilePath = sgitPath + File.separator + "testFolder" + File.separator + "hello"
 
     Add_cmd.add(Array("add",helloFilePath))
-
     Commit_cmd.commit(Array("commit"))
 
     val oldHeadContent = IOManager.readInFile(HelperPaths.headFile)
@@ -68,7 +67,6 @@ class CommandCheckoutSpec  extends FlatSpec with BeforeAndAfterEach {
     Add_cmd.add(Array("add",helloFilePath))
 
     Commit_cmd.commit(Array("commit"))
-
     Checkout_cmd.checkout(Array("checkout","devTest"))
 
     val newHeadContent = IOManager.readInFile(HelperPaths.headFile)
@@ -123,7 +121,6 @@ class CommandCheckoutSpec  extends FlatSpec with BeforeAndAfterEach {
     val helloFilePath = sgitPath + File.separator + "testFolder" + File.separator + "hello"
 
     Add_cmd.add(Array("add",helloFilePath))
-
     Commit_cmd.commit(Array("commit"))
 
     val oldPathRefs = HelperBranch.getCurrentBranch
@@ -158,8 +155,8 @@ class CommandCheckoutSpec  extends FlatSpec with BeforeAndAfterEach {
 
     Add_cmd.add(Array("add",helloFilePath))
     Commit_cmd.commit(Array("commit"))
-    val lastCommit = HelperCommit.getLastCommitInRefs()
 
+    val lastCommit = HelperCommit.getLastCommitInRefs()
     val oldHeadContent = IOManager.readInFile(HelperPaths.headFile)
 
     Checkout_cmd.checkout(Array("checkout",lastCommit))
@@ -173,7 +170,6 @@ class CommandCheckoutSpec  extends FlatSpec with BeforeAndAfterEach {
     val helloFilePath = sgitPath + File.separator + "testFolder" + File.separator + "hello"
 
     Add_cmd.add(Array("add",helloFilePath))
-
     Commit_cmd.commit(Array("commit"))
 
     val oldPathRefs = HelperBranch.getCurrentBranch
@@ -190,12 +186,42 @@ class CommandCheckoutSpec  extends FlatSpec with BeforeAndAfterEach {
     val helloFilePath = sgitPath + File.separator + "testFolder" + File.separator + "hello"
 
     Add_cmd.add(Array("add",helloFilePath))
-
     Commit_cmd.commit(Array("commit"))
 
 
     Branch_cmd.branch(Array("branch","devTest"))
     Checkout_cmd.checkout(Array("checkout","devTest"))
+    assert(FilesManager.getListOfFiles(sgitPath + File.separator + "testFolder").length == 2)
+  }
+
+  it should "recreate the good files when checkout on a branch" in {
+    //Given
+    val sgitPath = HelperPaths.sgitPath
+    val helloFilePath = sgitPath + File.separator + "testFolder" + File.separator + "hello"
+    val worldFilePath = sgitPath + File.separator + "testFolder" + File.separator + "world"
+    Add_cmd.add(Array("add",helloFilePath,worldFilePath))
+    Commit_cmd.commit(Array("commit"))
+
+    Branch_cmd.branch(Array("branch","devTest"))
+    Checkout_cmd.checkout(Array("checkout","devTest"))
+    assert(FilesManager.getListOfFiles(sgitPath + File.separator + "testFolder").length == 2)
+  }
+
+  it should "recreate the good files when checkout on an tag" in {
+    //Given
+    val sgitPath = HelperPaths.sgitPath
+    val helloFilePath = sgitPath + File.separator + "testFolder" + File.separator + "hello"
+    val worldFilePath = sgitPath + File.separator + "testFolder" + File.separator + "world"
+    IOManager.writeInFile("testFolder" + File.separator + "fileForTag","tagtag",append = false)
+    Add_cmd.add(Array("add",helloFilePath,worldFilePath))
+    Commit_cmd.commit(Array("commit"))
+    Tag_cmd.tag(Array("tag","V1"))
+
+    val fileForTagPath = sgitPath + File.separator + "testFolder" + File.separator + "fileForTag"
+    Add_cmd.add(Array("add",fileForTagPath))
+    Commit_cmd.commit(Array("commit"))
+
+    Checkout_cmd.checkout(Array("checkout","V1"))
     assert(FilesManager.getListOfFiles(sgitPath + File.separator + "testFolder").length == 2)
   }
 

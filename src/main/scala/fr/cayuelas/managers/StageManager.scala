@@ -113,7 +113,7 @@ object StageManager {
     val stageFiltered =  stageContent.filter(x => !x(2).equals(pathLine))
     val stage: List[String] = stageFiltered.map(x => x(0)+" "+x(1)+" "+x(2)+"\n")
 
-    stage.map(line => IOManager.writeInFile(stageToWrite,line,true))//WriteInStage
+    stage.map(line => IOManager.writeInFile(stageToWrite,line,append = true))//WriteInStage
   }
 
   /**

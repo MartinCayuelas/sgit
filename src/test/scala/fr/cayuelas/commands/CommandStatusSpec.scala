@@ -2,7 +2,8 @@ package fr.cayuelas.commands
 
 import java.io.File
 
-import fr.cayuelas.managers.{FilesManager, IOManager}
+import fr.cayuelas.helpers.{HelperPaths, HelperStatus}
+import fr.cayuelas.managers.{FilesManager, IOManager, StageManager}
 import org.scalatest.{BeforeAndAfterEach, FlatSpec}
 
 
@@ -15,8 +16,8 @@ class CommandStatusSpec  extends FlatSpec with BeforeAndAfterEach {
 
     FilesManager.createNewFile("testFolder" + File.separator + "hello")
     FilesManager.createNewFile("testFolder" + File.separator + "world")
-    IOManager.writeInFile("testFolder" + File.separator + "hello","hello",false)
-    IOManager.writeInFile("testFolder" + File.separator + "world","world",false)
+    IOManager.writeInFile("testFolder" + File.separator + "hello","hello",append = false)
+    IOManager.writeInFile("testFolder" + File.separator + "world","world",append = false)
   }
 
   //delete all files created in the .sgit directory after each test
@@ -29,7 +30,6 @@ class CommandStatusSpec  extends FlatSpec with BeforeAndAfterEach {
     if (testFolder.exists()) {
       delete(new File("testFolder"))
     }
-
   }
 
   def delete(file: File): Unit = {
@@ -38,8 +38,71 @@ class CommandStatusSpec  extends FlatSpec with BeforeAndAfterEach {
     }
     file.delete()
   }
+  "The status command" should "display newFile in to Be validated if the file has never been committed and it is added" in {
+    //Given
+    val sgitPath = HelperPaths.sgitPath
+    val helloFilePath = sgitPath + File.separator + "testFolder" + File.separator + "hello"
+    //When
+    Add_cmd.add(Array("add",helloFilePath))
+    val line = IOManager.readInFileAsLine(StageManager.stageValidatedPath)
+    //Then
+    assert(line.length == 1)
+    assert(line(0).startsWith("newFile"))
+  }
 
+  it should "display modified in to Be validated if the file has been committed once and it is added" in {
+    //Given
+    val sgitPath = HelperPaths.sgitPath
+    val helloFilePath = sgitPath + File.separator + "testFolder" + File.separator + "hello"
+    //When
+    Add_cmd.add(Array("add",helloFilePath))
+    Commit_cmd.commit(Array("commit"))
+    IOManager.writeInFile(helloFilePath,"changes in the file", append = true)
+    Add_cmd.add(Array("add",helloFilePath))
+    val line = IOManager.readInFileAsLine(StageManager.stageValidatedPath)
+    //Then
+    assert(line.length == 1)
+    assert(line(0).startsWith("modified"))
+  }
 
+  it should "display the right number of modifications not validated" in {
+    //Given
+    val sgitPath = HelperPaths.sgitPath
+    val helloFilePath = sgitPath + File.separator + "testFolder" + File.separator + "hello"
+    //When
+    Add_cmd.add(Array("add",helloFilePath))
+    IOManager.writeInFile(helloFilePath,"changes in the file", append = true)
+    val modifiedFilesNotBeeingValidated = HelperStatus.getChangesThatWillNotBeValidated
 
+    //Then
+    assert(modifiedFilesNotBeeingValidated.length == 1)
+  }
+
+  it should "display the right number of files untracked" in {
+    //Given
+    val untrackedPath = HelperPaths.sgitPath+"testFolder"+File.separator
+    val sgitPath = HelperPaths.sgitPath
+    val helloFilePath = sgitPath + File.separator + "testFolder" + File.separator + "hello"
+    //When
+    Add_cmd.add(Array("add",helloFilePath))
+val stageToCommit = StageManager.readStageToCommit()
+    println(stageToCommit)
+    val untrackedFiles =  HelperStatus.getUntracked(untrackedPath)
+    println(untrackedFiles)
+    val line = IOManager.readInFileAsLine(StageManager.stageValidatedPath)
+    //Then
+    assert(line.length == 1)
+    assert(untrackedFiles.length == 1)
+  }
+
+  it should "display only files untracked when there is no commit yet and no added files" in {
+    //Given
+    val sgitPath = HelperPaths.sgitPath+"testFolder"
+    val untrackedFiles =  HelperStatus.getUntracked(sgitPath)
+    val line = IOManager.readInFileAsLine(StageManager.stageValidatedPath)
+    //Then
+    assert(line.isEmpty)
+    assert(untrackedFiles.length == 2)
+  }
 
 }
