@@ -59,7 +59,7 @@ Now, you can test **Sgit**
     
 -   sgit branch -av  ✅
   
--   sgit checkout  (branch or tag or commit hash) ⚠🚫
+-   sgit checkout  (branch or tag or commit hash) ⚠
     
 -   sgit tag <tag name>  ✅
       
