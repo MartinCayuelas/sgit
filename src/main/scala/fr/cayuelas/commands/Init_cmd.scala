@@ -5,7 +5,7 @@ import java.io.File
 import java.nio.file.Paths
 
 import fr.cayuelas.helpers.HelperPaths
-import fr.cayuelas.managers.{FilesManager, IOManager, LogsManager, StageManager}
+import fr.cayuelas.managers.{FilesManager, IoManager, LogsManager, StageManager}
 
 import scala.annotation.tailrec
 
@@ -61,15 +61,15 @@ INIT -----------
       listFiles.map(file => FilesManager.createNewFile(sgitPath + File.separator + file))
 
       FilesManager.createNewFile(HelperPaths.branchesPath + File.separator + "master") //Creates file for master branch in refs/heads
-      IOManager.writeInFile(HelperPaths.headFile,"ref: refs/heads/master",append = false)//WriteInHEAD
+      IoManager.writeInFile(HelperPaths.headFile,"ref: refs/heads/master",append = false)//WriteInHEAD
       LogsManager.createLogFileForBranch("master") //creates file log for master branch
       FilesManager.createNewFile(StageManager.currentStagePath)// Creates file stage for master branch
       FilesManager.createNewFile(StageManager.stageToCommitPath)// Creates file for stageCommit
       FilesManager.createNewFile(StageManager.stageValidatedPath)// Creates file for stageValidated
 
-      IOManager.emptyRepositoryInitialized(path)
+      IoManager.emptyRepositoryInitialized(path)
     }
-    else IOManager.sgitRepoAlreadyExists()
+    else IoManager.sgitRepoAlreadyExists()
   }
 
   /**

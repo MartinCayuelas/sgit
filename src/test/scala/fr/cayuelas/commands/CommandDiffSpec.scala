@@ -4,7 +4,7 @@ import java.io.File
 
 import fr.cayuelas.helpers.HelperDiff.{createMatrix, getDeltas}
 import fr.cayuelas.helpers.{HelperCommit, HelperDiff, HelperPaths}
-import fr.cayuelas.managers.{FilesManager, IOManager}
+import fr.cayuelas.managers.{FilesManager, IoManager}
 import org.scalatest.{BeforeAndAfterEach, FlatSpec}
 
 class CommandDiffSpec  extends FlatSpec with BeforeAndAfterEach {
@@ -16,8 +16,8 @@ class CommandDiffSpec  extends FlatSpec with BeforeAndAfterEach {
 
     FilesManager.createNewFile("testFolder" + File.separator + "hello")
     FilesManager.createNewFile("testFolder" + File.separator + "world")
-    IOManager.writeInFile("testFolder" + File.separator + "hello","hello",false)
-    IOManager.writeInFile("testFolder" + File.separator + "world","world\nis big",false)
+    IoManager.writeInFile("testFolder" + File.separator + "hello","hello",false)
+    IoManager.writeInFile("testFolder" + File.separator + "world","world\nis big",false)
   }
 
   //delete all files created in the .sgit directory after each test
@@ -45,8 +45,8 @@ class CommandDiffSpec  extends FlatSpec with BeforeAndAfterEach {
     val sgitPath = HelperPaths.sgitPath
     val helloFilePath = sgitPath + File.separator + "testFolder" + File.separator + "hello"
 
-    val newContent = IOManager.readInFileAsLine(helloFilePath)
-    val oldContent = IOManager.readInFileAsLine(helloFilePath)
+    val newContent = IoManager.readInFileAsLine(helloFilePath)
+    val oldContent = IoManager.readInFileAsLine(helloFilePath)
 
     val matrix = createMatrix(oldContent, newContent, 0, 0, Map())
     val deltas = getDeltas(oldContent, newContent, oldContent.length - 1, newContent.length - 1, matrix, List())
@@ -60,7 +60,7 @@ class CommandDiffSpec  extends FlatSpec with BeforeAndAfterEach {
     val sgitPath = HelperPaths.sgitPath
     val helloFilePath = sgitPath + File.separator + "testFolder" + File.separator + "hello"
 
-    val newContent = IOManager.readInFileAsLine(helloFilePath)
+    val newContent = IoManager.readInFileAsLine(helloFilePath)
     val oldContent = List("")
 
     val matrix = createMatrix(oldContent, newContent, 0, 0, Map())
@@ -76,7 +76,7 @@ class CommandDiffSpec  extends FlatSpec with BeforeAndAfterEach {
     val helloFilePath = sgitPath + File.separator + "testFolder" + File.separator + "hello"
 
     val newContent = List("")
-    val oldContent = IOManager.readInFileAsLine(helloFilePath)
+    val oldContent = IoManager.readInFileAsLine(helloFilePath)
 
     val matrix = createMatrix(oldContent, newContent, 0, 0, Map())
     val deltas = getDeltas(oldContent, newContent, oldContent.length - 1, newContent.length - 1, matrix, List())
@@ -90,8 +90,8 @@ class CommandDiffSpec  extends FlatSpec with BeforeAndAfterEach {
     val sgitPath = HelperPaths.sgitPath
     val helloFilePath = sgitPath + File.separator + "testFolder" + File.separator + "hello"
     val worldFilePath = sgitPath + File.separator + "testFolder" + File.separator + "world"
-    val newContent = IOManager.readInFileAsLine(helloFilePath)
-    val oldContent = IOManager.readInFileAsLine(worldFilePath)
+    val newContent = IoManager.readInFileAsLine(helloFilePath)
+    val oldContent = IoManager.readInFileAsLine(worldFilePath)
 
     val matrix = createMatrix(oldContent, newContent, 0, 0, Map())
     val deltas = getDeltas(oldContent, newContent, oldContent.length - 1, newContent.length - 1, matrix, List())
@@ -111,8 +111,8 @@ class CommandDiffSpec  extends FlatSpec with BeforeAndAfterEach {
     Add_cmd.add(Array("add",helloFilePath,worldFilePath))
     Commit_cmd.commit(Array("commit"))
 
-    IOManager.writeInFile("testFolder" + File.separator + "hello","HELLO",append = false)
-    IOManager.writeInFile("testFolder" + File.separator + "world","HELP",append = false)
+    IoManager.writeInFile("testFolder" + File.separator + "hello","HELLO",append = false)
+    IoManager.writeInFile("testFolder" + File.separator + "world","HELP",append = false)
     Add_cmd.add(Array("add",helloFilePath,worldFilePath))
 
     val lastCommit = HelperCommit.getLastCommitInRefs()

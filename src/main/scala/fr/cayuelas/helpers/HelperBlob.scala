@@ -2,7 +2,7 @@ package fr.cayuelas.helpers
 
 import java.io.File
 
-import fr.cayuelas.managers.{IOManager, StageManager}
+import fr.cayuelas.managers.{IoManager, StageManager}
 import fr.cayuelas.objects.Wrapper
 
 object HelperBlob {
@@ -38,8 +38,8 @@ object HelperBlob {
 
     if(isIn1ButNotIn2C&&isIn1ButNotIn2V){//New
       val blob : String = s"Blob ${blobWrapped.hash} ${blobWrapped.path}\n"
-      IOManager.writeInFile(StageManager.stageValidatedPath,s"${typeOfAdd} : "+blobWrapped.path,append = true)
-      IOManager.writeInFile(StageManager.stageToCommitPath,blob,append = true)
+      IoManager.writeInFile(StageManager.stageValidatedPath,s"${typeOfAdd} : "+blobWrapped.path,append = true)
+      IoManager.writeInFile(StageManager.stageToCommitPath,blob,append = true)
     }
   }
 
@@ -48,10 +48,7 @@ object HelperBlob {
    * @param f : file to read the content
    * @return a string in sha1
    */
-  def createSha1Blob(f: String): String = {
-    val content: String = IOManager.readInFile(f)
-    HelperSha1.convertToSha1(content) //Creates the id in sha1
-  }
+  def createSha1Blob(f: String): String = HelperSha1.convertToSha1(IoManager.readInFile(f)) //Creates the id in sha1
 
   /**
    * Reads the content of a given blob's sha1
@@ -61,7 +58,7 @@ object HelperBlob {
   def readContentInBlob(sha1: String): List[String] = {
     val folder = sha1.substring(0,2)
     val file = sha1.substring(2,sha1.length)
-    IOManager.readInFileAsLine(HelperBlob.blobsPath+File.separator+folder+File.separator+file)
+    IoManager.readInFileAsLine(HelperBlob.blobsPath+File.separator+folder+File.separator+file)
   }
 
   /**

@@ -13,11 +13,9 @@ object FilesManager {
 
   def getListOfFiles(dir: String):List[File] = {
     val d = new File(dir)
-    if (d.exists && d.isDirectory) {
-      d.listFiles.filter(_.isFile).toList
-    } else {
-      List[File]()
-    }
+    if (d.exists && d.isDirectory) d.listFiles.filter(_.isFile).toList
+    else List[File]()
+
   }
 
   /**
@@ -27,11 +25,8 @@ object FilesManager {
    */
   def getListOfContentInDirectory(dir: String):List[File] = {
     val d = new File(dir)
-    if (d.exists && d.isDirectory && !d.getName.equals(".sgit") && !d.getName.equals(".git")) {
-      d.listFiles.toList
-    } else {
-      List[File]()
-    }
+    if (d.exists && d.isDirectory && !d.getName.equals(".sgit") && !d.getName.equals(".git")) d.listFiles.toList
+     else List[File]()
   }
 
   /**
@@ -40,9 +35,7 @@ object FilesManager {
    */
   def deleteFile(fileName: String): Unit = {
     val file = new File(fileName)
-    if (file.exists) {
-      file.delete()
-    }
+    if (file.exists) file.delete()
   }
   
   /**
@@ -50,18 +43,16 @@ object FilesManager {
    * @param pathNewFolder : the path of the new folder that will be created
    * @return true if it's created else false
    */
-  def createNewFolder(pathNewFolder: String): Boolean = {
-    new File(pathNewFolder).mkdir()
-  }
+  def createNewFolder(pathNewFolder: String): Boolean = new File(pathNewFolder).mkdir()
+
 
   /**
    * Function that creates a file given a path (String)
    * @param pathNewFile : the path of the new file that will be created
    * @return true if it's created else false
    */
-  def createNewFile(pathNewFile: String): Boolean = {
-    new File(pathNewFile).createNewFile()
-  }
+  def createNewFile(pathNewFile: String): Boolean = new File(pathNewFile).createNewFile()
+
 
 
 }

@@ -1,6 +1,6 @@
 package fr.cayuelas.helpers
 
-import fr.cayuelas.managers.{FilesManager, IOManager, StageManager}
+import fr.cayuelas.managers.{FilesManager, IoManager, StageManager}
 
 object HelperStatus {
   /**
@@ -16,8 +16,8 @@ object HelperStatus {
    */
 
   def printChangesThatWillBeValidated(): Unit = {
-    IOManager.printToBEValdiatedInfos(HelperBranch.getCurrentBranch)
-    getChangesThatWillBeValidated.map(elem => IOManager.printElemValidated(elem))
+    IoManager.printToBEValdiatedInfos(HelperBranch.getCurrentBranch)
+    getChangesThatWillBeValidated.map(elem => IoManager.printElemValidated(elem))
   }
 
   /**
@@ -45,8 +45,8 @@ object HelperStatus {
    * Print all the files that will not be validated
    */
   def printChangesThatWillNotBeValidated(): Unit = {
-    IOManager.printNotValidatedInfos()
-    getChangesThatWillNotBeValidated.map(e => IOManager.printElemNotValidated(e))
+    IoManager.printNotValidatedInfos()
+    getChangesThatWillNotBeValidated.map(IoManager.printElemNotValidated)
   }
 
   /**
@@ -57,7 +57,6 @@ object HelperStatus {
   def getUntracked(path :String): List[String] = {
     val listOfAll = FilesManager.getListOfContentInDirectory(path)
     val listOfAllCleared = listOfAll.map(e => HelperPaths.getRelativePathOfFile(e.getAbsolutePath))
-
     listOfAllCleared.diff(getPathsOfFilesTracked) //Difference between the Working directory and the "stage"
   }
 
@@ -65,8 +64,8 @@ object HelperStatus {
    * Print all the files not tracked in the stage
    */
   def printUntrackedFiles(): Unit = {
-    IOManager.printUntrackedInfos()
-    getUntracked(HelperPaths.sgitPath).map(e => IOManager.printElemNUntracked(e))
+    IoManager.printUntrackedInfos()
+    getUntracked(HelperPaths.sgitPath).map(IoManager.printElemNUntracked)
   }
 
   /**
@@ -77,8 +76,8 @@ object HelperStatus {
     val staged = StageManager.readStageAsLines()
     val stagedInCommit = StageManager.readStageToCommit()
 
-    val pathsInStageCommit = stagedInCommit.map(x => x.split(" ")).map(x => x(2)) //Split lines
-    val pathsInStage = staged.map(x => x.split(" ")).map(x => x(2)) //Split lines
+    val pathsInStageCommit = stagedInCommit.map(_.split(" ")).map(x => x(2)) //Split lines
+    val pathsInStage = staged.map(_.split(" ")).map(x => x(2)) //Split lines
 
     pathsInStage.concat(pathsInStageCommit).distinct //Union of the 2 lists of paths
 

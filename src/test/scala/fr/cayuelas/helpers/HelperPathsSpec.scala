@@ -3,7 +3,7 @@ package fr.cayuelas.helpers
 import java.io.File
 
 import fr.cayuelas.commands.Init_cmd
-import fr.cayuelas.managers.{FilesManager, IOManager}
+import fr.cayuelas.managers.{FilesManager, IoManager}
 import org.scalatest.{BeforeAndAfterEach, FlatSpec}
 
 class HelperPathsSpec   extends FlatSpec with BeforeAndAfterEach {
@@ -15,8 +15,8 @@ class HelperPathsSpec   extends FlatSpec with BeforeAndAfterEach {
 
     FilesManager.createNewFile("testFolder" + File.separator + "hello")
     FilesManager.createNewFile("testFolder" + File.separator + "world")
-    IOManager.writeInFile("testFolder" + File.separator + "hello","hello",false)
-    IOManager.writeInFile("testFolder" + File.separator + "world","world",false)
+    IoManager.writeInFile("testFolder" + File.separator + "hello","hello",false)
+    IoManager.writeInFile("testFolder" + File.separator + "world","world",false)
   }
 
   //delete all files created in the .sgit directory after each test

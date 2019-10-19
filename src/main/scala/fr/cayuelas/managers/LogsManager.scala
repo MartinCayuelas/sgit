@@ -28,7 +28,7 @@ object LogsManager {
    * Retrieves Logs
    * @return the content of the logs of the current branch
    */
-  def getLogsForBranch(nameBranch: String) : List[String] = IOManager.readInFileAsLine(HelperPaths.logsPath + File.separator +nameBranch).reverse
+  def getLogsForBranch(nameBranch: String) : List[String] = IoManager.readInFileAsLine(HelperPaths.logsPath + File.separator +nameBranch).reverse
 
 
   /**
@@ -48,10 +48,10 @@ object LogsManager {
   def listLogsForBranch(nameBranch: String): Unit = {
     val  listLogs = LogsManager.getLogsForBranch(nameBranch)
     listLogs match {
-      case Nil => IOManager.printFatalError(nameBranch)
+      case Nil => IoManager.printFatalError(nameBranch)
       case _ => {
-        IOManager.printBranch(nameBranch)
-        listLogs.map(log => IOManager.printLogFormated(log))
+        IoManager.printBranch(nameBranch)
+        listLogs.map(IoManager.printLogFormated)
       }
     }
   }
@@ -69,12 +69,7 @@ object LogsManager {
    *Call the displayOption Function for all the branches
    * @param logStat: boolean used to do the right action (true= log stat --stat, false log stat -p
    * */
-  def displayLogsOption(logStat: Boolean): Unit = {
-    val branches = FilesManager.getListOfFiles(HelperPaths.branchesPath)
-    branches.map(b => {
-      displayOption(logStat,b.getName)
-    })
-  }
+  def displayLogsOption(logStat: Boolean): Unit = FilesManager.getListOfFiles(HelperPaths.branchesPath).map(b => {displayOption(logStat,b.getName)})
 
   /**
    *Display logs recursively given an option boolean
@@ -84,29 +79,26 @@ object LogsManager {
   def displayOption(logStat: Boolean, nameBranch: String): Unit = {
     val logs = getLogsForBranch(nameBranch)
     logs match {
-      case Nil => IOManager.printFatalError(nameBranch)
+      case Nil => IoManager.printFatalError(nameBranch)
       case _ => {
-        IOManager.printBranch(nameBranch)
+        IoManager.printBranch(nameBranch)
         recursiveLogs(logs)
       }
     }
     @tailrec
     def recursiveLogs(logs: List[String]): Unit = {
       if(logs.nonEmpty){
-       IOManager.printLogFormated(logs.head)
+       IoManager.printLogFormated(logs.head)
         val (parentCommit,currentCommit): (String,String) =  (logs.head.split(" ")(0),logs.head.split(" ")(1))
-
-
         val res = HelperDiff.diffBetweenTwoCommits(currentCommit,parentCommit,logStat)
         if(logStat){
           val filesChanged = retrieveChanges(currentCommit,parentCommit)
-          IOManager.printChanges(filesChanged,res._1,res._2)
+          IoManager.printChanges(filesChanged,res._1,res._2)
         }
         recursiveLogs(logs.tail)
       }
     }
   }
-
 
   /**
    *Retrieves number of changed files
@@ -116,32 +108,29 @@ object LogsManager {
    */
 
   def retrieveChanges(lastCommit : String, parentLastCommit: String): Int = {
-    if(parentLastCommit.equals("0000000000000000000000000000000000000000")){
-      HelperCommit.getAllBlobsFromCommit(lastCommit).length
-    }else{
+    if(parentLastCommit.equals("0000000000000000000000000000000000000000")) HelperCommit.getAllBlobsFromCommit(lastCommit).length
+    else{
       val listBlobLastCommit = HelperCommit.getAllBlobsFromCommit(lastCommit)
       val listBlobParentLastCommit = HelperCommit.getAllBlobsFromCommit(parentLastCommit)
-      val listOfChanges = listBlobLastCommit.diff(listBlobParentLastCommit).length
-      listOfChanges
+      listBlobLastCommit.diff(listBlobParentLastCommit).length
     }
   }
 
   /**
-   *
-   * @param oldContent
-   * @param newContent
-   * @param path
-   * @param sha1
+   * Dispatch and diplay to user the number of modifications given a file
+   * @param oldContent : content of the old blob
+   * @param newContent: Content of the new blob
+   * @param path : path of the file
    */
-  def displayStatsLog(oldContent: List[String], newContent: List[String], path: String, sha1: String): (Int,Int) = {
+  def displayStatsLog(oldContent: List[String], newContent: List[String], path: String): (Int,Int) = {
     if (oldContent.isEmpty && newContent.nonEmpty) {
       val linesCounted = newContent.length
-      IOManager.printLineStat(path,"+",linesCounted)
+      IoManager.printLineStat(path,"+",linesCounted)
       (linesCounted,0)
     }
     else if (newContent.isEmpty && oldContent.nonEmpty) {
       val linesCounted = oldContent.length
-      IOManager.printLineStat(path,"-",linesCounted)
+      IoManager.printLineStat(path,"-",linesCounted)
       (0,linesCounted)
     }
     else {
@@ -150,7 +139,7 @@ object LogsManager {
       if (deltas.nonEmpty) {
         val (inserted, deleted) = calculateDeletionAndInsertion(deltas)
         val changes = inserted + deleted
-        IOManager.printLineStat(path,"+-",changes)
+        IoManager.printLineStat(path,"+-",changes)
         (inserted,deleted)
       }else (0,0)
     }

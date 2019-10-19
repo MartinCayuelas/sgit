@@ -3,7 +3,7 @@ package fr.cayuelas.commands
 import java.io.File
 
 import fr.cayuelas.helpers.{HelperPaths, HelperStatus}
-import fr.cayuelas.managers.{FilesManager, IOManager, StageManager}
+import fr.cayuelas.managers.{FilesManager, IoManager, StageManager}
 import org.scalatest.{BeforeAndAfterEach, FlatSpec}
 
 
@@ -16,8 +16,8 @@ class CommandStatusSpec  extends FlatSpec with BeforeAndAfterEach {
 
     FilesManager.createNewFile("testFolder" + File.separator + "hello")
     FilesManager.createNewFile("testFolder" + File.separator + "world")
-    IOManager.writeInFile("testFolder" + File.separator + "hello","hello",append = false)
-    IOManager.writeInFile("testFolder" + File.separator + "world","world",append = false)
+    IoManager.writeInFile("testFolder" + File.separator + "hello","hello",append = false)
+    IoManager.writeInFile("testFolder" + File.separator + "world","world",append = false)
   }
 
   //delete all files created in the .sgit directory after each test
@@ -44,7 +44,7 @@ class CommandStatusSpec  extends FlatSpec with BeforeAndAfterEach {
     val helloFilePath = sgitPath + File.separator + "testFolder" + File.separator + "hello"
     //When
     Add_cmd.add(Array("add",helloFilePath))
-    val line = IOManager.readInFileAsLine(StageManager.stageValidatedPath)
+    val line = IoManager.readInFileAsLine(StageManager.stageValidatedPath)
     print("StageValidated : "+line)
     //Then
     assert(line.length == 1)
@@ -58,9 +58,9 @@ class CommandStatusSpec  extends FlatSpec with BeforeAndAfterEach {
     //When
     Add_cmd.add(Array("add",helloFilePath))
     Commit_cmd.commit(Array("commit"))
-    IOManager.writeInFile(helloFilePath,"changes in the file", append = true)
+    IoManager.writeInFile(helloFilePath,"changes in the file", append = true)
     Add_cmd.add(Array("add",helloFilePath))
-    val line = IOManager.readInFileAsLine(StageManager.stageValidatedPath)
+    val line = IoManager.readInFileAsLine(StageManager.stageValidatedPath)
     //Then
     assert(line.length == 1)
     assert(line(0).startsWith("modified"))
@@ -72,7 +72,7 @@ class CommandStatusSpec  extends FlatSpec with BeforeAndAfterEach {
     val helloFilePath = sgitPath + File.separator + "testFolder" + File.separator + "hello"
     //When
     Add_cmd.add(Array("add",helloFilePath))
-    IOManager.writeInFile(helloFilePath,"changes in the file", append = true)
+    IoManager.writeInFile(helloFilePath,"changes in the file", append = true)
     val modifiedFilesNotBeeingValidated = HelperStatus.getChangesThatWillNotBeValidated
 
     //Then
@@ -90,7 +90,7 @@ val stageToCommit = StageManager.readStageToCommit()
     println(stageToCommit)
     val untrackedFiles =  HelperStatus.getUntracked(untrackedPath)
     println(untrackedFiles)
-    val line = IOManager.readInFileAsLine(StageManager.stageValidatedPath)
+    val line = IoManager.readInFileAsLine(StageManager.stageValidatedPath)
     //Then
     assert(line.length == 1)
     assert(untrackedFiles.length == 1)
@@ -100,7 +100,7 @@ val stageToCommit = StageManager.readStageToCommit()
     //Given
     val sgitPath = HelperPaths.sgitPath+"testFolder"
     val untrackedFiles =  HelperStatus.getUntracked(sgitPath)
-    val line = IOManager.readInFileAsLine(StageManager.stageValidatedPath)
+    val line = IoManager.readInFileAsLine(StageManager.stageValidatedPath)
     //Then
     assert(line.isEmpty)
     assert(untrackedFiles.length == 2)

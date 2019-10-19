@@ -5,7 +5,7 @@ import java.io.File
 import fr.cayuelas.helpers.HelperDiff.{createMatrix, getDeltas}
 import fr.cayuelas.helpers.{HelperBlob, HelperCommit, HelperDiff, HelperPaths}
 import fr.cayuelas.managers.LogsManager.retrieveChanges
-import fr.cayuelas.managers.{FilesManager, IOManager, LogsManager}
+import fr.cayuelas.managers.{FilesManager, IoManager, LogsManager}
 import fr.cayuelas.objects.Wrapper
 import org.scalatest.{BeforeAndAfterEach, FlatSpec}
 
@@ -19,8 +19,8 @@ class CommandLogSpec  extends FlatSpec with BeforeAndAfterEach {
 
     FilesManager.createNewFile("testFolder" + File.separator + "hello")
     FilesManager.createNewFile("testFolder" + File.separator + "world")
-    IOManager.writeInFile("testFolder" + File.separator + "hello","hello",false)
-    IOManager.writeInFile("testFolder" + File.separator + "world","world",false)
+    IoManager.writeInFile("testFolder" + File.separator + "hello","hello",false)
+    IoManager.writeInFile("testFolder" + File.separator + "world","world",false)
   }
 
   //delete all files created in the .sgit directory after each test
@@ -52,7 +52,7 @@ class CommandLogSpec  extends FlatSpec with BeforeAndAfterEach {
 
     Commit_cmd.commit(Array("commit"))
 
-    val numberOfLogs = IOManager.readInFileAsLine(HelperPaths.logsPath+File.separator+"master")
+    val numberOfLogs = IoManager.readInFileAsLine(HelperPaths.logsPath+File.separator+"master")
     assert(numberOfLogs.length == 1)
 
   }
@@ -65,7 +65,7 @@ class CommandLogSpec  extends FlatSpec with BeforeAndAfterEach {
     Add_cmd.add(Array("add",helloFilePath))
     Commit_cmd.commit(Array("commit"))
 
-    val logs = IOManager.readInFileAsLine(HelperPaths.logsPath+File.separator+"master")
+    val logs = IoManager.readInFileAsLine(HelperPaths.logsPath+File.separator+"master")
 
     val (parentCommit,currentCommit): (String,String) =  (logs.head.split(" ")(0),logs.head.split(" ")(1))
     val (inserted,deleted)  = HelperDiff.diffBetweenTwoCommits(currentCommit,parentCommit,true)
@@ -87,7 +87,7 @@ class CommandLogSpec  extends FlatSpec with BeforeAndAfterEach {
 
     val listBlobCommit: List[Wrapper] = HelperCommit.getAllBlobsFromCommit(HelperCommit.getLastCommitInRefs())
     val contentBlobCurrent = HelperBlob.readContentInBlob(listBlobCommit.head.hash)
-    val resFunc = LogsManager.displayStatsLog(List(), contentBlobCurrent, listBlobCommit.head.path, listBlobCommit.head.hash)
+    val resFunc = LogsManager.displayStatsLog(List(), contentBlobCurrent, listBlobCommit.head.path)
     val resInsertedDeleted = Some((resFunc._1,resFunc._2))
 
     assert(resInsertedDeleted.get._1 == 1)

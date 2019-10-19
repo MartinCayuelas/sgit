@@ -1,7 +1,7 @@
 package fr.cayuelas.commands
 
 import fr.cayuelas.helpers.{HelperBlob, HelperDiff, HelperPaths}
-import fr.cayuelas.managers.{IOManager, StageManager}
+import fr.cayuelas.managers.{IoManager, StageManager}
 
 object Diff_cmd {
 
@@ -13,7 +13,7 @@ object Diff_cmd {
     val stageToCommitSplited = StageManager.readStageToCommit().map(x => x.split(" "))
     stageToCommitSplited.map(file => {
       val contentBlob = HelperBlob.readContentInBlob(file(1))
-      val contentOfFile = IOManager.readInFileAsLine(HelperPaths.sgitPath+file(2))
+      val contentOfFile = IoManager.readInFileAsLine(HelperPaths.sgitPath+file(2))
    HelperDiff.displayDifferenceBetweenTwoFiles(contentBlob, contentOfFile, file(2), file(1))
     })
   }

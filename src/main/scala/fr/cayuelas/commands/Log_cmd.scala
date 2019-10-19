@@ -1,6 +1,6 @@
 package fr.cayuelas.commands
 
-import fr.cayuelas.managers.{IOManager, LogsManager}
+import fr.cayuelas.managers.{IoManager, LogsManager}
 
 object Log_cmd {
 
@@ -14,9 +14,9 @@ object Log_cmd {
       args match {
         case Array(_,"-p") => LogsManager.displayLogsOption(false)
         case Array(_,"--stat") => LogsManager.displayLogsOption(true)
-        case _ => IOManager.argumentNotSupported()
+        case _ => IoManager.argumentNotSupported()
       }
     }
-    else IOManager.numberOfArgumentNotSupported(args(0))
+    else IoManager.numberOfArgumentNotSupported(args(0))
   }
 }

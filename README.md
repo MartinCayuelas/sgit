@@ -4,7 +4,26 @@ It's a simple implementation of Git in Scala. This project was realized in 2 and
 
 #  Installation
 
+```shell script
+$ cd
+$ git clone https://github.com/MartinCayuelas/sgit.git
+$ cd sgit
+$ source install.sh
+$ sbt assembly
+$ cd ..
+$ mkdir yourOwnFolder
+$ cd yourOwnFolder
+```
 
+Now, you can enjoy **Sgit**
+
+#  Tests
+
+```shell script
+$ cd sgit
+$ sbt test
+```
+Now, you can test **Sgit**
 # Features
 
 ## Create:
@@ -40,7 +59,7 @@ It's a simple implementation of Git in Scala. This project was realized in 2 and
     
 -   sgit branch -av  ✅
   
--   sgit checkout (branch or tag or commit hash) ⏳ 
+-   sgit checkout  (branch or tag or commit hash) ⚠🚫
     
 -   sgit tag <tag name>  ✅
       
@@ -48,8 +67,8 @@ It's a simple implementation of Git in Scala. This project was realized in 2 and
 ## Merge & Rebase
     
 
--   sgit merge <branch> ⚠️
+-   sgit merge <branch>  ❌
     
--   sgit rebase <branch>⚠️
+-   sgit rebase <branch> ❌
     
--   sgit rebase -i <commit hash or banch name>⚠️
+-   sgit rebase -i <commit hash or banch name> ❌

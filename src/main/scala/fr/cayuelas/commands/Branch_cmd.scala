@@ -2,7 +2,7 @@ package fr.cayuelas.commands
 
 
 import fr.cayuelas.helpers.{HelperBranch, HelperTag}
-import fr.cayuelas.managers.IOManager
+import fr.cayuelas.managers.IoManager
 
 object Branch_cmd {
   /*
@@ -18,11 +18,11 @@ object Branch_cmd {
   def branch(args: Array[String]): Unit = {
     if ((args.length == 2) && args(1).equals("-av")) {
       HelperBranch.displayAllBranches()
-      println("   ------------")
+      IoManager.printSeparator()
       HelperTag.displayAllTags()
     }
     else if (args.length == 2) HelperBranch.createBranch(args(1))
-    else IOManager.numberOfArgumentNotSupported(args(0))
+    else IoManager.numberOfArgumentNotSupported(args(0))
   }
 
 

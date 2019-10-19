@@ -3,7 +3,7 @@ package fr.cayuelas.commands
 import java.nio.file.Paths
 
 import fr.cayuelas.helpers.HelperAdd
-import fr.cayuelas.managers.IOManager
+import fr.cayuelas.managers.IoManager
 
 object Add_cmd {
   /**
@@ -12,7 +12,7 @@ object Add_cmd {
    * @param args : array of String that represents the name of files or folders
    */
   def add(args: Array[String]) : Unit = {
-    if (args.length == 1) IOManager.specifyFileOrFolder()
+    if (args.length == 1) IoManager.specifyFileOrFolder()
     else {
       args.filter(_ != "add").map(arg =>{
         val file =  Paths.get(arg).toFile

@@ -3,7 +3,7 @@ package fr.cayuelas.commands
 import java.io.File
 
 import fr.cayuelas.helpers.{HelperBranch, HelperCommit, HelperPaths, HelperTag}
-import fr.cayuelas.managers.{FilesManager, IOManager, StageManager}
+import fr.cayuelas.managers.{FilesManager, IoManager, StageManager}
 import org.scalatest.{BeforeAndAfterEach, FlatSpec}
 
 
@@ -16,8 +16,8 @@ class CommandCheckoutSpec  extends FlatSpec with BeforeAndAfterEach {
 
     FilesManager.createNewFile("testFolder" + File.separator + "hello")
     FilesManager.createNewFile("testFolder" + File.separator + "world")
-    IOManager.writeInFile("testFolder" + File.separator + "hello","hello",false)
-    IOManager.writeInFile("testFolder" + File.separator + "world","world",false)
+    IoManager.writeInFile("testFolder" + File.separator + "hello","hello",false)
+    IoManager.writeInFile("testFolder" + File.separator + "world","world",false)
   }
 
   //delete all files created in the .sgit directory after each test
@@ -48,11 +48,11 @@ class CommandCheckoutSpec  extends FlatSpec with BeforeAndAfterEach {
     Add_cmd.add(Array("add",helloFilePath))
     Commit_cmd.commit(Array("commit"))
 
-    val oldHeadContent = IOManager.readInFile(HelperPaths.headFile)
+    val oldHeadContent = IoManager.readInFile(HelperPaths.headFile)
 
     Branch_cmd.branch(Array("branch","devTest"))
     Checkout_cmd.checkout(Array("checkout","devTest"))
-    val newHeadContent = IOManager.readInFile(HelperPaths.headFile)
+    val newHeadContent = IoManager.readInFile(HelperPaths.headFile)
     ////Then
     assert(oldHeadContent != newHeadContent)
     assert(newHeadContent.equals("ref: refs/heads/devTest"))
@@ -69,7 +69,7 @@ class CommandCheckoutSpec  extends FlatSpec with BeforeAndAfterEach {
     Commit_cmd.commit(Array("commit"))
     Checkout_cmd.checkout(Array("checkout","devTest"))
 
-    val newHeadContent = IOManager.readInFile(HelperPaths.headFile)
+    val newHeadContent = IoManager.readInFile(HelperPaths.headFile)
     ////Then
     assert(!newHeadContent.equals("ref: refs/heads/devTest"))
 
@@ -81,10 +81,10 @@ class CommandCheckoutSpec  extends FlatSpec with BeforeAndAfterEach {
     //When
     Add_cmd.add(Array("add",helloFilePath))
 
-    val oldHeadContent = IOManager.readInFile(HelperPaths.headFile)
+    val oldHeadContent = IoManager.readInFile(HelperPaths.headFile)
 
     Checkout_cmd.checkout(Array("checkout","devTest"))
-    val newHeadContent = IOManager.readInFile(HelperPaths.headFile)
+    val newHeadContent = IoManager.readInFile(HelperPaths.headFile)
     //Then
     assert(oldHeadContent == newHeadContent)
   }
@@ -96,10 +96,10 @@ class CommandCheckoutSpec  extends FlatSpec with BeforeAndAfterEach {
     //When
     Add_cmd.add(Array("add",helloFilePath))
 
-    val oldHeadContent = IOManager.readInFile(HelperPaths.headFile)
+    val oldHeadContent = IoManager.readInFile(HelperPaths.headFile)
 
     Checkout_cmd.checkout(Array("checkout","commitHash"))
-    val newHeadContent = IOManager.readInFile(HelperPaths.headFile)
+    val newHeadContent = IoManager.readInFile(HelperPaths.headFile)
     //Then
     assert(oldHeadContent == newHeadContent)
   }
@@ -111,10 +111,10 @@ class CommandCheckoutSpec  extends FlatSpec with BeforeAndAfterEach {
     //When
     Add_cmd.add(Array("add",helloFilePath))
 
-    val oldHeadContent = IOManager.readInFile(HelperPaths.headFile)
+    val oldHeadContent = IoManager.readInFile(HelperPaths.headFile)
     HelperTag.createTag("tag1")
     Checkout_cmd.checkout(Array("checkout","tag1"))
-    val newHeadContent = IOManager.readInFile(HelperPaths.headFile)
+    val newHeadContent = IoManager.readInFile(HelperPaths.headFile)
     //Then
     assert(oldHeadContent == newHeadContent)
   }
@@ -145,10 +145,10 @@ class CommandCheckoutSpec  extends FlatSpec with BeforeAndAfterEach {
     //When
     Add_cmd.add(Array("add",helloFilePath))
     Commit_cmd.commit(Array("commit"))
-    val oldHeadContent = IOManager.readInFile(HelperPaths.headFile)
+    val oldHeadContent = IoManager.readInFile(HelperPaths.headFile)
     HelperTag.createTag("tag1")
     Checkout_cmd.checkout(Array("checkout","tag1"))
-    val newHeadContent = IOManager.readInFile(HelperPaths.headFile)
+    val newHeadContent = IoManager.readInFile(HelperPaths.headFile)
     //Then
     assert(oldHeadContent == newHeadContent)
 
@@ -162,10 +162,10 @@ class CommandCheckoutSpec  extends FlatSpec with BeforeAndAfterEach {
     Commit_cmd.commit(Array("commit"))
 
     val lastCommit = HelperCommit.getLastCommitInRefs()
-    val oldHeadContent = IOManager.readInFile(HelperPaths.headFile)
+    val oldHeadContent = IoManager.readInFile(HelperPaths.headFile)
 
     Checkout_cmd.checkout(Array("checkout",lastCommit))
-    val newHeadContent = IOManager.readInFile(HelperPaths.headFile)
+    val newHeadContent = IoManager.readInFile(HelperPaths.headFile)
     //Then
     assert(oldHeadContent == newHeadContent)
   }
@@ -221,7 +221,7 @@ class CommandCheckoutSpec  extends FlatSpec with BeforeAndAfterEach {
     val helloFilePath = sgitPath + File.separator + "testFolder" + File.separator + "hello"
     val worldFilePath = sgitPath + File.separator + "testFolder" + File.separator + "world"
     //When
-    IOManager.writeInFile("testFolder" + File.separator + "fileForTag","tagtag",append = false)
+    IoManager.writeInFile("testFolder" + File.separator + "fileForTag","tagtag",append = false)
     Add_cmd.add(Array("add",helloFilePath,worldFilePath))
     Commit_cmd.commit(Array("commit"))
     Tag_cmd.tag(Array("tag","V1"))
@@ -260,13 +260,13 @@ class CommandCheckoutSpec  extends FlatSpec with BeforeAndAfterEach {
     Add_cmd.add(Array("add",helloFilePath,worldFilePath))
     Commit_cmd.commit(Array("commit"))
     val lastCommit = HelperCommit.getLastCommitInRefs()
-    val stage = IOManager.readInFileAsLine(StageManager.currentStagePath)
+    val stage = IoManager.readInFileAsLine(StageManager.currentStagePath)
     val fileForTagPath = sgitPath + File.separator + "testFolder" + File.separator + "fileForTag"
     Add_cmd.add(Array("add",fileForTagPath))
     Commit_cmd.commit(Array("commit"))
 
     Checkout_cmd.checkout(Array("checkout",lastCommit))
-    val stage2 = IOManager.readInFileAsLine(StageManager.currentStagePath)
+    val stage2 = IoManager.readInFileAsLine(StageManager.currentStagePath)
     //Then
     assert(stage.length == stage2.length)
   }

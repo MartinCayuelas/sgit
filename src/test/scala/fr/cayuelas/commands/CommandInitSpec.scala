@@ -3,7 +3,7 @@ package fr.cayuelas.commands
 
 import java.io.File
 
-import fr.cayuelas.managers.IOManager
+import fr.cayuelas.managers.IoManager
 import org.scalatest.{BeforeAndAfterEach, FlatSpec}
 
 
@@ -44,7 +44,7 @@ class CommandInitSpec extends FlatSpec with BeforeAndAfterEach {
 
   it should "put the right content in the HEAD file" in {
     val pathHead = ".sgit" + File.separator + "HEAD"
-    val content = IOManager.readInFileAsLine(pathHead).mkString
+    val content = IoManager.readInFileAsLine(pathHead).mkString
     assert(content == "ref: refs/heads/master")
   }
 

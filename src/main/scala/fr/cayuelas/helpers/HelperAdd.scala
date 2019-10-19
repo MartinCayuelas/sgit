@@ -2,7 +2,7 @@ package fr.cayuelas.helpers
 
 import java.io.File
 
-import fr.cayuelas.managers.{FilesManager, IOManager}
+import fr.cayuelas.managers.{FilesManager, IoManager}
 import fr.cayuelas.objects.Blob
 
 object HelperAdd {
@@ -14,10 +14,8 @@ object HelperAdd {
    */
   def addRoutine(f: File) : Unit = {
     if(f.isFile) Blob.createBlob(f)
-    else if (f.isDirectory){
-      recursionAddBlob(f)
-    }
-    else IOManager.printFatalAdd(f)
+    else if (f.isDirectory)recursionAddBlob(f)
+    else IoManager.printFatalAdd(f)
   }
 
   /**

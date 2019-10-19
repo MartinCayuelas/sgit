@@ -3,7 +3,7 @@ package fr.cayuelas.helpers
 import java.io.File
 import java.nio.file.{Files, Paths}
 
-import fr.cayuelas.managers.{FilesManager, IOManager, LogsManager}
+import fr.cayuelas.managers.{FilesManager, IoManager, LogsManager}
 
 object HelperBranch {
   /**
@@ -17,11 +17,11 @@ object HelperBranch {
       val path = HelperPaths.branchesPath + File.separator + nameBranch
       if(Files.notExists(Paths.get(path))){
         FilesManager.createNewFile(path)
-        IOManager.writeInFile(path,HelperCommit.getLastCommitInRefs(),append = false)
+        IoManager.writeInFile(path,HelperCommit.getLastCommitInRefs(),append = false)
         createStageForBranch(nameBranch) //Creates a new file in /objects/stage/branchName>
         LogsManager.createLogFileForBranch(nameBranch)
-      } else IOManager.printFatalCreation("branch",nameBranch)
-    }else IOManager.printErrorNoCommitExisting()
+      } else IoManager.printFatalCreation("branch",nameBranch)
+    }else IoManager.printErrorNoCommitExisting()
 
   }
 
@@ -32,8 +32,8 @@ object HelperBranch {
   def createStageForBranch(nameBranch: String): Unit = {
     val path = Paths.get(HelperPaths.stagePath+File.separator+nameBranch)
     if(Files.notExists(path)) FilesManager.createNewFile(path.toString)
-    val stageMaster =IOManager.readInFileAsLine(HelperPaths.stagePath+File.separator+"master")
-    stageMaster.map(line =>  IOManager.writeInFile(HelperPaths.stagePath+File.separator+nameBranch,line+"\n",true))
+    val stageMaster = IoManager.readInFileAsLine(HelperPaths.stagePath+File.separator+"master")
+    stageMaster.map(line =>  IoManager.writeInFile(HelperPaths.stagePath+File.separator+nameBranch,line+"\n",append = true))
   }
 
   /**
@@ -42,7 +42,7 @@ object HelperBranch {
    */
   def getCurrentBranch: String = {
     val path = HelperPaths.headFile
-    val content: String = IOManager.readInFile(path)
+    val content: String = IoManager.readInFile(path)
     val pattern = "([A-Za-z]+)(:) ([A-Za-z]+)(/)([A-Za-z]+)(/)([A-Za-z]+)".r
     val pattern(_, _, _,_,_,_,currentBranch) = content
     currentBranch
@@ -51,10 +51,7 @@ object HelperBranch {
   /**
    * Function that display all branches
    */
-  def displayAllBranches(): Unit = {
-    val listOfBranches = FilesManager.getListOfFiles(HelperPaths.branchesPath) //Getting all the files in objects/refs/heads
-    listOfBranches.map(b => formatAndDisplayBranch(b))
-  }
+  def displayAllBranches(): Unit = FilesManager.getListOfFiles(HelperPaths.branchesPath).map(formatAndDisplayBranch) //Getting all the files in objects/refs/heads
 
   /**
    * Format the string following if the branch is the current or not
@@ -62,27 +59,22 @@ object HelperBranch {
    */
 
   def formatAndDisplayBranch(fileToFormat: File): Unit = {
-    if (getCurrentBranch.equals(fileToFormat.getName)) IOManager.printCurrentBranch(fileToFormat.getName)
-    else IOManager.printNonCurrentBranch(fileToFormat.getName)
+    if (getCurrentBranch.equals(fileToFormat.getName)) IoManager.printCurrentBranch(fileToFormat.getName)
+    else IoManager.printNonCurrentBranch(fileToFormat.getName)
   }
 
   /**
    *Checks if the branch name given exists
-   * @param nameBranch
+   * @param nameBranch: name of yhe branch we want to checks
    * @return true if the branch exists else false
    */
 
-  def isABranch(nameBranch: String): Boolean = {
-    val branches = FilesManager.getListOfFiles(HelperPaths.branchesPath)
-    branches.exists(b => b.getName == nameBranch)
-  }
+  def isABranch(nameBranch: String): Boolean = FilesManager.getListOfFiles(HelperPaths.branchesPath).exists(b => b.getName == nameBranch)
 
   /**
    *Writes in the HEAD file the new ref to the new branch
    * @param nameBranch : new name
    */
-  def setNewBranchInHEAD(nameBranch: String): Unit = {
-    IOManager.writeInFile(HelperPaths.headFile,s"ref: refs/heads/${nameBranch}",append = false)
-  }
+  def setNewBranchInHEAD(nameBranch: String): Unit = IoManager.writeInFile(HelperPaths.headFile,s"ref: refs/heads/${nameBranch}",append = false)
 
 }

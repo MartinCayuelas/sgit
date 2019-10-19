@@ -9,7 +9,7 @@ import fr.cayuelas.objects.Commit
 
 import scala.annotation.tailrec
 
-object IOManager {
+object IoManager {
 
   /**
    *General function that write in files (For commit, tree, blob, stage)
@@ -76,6 +76,7 @@ object IOManager {
   def printFatalError(nameBranch: String): Unit = println(s"fatal: your current '${nameBranch}' branch does not yet contain any log")
   def printNonCurrentBranch(nameBranch: String): Unit = println(s"  ${nameBranch} (branch)")
   def printCurrentBranch(nameBranch: String): Unit = println(s"* ${nameBranch} (branch)")
+  def printSeparator(): Unit =println("   ------------")
 
   /*
   STATUS
@@ -101,14 +102,14 @@ object IOManager {
   def printResultCommit(numberOfChanges: Int, commit: Commit, inserted: Int, deleted: Int): Unit = {
     if(deleted > 0){
       val resToPrint = numberOfChanges match {
-        case  1 =>"["+HelperBranch.getCurrentBranch+" "+commit.idCommit.substring(0,8)+"] "+commit.message+s"\n  ${numberOfChanges} file changed, ${inserted} insertions(+), ${deleted} deletions(-)"
-        case _ =>"["+HelperBranch.getCurrentBranch+" "+commit.idCommit.substring(0,8)+"] "+commit.message+s"\n  ${numberOfChanges} files changed, ${inserted} insertions(+), ${deleted} deletions(-)"
+        case  1 => "["+HelperBranch.getCurrentBranch+" "+commit.idCommit.substring(0,8)+"] "+commit.message+s"\n  ${numberOfChanges} file changed, ${inserted} insertions(+), ${deleted} deletions(-)"
+        case _ => "["+HelperBranch.getCurrentBranch+" "+commit.idCommit.substring(0,8)+"] "+commit.message+s"\n  ${numberOfChanges} files changed, ${inserted} insertions(+), ${deleted} deletions(-)"
       }
       println(resToPrint)
     }else{
       val resToPrint = numberOfChanges match {
-        case  1 =>"["+HelperBranch.getCurrentBranch+" "+commit.idCommit.substring(0,8)+"] "+commit.message+s"\n  ${numberOfChanges} file changed, ${inserted} insertions(+)"
-        case _ =>"["+HelperBranch.getCurrentBranch+" "+commit.idCommit.substring(0,8)+"] "+commit.message+s"\n  ${numberOfChanges} files changed, ${inserted} insertions(+)"
+        case  1 => "["+HelperBranch.getCurrentBranch+" "+commit.idCommit.substring(0,8)+"] "+commit.message+s"\n  ${numberOfChanges} file changed, ${inserted} insertions(+)"
+        case _ => "["+HelperBranch.getCurrentBranch+" "+commit.idCommit.substring(0,8)+"] "+commit.message+s"\n  ${numberOfChanges} files changed, ${inserted} insertions(+)"
       }
       println(resToPrint)
     }
@@ -117,9 +118,8 @@ object IOManager {
   /*
   DIFF
    */
-  def printDiffForFile(path: String, sha1: String): Unit = {
-    println(s"diff --sgit a/${path} b/${path}\nindex ${sha1.substring(0, 7)}..${sha1.substring(sha1.length - 7, sha1.length)}\n--- a/${path}\n+++ b/${path}\n")
-  }
+  def printDiffForFile(path: String, sha1: String): Unit = println(s"diff --sgit a/${path} b/${path}\nindex ${sha1.substring(0, 7)}..${sha1.substring(sha1.length - 7, sha1.length)}\n--- a/${path}\n+++ b/${path}\n")
+
   /**
    * Prints the différence with the deltas given
    * In green if content is added else in red
@@ -149,8 +149,8 @@ object IOManager {
   def printLineStat(path: String, typePrint: String, changes: Int): Unit ={
     typePrint match {
       case x if x.equals("+") =>println(path + " "*15+"|" + changes + Console.GREEN +"+"*changes+Console.RESET)
-      case y if y.equals("-") => println(path + "                            | " + changes + Console.RED +"-"*changes+Console.RESET)
-      case _ =>  println(path + " "*15+"|"  + changes + s"${Console.GREEN}  +${Console.RESET}" + s"${Console.RED}-${Console.RESET}")
+      case y if y.equals("-") => println(path + " "*15+"|"+ changes + Console.RED +"-"*changes+Console.RESET)
+      case _ =>  println(path + " "*15+"|"  + changes + Console.GREEN+"+"+Console.RESET+Console.RED+"-"+Console.RESET)
     }
   }
 
@@ -172,7 +172,6 @@ object IOManager {
   CHECKOUT
    */
   def printSuccessCheckoutBranch(nameBranch: String): Unit = println(s"Tipping on the branch ${nameBranch}")
-
   def printErrorCheckout(): Unit = println("There is no branch or tag or commit corresponding. Please try again with a rigth name")
   def printErrorOnCheckoutSameBranch(nameBranch: String): Unit = println(s"You are already on the branch ${nameBranch}")
 }

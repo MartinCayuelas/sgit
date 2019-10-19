@@ -1,6 +1,6 @@
 package fr.cayuelas.helpers
 
-import fr.cayuelas.managers.{IOManager, LogsManager, StageManager}
+import fr.cayuelas.managers.{IoManager, LogsManager, StageManager}
 import fr.cayuelas.objects.Wrapper
 
 import scala.annotation.tailrec
@@ -20,7 +20,6 @@ object HelperDiff {
    */
   @tailrec
   def createMatrix(oldContent: List[String], newContent: List[String], i: Int, j: Int, matrix: Map[(Int, Int), Int]): Map[(Int, Int), Int] = {
-    //Step 0 -> end
 
     if (oldContent.length - 1 <= i && newContent.length <= j) matrix
     else {
@@ -86,11 +85,7 @@ object HelperDiff {
    * @param deltas : list of opérations
    * @return a tuple2 containing the number of Lines inserted and deleted in a file
    */
-  def calculateDeletionAndInsertion(deltas: List[String]): (Int, Int) = {
-    val insertedLines = deltas.count(x => x.startsWith("+"))
-    val deletedLines = deltas.count(x => x.startsWith("-"))
-    (insertedLines, deletedLines)
-  }
+  def calculateDeletionAndInsertion(deltas: List[String]): (Int, Int) = (deltas.count(x => x.startsWith("+")), deltas.count(x => x.startsWith("-")))
 
   /**
    *Calcul the number of inserted lines for files never committed
@@ -102,7 +97,7 @@ object HelperDiff {
   def calculateNewsLinesWhenFileHasNeverBeenCommitted(listPathsNewFiles: List[Wrapper], acc: Int): Int = {
     if(listPathsNewFiles.isEmpty) acc
     else{
-      val linesCounted = IOManager.readInFileAsLine(HelperPaths.sgitPath+listPathsNewFiles.head.path).length
+      val linesCounted = IoManager.readInFileAsLine(HelperPaths.sgitPath+listPathsNewFiles.head.path).length
       val newAcc = acc+linesCounted
       calculateNewsLinesWhenFileHasNeverBeenCommitted(listPathsNewFiles.tail,newAcc)
     }
@@ -119,7 +114,7 @@ object HelperDiff {
     if (listOfHashesAndPaths.isEmpty) accumulator
     else {
       val contentBlob = HelperBlob.readContentInBlob(listOfHashesAndPaths.head.hash)
-      val contentOfFile = IOManager.readInFileAsLine(HelperPaths.sgitPath+listOfHashesAndPaths.head.path)
+      val contentOfFile = IoManager.readInFileAsLine(HelperPaths.sgitPath+listOfHashesAndPaths.head.path)
       if (contentBlob.isEmpty && contentOfFile.nonEmpty) {
         val newAccumulator = ((accumulator._1+contentOfFile.length), accumulator._2 )
         accumulateCalculation(listOfHashesAndPaths.tail, newAccumulator)
@@ -151,20 +146,19 @@ object HelperDiff {
    * @param sha1          : sha1 of the blob
    */
   def displayDifferenceBetweenTwoFiles(oldContent: List[String], newContent: List[String], path: String, sha1: String): Unit = {
-
     if (oldContent.isEmpty && newContent.nonEmpty) {
-      IOManager.printDiffForFile(path,sha1)
-      IOManager.printDiff(newContent.map("+ "+ _))
+      IoManager.printDiffForFile(path,sha1)
+      IoManager.printDiff(newContent.map("+ "+ _))
     }
     else if (newContent.isEmpty && oldContent.nonEmpty) {
-      IOManager.printDiffForFile(path,sha1)
-      IOManager.printDiff(oldContent.map("- " +_))
+      IoManager.printDiffForFile(path,sha1)
+      IoManager.printDiff(oldContent.map("- " +_))
     }
     else {
       val deltas = getDeltas(oldContent, newContent, oldContent.length - 1, newContent.length - 1, createMatrix(oldContent, newContent, 0, 0, Map()), List())
       if (deltas.nonEmpty) {
-        IOManager.printDiffForFile(path,sha1)
-        IOManager.printDiff(deltas)
+        IoManager.printDiffForFile(path,sha1)
+        IoManager.printDiff(deltas)
       }
     }
   }
@@ -177,7 +171,9 @@ object HelperDiff {
    * @return lines inserted and deleted between two commits
    */
   def diffBetweenTwoCommits(commit: String, parentCommit: String, logStat: Boolean): (Int,Int) ={
+
     val listBlobCommit:  List[Wrapper] = HelperCommit.getAllBlobsFromCommit(commit)
+
     if(!parentCommit.equals("0000000000000000000000000000000000000000")){
       val listBlobParentCommit: List[Wrapper] = HelperCommit.getAllBlobsFromCommit(parentCommit)
       val res = recursiveDisplay(listBlobCommit,listBlobParentCommit,logStat, None)
@@ -205,10 +201,11 @@ object HelperDiff {
     val deleted = resOption._2
 
     if(listBlobParent.nonEmpty && listBlobCommit.nonEmpty){
+
       val contentBlobParent = HelperBlob.readContentInBlob(listBlobParent.head.hash)
       val contentBlobCurrent = HelperBlob.readContentInBlob(listBlobCommit.head.hash)
       if(logStat) {
-        val resFunc = LogsManager.displayStatsLog(contentBlobParent, contentBlobCurrent, listBlobCommit.head.path, listBlobCommit.head.hash)
+        val resFunc = LogsManager.displayStatsLog(contentBlobParent, contentBlobCurrent, listBlobCommit.head.path)
         val resInsertedDeleted = Some((resFunc._1+ins,resFunc._2+deleted))
         recursiveDisplay(listBlobCommit.tail,listBlobParent.tail,logStat,resInsertedDeleted)
       }
@@ -220,7 +217,7 @@ object HelperDiff {
       if(listBlobCommit.nonEmpty){
         val contentBlobCurrent = HelperBlob.readContentInBlob(listBlobCommit.head.hash)
         if(logStat){
-          val resFunc = LogsManager.displayStatsLog(List(), contentBlobCurrent, listBlobCommit.head.path, listBlobCommit.head.hash)
+          val resFunc = LogsManager.displayStatsLog(List(), contentBlobCurrent, listBlobCommit.head.path)
           val resInsertedDeleted = Some((resFunc._1+ins,resFunc._2+deleted))
           recursiveDisplay(listBlobCommit.tail,List(),logStat,resInsertedDeleted)
         }
@@ -240,7 +237,7 @@ object HelperDiff {
    */
 
   def diffWhenCommitting(lastCommit: String): (Int, Int) = {
-    val stageSplited= StageManager.readStageAsLines().map(x => x.split(" "))
+    val stageSplited= StageManager.readStageAsLines().map(_.split(" "))
     val stageWrappered : List[Wrapper] = stageSplited.map(elem => Wrapper(elem(2),elem(1),"Blob",""))
 
     val listBlobLastCommit: List[Wrapper] = HelperCommit.getAllBlobsFromCommit(lastCommit)

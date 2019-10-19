@@ -2,7 +2,7 @@ package fr.cayuelas.commands
 import java.io.File
 
 import fr.cayuelas.helpers.{HelperBranch, HelperCommit, HelperPaths}
-import fr.cayuelas.managers.{FilesManager, IOManager, LogsManager, StageManager}
+import fr.cayuelas.managers.{FilesManager, IoManager, LogsManager, StageManager}
 import org.scalatest.{BeforeAndAfterEach, FlatSpec}
 
 
@@ -15,8 +15,8 @@ class CommandCommitSpec  extends FlatSpec with BeforeAndAfterEach {
 
     FilesManager.createNewFile("testFolder" + File.separator + "hello")
     FilesManager.createNewFile("testFolder" + File.separator + "world")
-    IOManager.writeInFile("testFolder" + File.separator + "hello","HELLO",false)
-    IOManager.writeInFile("testFolder" + File.separator + "world","HELP",false)
+    IoManager.writeInFile("testFolder" + File.separator + "hello","HELLO",false)
+    IoManager.writeInFile("testFolder" + File.separator + "world","HELP",false)
   }
 
   //delete all files created in the .sgit directory after each test
@@ -42,7 +42,7 @@ class CommandCommitSpec  extends FlatSpec with BeforeAndAfterEach {
   "the commit command" should "no do commit action if there is nothing to commit" in {
     //Given and /When
     Commit_cmd.commit(Array("commit"))
-    val contentStage = IOManager.readInFileAsLine(StageManager.currentStagePath) // Commited files go to stage
+    val contentStage = IoManager.readInFileAsLine(StageManager.currentStagePath) // Commited files go to stage
     val contentObjectsCommit = FilesManager.getListOfContentInDirectory(HelperPaths.objectsPath+File.separator+"commits")
 
     //Then
@@ -59,7 +59,7 @@ class CommandCommitSpec  extends FlatSpec with BeforeAndAfterEach {
 
     Commit_cmd.commit(Array("commit"))
 
-    val contentStage = IOManager.readInFileAsLine(StageManager.currentStagePath) // Commit files go to stage
+    val contentStage = IoManager.readInFileAsLine(StageManager.currentStagePath) // Commit files go to stage
     //Then
     assert(contentStage.nonEmpty)
   }
@@ -72,12 +72,12 @@ class CommandCommitSpec  extends FlatSpec with BeforeAndAfterEach {
     Add_cmd.add(Array("add",helloFilePath))
 
     Commit_cmd.commit(Array("commit"))
-    val stage =  IOManager.readInFileAsLine(StageManager.currentStagePath)
+    val stage =  IoManager.readInFileAsLine(StageManager.currentStagePath)
 
     Add_cmd.add(Array("add",worldFilePath))
 
     Commit_cmd.commit(Array("commit"))
-    val stage2 =  IOManager.readInFileAsLine(StageManager.currentStagePath)
+    val stage2 =  IoManager.readInFileAsLine(StageManager.currentStagePath)
 
     assert(stage != stage2)
   }
@@ -109,7 +109,7 @@ class CommandCommitSpec  extends FlatSpec with BeforeAndAfterEach {
 
     val contentObjectsCommit = FilesManager.getListOfContentInDirectory(HelperPaths.objectsPath+File.separator+"commits")
     val filesInFolderOfTheCommit = FilesManager.getListOfContentInDirectory(HelperPaths.objectsPath+File.separator+"commits"+File.separator+contentObjectsCommit.head.getName)
-    val contentInfile = IOManager.readInFileAsLine(filesInFolderOfTheCommit.head.getAbsolutePath)
+    val contentInfile = IoManager.readInFileAsLine(filesInFolderOfTheCommit.head.getAbsolutePath)
     //Then
     assert(contentObjectsCommit.size == 1)
     assert(filesInFolderOfTheCommit.size == 1)
@@ -126,7 +126,7 @@ class CommandCommitSpec  extends FlatSpec with BeforeAndAfterEach {
 
     Commit_cmd.commit(Array("commit"))
 
-    val contentStageCommit = IOManager.readInFileAsLine(StageManager.stageToCommitPath)
+    val contentStageCommit = IoManager.readInFileAsLine(StageManager.stageToCommitPath)
     //Then
     assert(contentStageCommit.isEmpty)
   }
@@ -152,12 +152,12 @@ class CommandCommitSpec  extends FlatSpec with BeforeAndAfterEach {
     val helloFilePath = sgitPath + File.separator + "testFolder" + File.separator + "hello"
     val worldFilePath = sgitPath + File.separator + "testFolder" + File.separator + "world"
     Add_cmd.add(Array("add",helloFilePath))
-    val numberOfChanges = IOManager.readInFileAsLine(StageManager.stageToCommitPath).length
+    val numberOfChanges = IoManager.readInFileAsLine(StageManager.stageToCommitPath).length
     Commit_cmd.commit(Array("commit","-m","commit1"))
     assert(numberOfChanges == 1)
 
     Add_cmd.add(Array("add",helloFilePath,worldFilePath))
-    val numberOfChanges2 = IOManager.readInFileAsLine(StageManager.stageToCommitPath).length
+    val numberOfChanges2 = IoManager.readInFileAsLine(StageManager.stageToCommitPath).length
     Commit_cmd.commit(Array("commit","-m","commit1"))
     assert(numberOfChanges2 == 1)
 

@@ -4,7 +4,7 @@ package fr.cayuelas.objects
 import java.io.{File, PrintWriter}
 
 import fr.cayuelas.helpers.{HelperPaths, HelperSha1}
-import fr.cayuelas.managers.{FilesManager, IOManager}
+import fr.cayuelas.managers.{FilesManager, IoManager}
 
 case class Tree( contentTree: List[Wrapper] = List.empty, id: String = "") {
 
@@ -35,7 +35,7 @@ case class Tree( contentTree: List[Wrapper] = List.empty, id: String = "") {
     FilesManager.createNewFile(pathFile)
 
     clearTreefile(folder,nameFile)
-    contentTree.map(elem => IOManager.writeInFile(pathFile,elem.typeElement+ " " + elem.hash+" "+ elem.name+ "\n",append = true)) //WriteInTree
+    contentTree.map(elem => IoManager.writeInFile(pathFile,elem.typeElement+ " " + elem.hash+" "+ elem.name+ "\n",append = true)) //WriteInTree
   }
 
   /**
@@ -69,7 +69,6 @@ case class Tree( contentTree: List[Wrapper] = List.empty, id: String = "") {
 }
 
 object Tree {
-
   /**
    * Function that process the entire creation of a tree using others methos and funcitons of the class
    * @param nonRootFiles : Files that are in subdirectories

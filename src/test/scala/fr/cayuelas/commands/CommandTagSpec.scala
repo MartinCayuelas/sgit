@@ -3,7 +3,7 @@ package fr.cayuelas.commands
 import java.io.File
 
 import fr.cayuelas.helpers.{HelperCommit, HelperPaths, HelperTag}
-import fr.cayuelas.managers.{FilesManager, IOManager}
+import fr.cayuelas.managers.{FilesManager, IoManager}
 import org.scalatest.{BeforeAndAfterEach, FlatSpec}
 
 class CommandTagSpec   extends FlatSpec with BeforeAndAfterEach {
@@ -15,8 +15,8 @@ class CommandTagSpec   extends FlatSpec with BeforeAndAfterEach {
 
     FilesManager.createNewFile("testFolder" + File.separator + "hello")
     FilesManager.createNewFile("testFolder" + File.separator + "world")
-    IOManager.writeInFile("testFolder" + File.separator + "hello","hello",false)
-    IOManager.writeInFile("testFolder" + File.separator + "world","world",false)
+    IoManager.writeInFile("testFolder" + File.separator + "hello","hello",false)
+    IoManager.writeInFile("testFolder" + File.separator + "world","world",false)
   }
 
   //delete all files created in the .sgit directory after each test
@@ -63,7 +63,7 @@ class CommandTagSpec   extends FlatSpec with BeforeAndAfterEach {
     Commit_cmd.commit(Array("commit"))
     HelperTag.createTag("Tag1")
     assert(new File(HelperPaths.tagsPath+File.separator+"Tag1").exists())
-    val contentNewTagFile = IOManager.readInFile(HelperPaths.tagsPath+File.separator+"Tag1")
+    val contentNewTagFile = IoManager.readInFile(HelperPaths.tagsPath+File.separator+"Tag1")
     assert(contentNewTagFile == HelperCommit.getLastCommitInRefs())
   }
 
@@ -98,8 +98,8 @@ class CommandTagSpec   extends FlatSpec with BeforeAndAfterEach {
     HelperTag.createTag("Tag2")
     assert(new File(HelperPaths.tagsPath+File.separator+"Tag1").exists())
     assert(new File(HelperPaths.tagsPath+File.separator+"Tag2").exists())
-    val contentNewTagFile = IOManager.readInFile(HelperPaths.tagsPath+File.separator+"Tag1")
-    val contentNewTagFile2 = IOManager.readInFile(HelperPaths.tagsPath+File.separator+"Tag2")
+    val contentNewTagFile = IoManager.readInFile(HelperPaths.tagsPath+File.separator+"Tag1")
+    val contentNewTagFile2 = IoManager.readInFile(HelperPaths.tagsPath+File.separator+"Tag2")
     assert(contentNewTagFile == HelperCommit.getLastCommitInRefs())
     assert(contentNewTagFile2 == HelperCommit.getLastCommitInRefs())
     assert(contentNewTagFile == contentNewTagFile2)

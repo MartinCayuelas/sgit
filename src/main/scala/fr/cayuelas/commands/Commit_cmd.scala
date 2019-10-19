@@ -2,7 +2,7 @@ package fr.cayuelas.commands
 
 
 import fr.cayuelas.helpers.HelperCommit
-import fr.cayuelas.managers.{IOManager, StageManager}
+import fr.cayuelas.managers.{IoManager, StageManager}
 import fr.cayuelas.objects.{Tree, Wrapper}
 
 
@@ -14,8 +14,7 @@ object Commit_cmd {
    * If no, the user is informed that there is nothing to commit
    */
   def commit(args: Array[String]): Unit = {
-
-    if (!StageManager.canCommit) IOManager.nothingToCommit()
+    if (!StageManager.canCommit) IoManager.nothingToCommit()
     else {
       HelperCommit.mergeStageToCommitInStage()
 

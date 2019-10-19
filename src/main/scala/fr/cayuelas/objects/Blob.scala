@@ -3,7 +3,7 @@ package fr.cayuelas.objects
 import java.io.File
 
 import fr.cayuelas.helpers.{HelperBlob, HelperPaths, HelperSha1}
-import fr.cayuelas.managers.{FilesManager, IOManager}
+import fr.cayuelas.managers.{FilesManager, IoManager}
 
 object Blob {
 
@@ -14,7 +14,7 @@ object Blob {
    * @return a string that is the id after the process of digest with Sha1 Algorithm
    */
   def createBlob(f: File): Unit = {
-    val content: String = IOManager.readInFile(f.getPath)
+    val content: String = IoManager.readInFile(f.getPath)
     val idSha1: String = HelperSha1.convertToSha1(content) //Creates the id in sha1
     val relativePath: String = HelperPaths.getRelativePathOfFile(f.getAbsolutePath)
 
@@ -38,6 +38,6 @@ object Blob {
 
     FilesManager.createNewFolder(pathFolder)
     FilesManager.createNewFile(pathFile)
-    IOManager.writeInFile(pathFile,contentBlob,append = false)//WriteInBlob ex: .sgit/objects/blobs/ed/72d396fae9206628714fb2ce00f72e94f2258f
+    IoManager.writeInFile(pathFile,contentBlob,append = false)//WriteInBlob ex: .sgit/objects/blobs/ed/72d396fae9206628714fb2ce00f72e94f2258f
   }
 }

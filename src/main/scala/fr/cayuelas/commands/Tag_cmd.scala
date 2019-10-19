@@ -2,7 +2,7 @@ package fr.cayuelas.commands
 
 
 import fr.cayuelas.helpers.HelperTag
-import fr.cayuelas.managers.IOManager
+import fr.cayuelas.managers.IoManager
 
 object Tag_cmd {
 
@@ -12,7 +12,7 @@ object Tag_cmd {
    */
   def tag(args: Array[String]): Unit = {
     if (args.length == 2) HelperTag.createTag(args(1))
-    else  IOManager.numberOfArgumentNotSupported(args(0))
+    else  IoManager.numberOfArgumentNotSupported(args(0))
   }
 
 

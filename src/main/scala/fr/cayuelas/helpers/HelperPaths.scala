@@ -29,13 +29,11 @@ object HelperPaths {
    */
   @tailrec
   def getSgitPath(directory: File): Option[String] = {
-
     if (directory == null || !directory.isDirectory) None
     else {
       if (new File(directory.getAbsolutePath + File.separator + sgitRepositoryName).exists()) Some(directory.getAbsolutePath)
       else getSgitPath(directory.getParentFile)
     }
-
   }
 
   /**
@@ -78,7 +76,5 @@ object HelperPaths {
    * @param l2 : list to check
    * @return a list filtered
    */
-  def inFirstListButNotInSecondListWithPath(l1: List[Wrapper], l2: List[Wrapper]): List[Wrapper] = {
-    l1.filter(x => !l2.exists(y => x.path.equals(y.path)))
-  }
+  def inFirstListButNotInSecondListWithPath(l1: List[Wrapper], l2: List[Wrapper]): List[Wrapper] = l1.filter(x => !l2.exists(y => x.path.equals(y.path)))
 }

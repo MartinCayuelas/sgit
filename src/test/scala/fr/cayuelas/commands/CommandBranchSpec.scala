@@ -3,7 +3,7 @@ package fr.cayuelas.commands
 import java.io.File
 
 import fr.cayuelas.helpers.{HelperBranch, HelperCommit, HelperPaths}
-import fr.cayuelas.managers.{FilesManager, IOManager}
+import fr.cayuelas.managers.{FilesManager, IoManager}
 import org.scalatest.{BeforeAndAfterEach, FlatSpec}
 
 class CommandBranchSpec   extends FlatSpec with BeforeAndAfterEach {
@@ -15,8 +15,8 @@ class CommandBranchSpec   extends FlatSpec with BeforeAndAfterEach {
 
     FilesManager.createNewFile("testFolder" + File.separator + "hello")
     FilesManager.createNewFile("testFolder" + File.separator + "world")
-    IOManager.writeInFile("testFolder" + File.separator + "hello","hello",false)
-    IOManager.writeInFile("testFolder" + File.separator + "world","world",false)
+    IoManager.writeInFile("testFolder" + File.separator + "hello","hello",false)
+    IoManager.writeInFile("testFolder" + File.separator + "world","world",false)
   }
 
   //delete all files created in the .sgit directory after each test
@@ -85,8 +85,8 @@ class CommandBranchSpec   extends FlatSpec with BeforeAndAfterEach {
 
     Commit_cmd.commit(Array("commit"))
     HelperBranch.createBranch("testBranch")
-    val stageMaster =IOManager.readInFileAsLine(HelperPaths.stagePath+File.separator+"master")
-    val testBranchStage =IOManager.readInFileAsLine(HelperPaths.stagePath+File.separator+"testBranch")
+    val stageMaster =IoManager.readInFileAsLine(HelperPaths.stagePath+File.separator+"master")
+    val testBranchStage =IoManager.readInFileAsLine(HelperPaths.stagePath+File.separator+"testBranch")
     assert(stageMaster == testBranchStage)
   }
 
@@ -100,7 +100,7 @@ class CommandBranchSpec   extends FlatSpec with BeforeAndAfterEach {
     Commit_cmd.commit(Array("commit"))
     HelperBranch.createBranch("testBranch")
     assert(new File(HelperPaths.branchesPath+File.separator+"testBranch").exists())
-    val contentNewBranchFile = IOManager.readInFile(HelperPaths.branchesPath+File.separator+"testBranch")
+    val contentNewBranchFile = IoManager.readInFile(HelperPaths.branchesPath+File.separator+"testBranch")
     assert(contentNewBranchFile == HelperCommit.getLastCommitInRefs())
   }
 
