@@ -2,7 +2,7 @@ name := "sgit"
 
 version := "0.1"
 
-scalaVersion := "2.13.1"
+scalaVersion := "2.13.0"
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.8" % "test"
 
 libraryDependencies += "com.github.pathikrit" %% "better-files" % "3.8.0"
@@ -20,10 +20,12 @@ assemblyMergeStrategy in assembly := {
 
 import sbtsonar.SonarPlugin.autoImport.sonarProperties
 
+
 sonarProperties ++= Map(
   "sonar.host.url" -> "http://localhost:9000",
+  "sonar.projectName" -> "Sgit",
+  "sonar.scala.coverage.reportPaths" -> "target/scala-2.13/scoverage-report/scoverage.xml",
   "sonar.sources" -> "src/main/scala",
   "sonar.tests" -> "src/test/scala"
 )
-
 parallelExecution in Test := false

@@ -1,6 +1,6 @@
 package fr.cayuelas.helpers
 
-import fr.cayuelas.managers.{IOManager, LogsManager}
+import fr.cayuelas.managers.{IOManager, LogsManager, StageManager}
 import fr.cayuelas.objects.Wrapper
 
 import scala.annotation.tailrec
@@ -50,7 +50,7 @@ object HelperDiff {
     }
   }
   /**
-   * Method that retrieves all the deltas (différences between 2 list of strings) of two given lists and a matrix containing the subsequence
+   * Function that retrieves all the deltas (différences between 2 list of strings) of two given lists and a matrix containing the subsequence
    *
    * @param oldContent : old list of string ( Old content )
    * @param newContent : new list of String (new content)
@@ -81,7 +81,7 @@ object HelperDiff {
     }
   }
   /**
-   * Methods that calculates the number of deletion or insertion in a file
+   * Functions that calculates the number of deletion or insertion in a file
    *
    * @param deltas : list of opérations
    * @return a tuple2 containing the number of Lines inserted and deleted in a file
@@ -99,10 +99,10 @@ object HelperDiff {
    * @return the number of new lines
    */
   @tailrec
-  def calculateNewsLinesWhenFileHasNeverBeenCommitted(listPathsNewFiles: List[String], acc: Int): Int = {
+  def calculateNewsLinesWhenFileHasNeverBeenCommitted(listPathsNewFiles: List[Wrapper], acc: Int): Int = {
     if(listPathsNewFiles.isEmpty) acc
     else{
-      val linesCounted = IOManager.readInFileAsLine(HelperPaths.sgitPath+listPathsNewFiles.head).length
+      val linesCounted = IOManager.readInFileAsLine(HelperPaths.sgitPath+listPathsNewFiles.head.path).length
       val newAcc = acc+linesCounted
       calculateNewsLinesWhenFileHasNeverBeenCommitted(listPathsNewFiles.tail,newAcc)
     }
@@ -179,8 +179,8 @@ object HelperDiff {
   def diffBetweenTwoCommits(commit: String, parentCommit: String, logStat: Boolean): (Int,Int) ={
     val listBlobCommit:  List[Wrapper] = HelperCommit.getAllBlobsFromCommit(commit)
     if(!parentCommit.equals("0000000000000000000000000000000000000000")){
-      val listBlobLParentCommit: List[Wrapper] = HelperCommit.getAllBlobsFromCommit(parentCommit)
-      val res = recursiveDisplay(listBlobCommit,listBlobLParentCommit,logStat, None)
+      val listBlobParentCommit: List[Wrapper] = HelperCommit.getAllBlobsFromCommit(parentCommit)
+      val res = recursiveDisplay(listBlobCommit,listBlobParentCommit,logStat, None)
       val (inserted,deleted) = res._3.getOrElse(0,0)
       (inserted,deleted)
     }else {
@@ -203,6 +203,7 @@ object HelperDiff {
     val resOption= res.getOrElse(0,0)
     val ins = resOption._1
     val deleted = resOption._2
+
     if(listBlobParent.nonEmpty && listBlobCommit.nonEmpty){
       val contentBlobParent = HelperBlob.readContentInBlob(listBlobParent.head.hash)
       val contentBlobCurrent = HelperBlob.readContentInBlob(listBlobCommit.head.hash)
@@ -231,4 +232,22 @@ object HelperDiff {
       else (List(),List(),res)
     }
   }
+
+  /**
+   * Function that processes the diff between the stage beeing committed and the last commit in refs
+   * @param lastCommit : Last commit in refs
+   * @return the number of lines inserted and deleted over all the files between last commit and new content that will be committed
+   */
+
+  def diffWhenCommitting(lastCommit: String): (Int, Int) = {
+    val stageSplited= StageManager.readStageAsLines().map(x => x.split(" "))
+    val stageWrappered : List[Wrapper] = stageSplited.map(elem => Wrapper(elem(2),elem(1),"Blob",""))
+
+    val listBlobLastCommit: List[Wrapper] = HelperCommit.getAllBlobsFromCommit(lastCommit)
+    val listNewFiles: List[Wrapper] = HelperPaths.inFirstListButNotInSecondListWithPath(stageWrappered,listBlobLastCommit)//Files neverCommited
+
+    val (inserted, deleted) = HelperDiff.accumulateCalculation(listBlobLastCommit, (0, 0))
+    (inserted + HelperDiff.calculateNewsLinesWhenFileHasNeverBeenCommitted(listNewFiles,0), deleted)
+  }
+
 }

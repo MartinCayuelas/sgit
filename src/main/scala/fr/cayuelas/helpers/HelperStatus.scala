@@ -4,7 +4,7 @@ import fr.cayuelas.managers.{FilesManager, IOManager, StageManager}
 
 object HelperStatus {
   /**
-   *Method that retrieve the files that will be added in the next commit
+   *Function that retrieve the files that will be added in the next commit
    * @return a list[String] containing all changes that will be validated
    */
   def getChangesThatWillBeValidated: List[String] = {
@@ -21,7 +21,7 @@ object HelperStatus {
   }
 
   /**
-   *Method that retrieve the files that will not be validated but they are tracked
+   *Function that retrieve the files that will not be validated but they are tracked
    *
    * @return a list[String] containing all changes that will not be validated
    */
@@ -50,7 +50,7 @@ object HelperStatus {
   }
 
   /**
-   * Method that retrieve all the files not tracked
+   * Function that retrieve all the files not tracked
    * @return a list[String] containing all Files not tracked in the stage
    */
 
@@ -58,7 +58,7 @@ object HelperStatus {
     val listOfAll = FilesManager.getListOfContentInDirectory(path)
     val listOfAllCleared = listOfAll.map(e => HelperPaths.getRelativePathOfFile(e.getAbsolutePath))
 
-    listOfAllCleared.diff(getPathsOfFilesTracked) //Différence between the Working directory and the "stage"
+    listOfAllCleared.diff(getPathsOfFilesTracked) //Difference between the Working directory and the "stage"
   }
 
   /**

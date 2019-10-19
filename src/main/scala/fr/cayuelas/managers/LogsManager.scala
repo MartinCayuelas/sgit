@@ -32,7 +32,7 @@ object LogsManager {
 
 
   /**
-   * Method that transform a given string in other
+   * Function that transform a given string in other
    * @param stringToFormat : the string tha will be formated
    * @return a string to be displayed
    */
@@ -51,7 +51,7 @@ object LogsManager {
       case Nil => IOManager.printFatalError(nameBranch)
       case _ => {
         IOManager.printBranch(nameBranch)
-        listLogs.map(log => println(logFormatting(log)))
+        listLogs.map(log => IOManager.printLogFormated(log))
       }
     }
   }
@@ -66,7 +66,7 @@ object LogsManager {
   }
 
   /**
-   *Call the displayOption method for all the branches
+   *Call the displayOption Function for all the branches
    * @param logStat: boolean used to do the right action (true= log stat --stat, false log stat -p
    * */
   def displayLogsOption(logStat: Boolean): Unit = {
@@ -93,17 +93,14 @@ object LogsManager {
     @tailrec
     def recursiveLogs(logs: List[String]): Unit = {
       if(logs.nonEmpty){
-        println(logFormatting(logs.head)) //Format Display
+       IOManager.printLogFormated(logs.head)
         val (parentCommit,currentCommit): (String,String) =  (logs.head.split(" ")(0),logs.head.split(" ")(1))
+
+
         val res = HelperDiff.diffBetweenTwoCommits(currentCommit,parentCommit,logStat)
         if(logStat){
-          val (inserted,deleted) = res
           val filesChanged = retrieveChanges(currentCommit,parentCommit)
-          val resToPrint = filesChanged match {
-            case  1 => filesChanged +s" file changed, ${inserted} insertions(+), ${deleted} deletions(-)"
-            case _ => filesChanged +s" files changed, ${inserted} insertions(+), ${deleted} deletions(-)"
-          }
-          println(resToPrint)
+          IOManager.printChanges(filesChanged,res._1,res._2)
         }
         recursiveLogs(logs.tail)
       }
@@ -144,7 +141,7 @@ object LogsManager {
     }
     else if (newContent.isEmpty && oldContent.nonEmpty) {
       val linesCounted = oldContent.length
-      IOManager. printLineStat(path,"-",linesCounted)
+      IOManager.printLineStat(path,"-",linesCounted)
       (0,linesCounted)
     }
     else {
@@ -153,7 +150,7 @@ object LogsManager {
       if (deltas.nonEmpty) {
         val (inserted, deleted) = calculateDeletionAndInsertion(deltas)
         val changes = inserted + deleted
-        IOManager. printLineStat(path,"+-",changes)
+        IOManager.printLineStat(path,"+-",changes)
         (inserted,deleted)
       }else (0,0)
     }

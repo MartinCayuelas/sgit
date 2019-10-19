@@ -15,7 +15,7 @@ object HelperTag {
       val path = HelperPaths.tagsPath + File.separator + nameTag
       if(Files.notExists(Paths.get(path))){
         FilesManager.createNewFile(path)
-        IOManager.writeInFile(path,HelperCommit.getLastCommitInRefs(),false)
+        IOManager.writeInFile(path,HelperCommit.getLastCommitInRefs(),append = false)
       } else IOManager.printFatalCreation("tag",nameTag)
     }else IOManager.printErrorNoCommitExisting()
   }
@@ -25,7 +25,7 @@ object HelperTag {
    */
   def displayAllTags(): Unit = {
     val listOfTags = FilesManager.getListOfFiles(HelperPaths.tagsPath)
-    listOfTags.map(b => println(s"  ${b.getName} (tag)"))
+    listOfTags.map(b => IOManager.printTag(b.getName))
   }
 
   /**

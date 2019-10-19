@@ -27,8 +27,8 @@ object HelperCheckout {
   def checkoutBranch(nameBranch: String): Unit = {
     if(HelperBranch.getCurrentBranch.equals(nameBranch)) IOManager.printErrorOnCheckoutSameBranch(nameBranch)
     else{
-
       val stage: List[Wrapper] = IOManager.readInFileAsLine(StageManager.currentStagePath).map(x => x.split(" ")).map(blob => Wrapper(blob(2),blob(1),"Blob",""))
+      StageManager.clearStage(StageManager.currentStagePath)
       HelperBranch.setNewBranchInHEAD(nameBranch)
       val lastCommit = HelperCommit.getLastCommitInRefs()
       val blobsRetrieved: List[Wrapper] = HelperCommit.getAllBlobsFromCommit(lastCommit)
@@ -43,10 +43,14 @@ object HelperCheckout {
    */
   def checkoutCommitOrTag(name: String, isTag: Boolean): Unit = {
     val stage: List[Wrapper] = IOManager.readInFileAsLine(StageManager.currentStagePath).map(x => x.split(" ")).map(blob => Wrapper(blob(2),blob(1),"Blob",""))
+    StageManager.clearStage(StageManager.currentStagePath)
     val blobsRetrieved: List[Wrapper] = isTag match {
       case true => HelperCommit.getAllBlobsFromCommit(IOManager.readInFile(HelperPaths.tagsPath+File.separator+name))
       case false => HelperCommit.getAllBlobsFromCommit(name)
     }
+    if (isTag) IOManager.writeInFile(HelperPaths.branchesPath+File.separator+HelperBranch.getCurrentBranch,IOManager.readInFile(HelperPaths.tagsPath+File.separator+name),append = false)
+    else IOManager.writeInFile(HelperPaths.branchesPath+File.separator+HelperBranch.getCurrentBranch,name,append = false)
+
     routineCheckout(blobsRetrieved,stage)
   }
 
@@ -59,16 +63,14 @@ object HelperCheckout {
     stage.map(line => FilesManager.deleteFile(line.path))
     StageManager.clearStage(HelperPaths.stagePath+File.separator+"stageToCommit")
     StageManager.clearStage(HelperPaths.stagePath+File.separator+"stageValidated")
+
     blobsRetrieved.map(blob => {
+      IOManager.writeInFile(StageManager.currentStagePath,blob.typeElement+" "+blob.hash+" "+blob.path+"\n",append = true)
       FilesManager.createNewFile(HelperPaths.sgitPath+blob.path)
       val contentBlob = HelperBlob.readContentInBlob(blob.hash)
       contentBlob.map(l =>  {
         IOManager.writeInFile(HelperPaths.sgitPath+blob.path,l+"\n",append = true)
-        IOManager.writeInFile(HelperPaths.stagePath+File.separator+HelperBranch.getCurrentBranch,l+"\n",append = true)
       })
     })
   }
-
-
-
 }

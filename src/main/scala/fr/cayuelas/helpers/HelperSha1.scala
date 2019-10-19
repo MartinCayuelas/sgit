@@ -5,7 +5,7 @@ import java.security.MessageDigest
 
 object HelperSha1 {
   /**
-   * Method that return a new string converted given a string in parameter
+   * Function that return a new string converted given a string in parameter
    * @param string : the string that will be converted
    * @return a string digested by Sha1 Algorithm
    */

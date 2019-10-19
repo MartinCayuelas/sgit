@@ -8,7 +8,7 @@ import fr.cayuelas.managers.{FilesManager, IOManager}
 object Blob {
 
   /**
-   *Method that creates a blob with the content of the file given in parameter and transforms it in Sha1 string
+   *Function that creates a blob with the content of the file given in parameter and transforms it in Sha1 string
    * Do somme checks. like if the file is already or not in the Stage or in the stageCommit. Then we check if the file is a new version or not
    * @param f : File which will be processed
    * @return a string that is the id after the process of digest with Sha1 Algorithm
@@ -19,8 +19,8 @@ object Blob {
     val relativePath: String = HelperPaths.getRelativePathOfFile(f.getAbsolutePath)
 
     relativePath.startsWith(".") match {
-      case true => HelperBlob.checksAndWriteInFiles(relativePath.substring(2,relativePath.length),idSha1)
-      case false => HelperBlob.checksAndWriteInFiles(relativePath,idSha1)
+      case true => HelperBlob.checksAndWriteInFiles(Wrapper(relativePath.substring(2,relativePath.length),idSha1,"Blob",""))
+      case false => HelperBlob.checksAndWriteInFiles(Wrapper(relativePath,idSha1,"Blob",""))
     }
     addBlobInObjects(idSha1, content) //Add blob in .sgit/objects/blobs
   }

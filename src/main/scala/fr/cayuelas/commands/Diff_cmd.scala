@@ -1,8 +1,7 @@
 package fr.cayuelas.commands
 
-import fr.cayuelas.helpers.{HelperBlob, HelperCommit, HelperDiff, HelperPaths}
+import fr.cayuelas.helpers.{HelperBlob, HelperDiff, HelperPaths}
 import fr.cayuelas.managers.{IOManager, StageManager}
-import fr.cayuelas.objects.Wrapper
 
 object Diff_cmd {
 
@@ -18,27 +17,5 @@ object Diff_cmd {
    HelperDiff.displayDifferenceBetweenTwoFiles(contentBlob, contentOfFile, file(2), file(1))
     })
   }
-
-  /**
-   * Function that processes the diff between the stage beeing committed and the last commit in refs
-   * @param lastCommit : Last commit in refs
-   * @return the number of lines inserted and deleted over all the files between last commit and new content that will be committed
-   */
-
-  def diffWhenCommitting(lastCommit: String): (Int, Int) = {
-    val stageSplited= StageManager.readStageAsLines().map(x => x.split(" "))
-    val hashes = stageSplited.map(x => x(1))
-    val paths = stageSplited.map(x => x(2))
-
-    val listZippedStageFiltered = hashes.zip(paths).map(x => x._2)
-    val listBlobLastCommit: List[Wrapper] = HelperCommit.getAllBlobsFromCommit(lastCommit)
-    val listBlobLastCommitFiltered = listBlobLastCommit.map(x => x.path)
-
-    val listFilteredNewsFiles = listZippedStageFiltered.diff(listBlobLastCommitFiltered) //Files neverCommited
-
-    val (inserted, deleted) = HelperDiff.accumulateCalculation(listBlobLastCommit, (0, 0))
-    (inserted + HelperDiff.calculateNewsLinesWhenFileHasNeverBeenCommitted(listFilteredNewsFiles,0), deleted)
-  }
-
 
 }

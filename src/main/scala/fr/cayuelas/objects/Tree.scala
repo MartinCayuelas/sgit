@@ -11,7 +11,7 @@ case class Tree( contentTree: List[Wrapper] = List.empty, id: String = "") {
   //Path to folder of trees
   def treesPath: String = HelperPaths.objectsPath + File.separator + "trees"
 
-  /**Method that creates the id of a tree given his content
+  /**Function that creates the id of a tree given his content
    *
    * @param contentTree : content of the tree
    * @return tree's id string digested by sha1
@@ -52,7 +52,7 @@ case class Tree( contentTree: List[Wrapper] = List.empty, id: String = "") {
   }
 
   /**
-   * MEthod thats accumulated all the content of a given list
+   * Function thats accumulated all the content of a given list
    * @param listA : list to get elements
    * @param accumulator: list of all elements accumulated
    * @return a list of of all elment of the given list accumulated in an Option or NOne

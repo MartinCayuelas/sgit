@@ -2,7 +2,6 @@ package fr.cayuelas.helpers
 
 import java.io.File
 
-import fr.cayuelas.commands.Diff_cmd
 import fr.cayuelas.managers.{FilesManager, IOManager, LogsManager, StageManager}
 import fr.cayuelas.objects.{Commit, Tree, Wrapper}
 
@@ -40,7 +39,7 @@ object HelperCommit {
   PART CREATION OF TREES
    */
   /**
-   * FMethod that creates all the trees for the commit with the non root files
+   * FFunction that creates all the trees for the commit with the non root files
    * @param l : list to use
    * @param WrapperWithHashFinal : Potential final hash for the last tree in a list to have it every step
    * @return a list containing the final hash and the final path
@@ -61,7 +60,7 @@ object HelperCommit {
   }
 
   /**
-   * Method that retrieves the deepest directory
+   * Function that retrieves the deepest directory
    * @param l : list on which we do action
    * @return a tuple4 containing the dispest path, the rest of the orthers paths, the parent path of the dispest direcoty and itself path
    */
@@ -76,7 +75,7 @@ object HelperCommit {
   }
 
   /**
-   * Method that retrieves the path max in a given list
+   * Function that retrieves the path max in a given list
    * @param l : list that we look at
    * @param pathMax : longest path
    * @param max : Accumulator
@@ -92,7 +91,7 @@ object HelperCommit {
   }
 
   /**
-   * Method the retrieves the parent of a givent path
+   * Function the retrieves the parent of a givent path
    * @param path : the path to be transformed
    * @return the parent path of the given path and itself
    */
@@ -109,10 +108,11 @@ object HelperCommit {
    * Merge the content of the stageToCommit in the real stage
    */
   def mergeStageToCommitInStage(): Unit = {
-    val currentStageCommit = StageManager.readStageToCommit()
-    currentStageCommit.map(line => {
-      StageManager.deleteLineInStageIfFileAlreadyExists(line.split(" ")(2),StageManager.currentStagePath)
-      IOManager.writeInFile(StageManager.currentStagePath,line,append = true)
+    val currentStageCommit = StageManager.readStageToCommit().map(x => x.split(" "))
+    val currentStageCommitWrapped = currentStageCommit.map(x => Wrapper(x(2),x(1),x(0),""))
+    currentStageCommitWrapped.map(line => {
+      val isInS = StageManager.writeInStagesWithChecks(line,StageManager.currentStagePath)
+      if(isInS) IOManager.writeInFile(StageManager.currentStagePath,line.typeElement+" "+line.hash+" "+line.path+"\n",append = true)
     }) //WriteInStage
   }
 
@@ -151,14 +151,9 @@ object HelperCommit {
    */
 
   def printResultCommit(lastCommit: String, commit: Commit): Unit = {
-
-    val (inserted,deleted) = Diff_cmd.diffWhenCommitting(lastCommit)
+    val (inserted,deleted) = HelperDiff.diffWhenCommitting(lastCommit)
     val numberOfChanges = IOManager.readInFileAsLine(StageManager.stageToCommitPath).length
-    val resToPrint = numberOfChanges match {
-      case  1 =>"["+HelperBranch.getCurrentBranch+" "+commit.idCommit.substring(0,8)+"] "+commit.message+s"\n  ${numberOfChanges} file changed, ${inserted} insertions(+), ${deleted} deletions(-)"
-      case _ =>"["+HelperBranch.getCurrentBranch+" "+commit.idCommit.substring(0,8)+"] "+commit.message+s"\n  ${numberOfChanges} files changed, ${inserted} insertions(+), ${deleted} deletions(-)"
-    }
-    println(resToPrint)
+    IOManager.printResultCommit(numberOfChanges,commit,inserted,deleted)
   }
 
   /**
@@ -179,12 +174,8 @@ object HelperCommit {
     }
     val inserted =  acc(listCommitted,0)
     val numberOfChanges = listCommitted.length
+    IOManager.printResultCommit(numberOfChanges,commit,inserted,0)
 
-    val resToPrint = numberOfChanges match {
-      case  1 =>"["+HelperBranch.getCurrentBranch+" "+commit.idCommit.substring(0,8)+"] "+commit.message+s"\n  ${numberOfChanges} file changed, ${inserted} insertions(+)"
-      case _ =>"["+HelperBranch.getCurrentBranch+" "+commit.idCommit.substring(0,8)+"] "+commit.message+s"\n  ${numberOfChanges} files changed, ${inserted} insertions(+)"
-    }
-    println(resToPrint)
   }
 
   /**
@@ -262,7 +253,7 @@ object HelperCommit {
       case _ => pathParent+File.separator
     }
     val (folder,file) = HelperPaths.getFolderAndFileWithSha1(hashTree)
-    val path = treesPath + File.separator + folder + File.separator  +file
+    val path = treesPath + File.separator + folder + File.separator +file
     val contentOfTree = IOManager.readInFileAsLine(path)
 
     val blobsSplited = contentOfTree.filter(x => x.startsWith("Blob")).map(b => b.split(" "))

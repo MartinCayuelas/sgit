@@ -60,6 +60,7 @@ class CommandAddSpec  extends FlatSpec with BeforeAndAfterEach {
     val sgitPath = HelperPaths.sgitPath
     val helloFilePath = sgitPath + File.separator + "testFolder" + File.separator + "hello"
     val worldFilePath = sgitPath + File.separator + "testFolder" + File.separator + "world"
+
     //When
     Add_cmd.add(Array("add",helloFilePath,worldFilePath))
 
@@ -71,7 +72,10 @@ class CommandAddSpec  extends FlatSpec with BeforeAndAfterEach {
 
 
     val contentOfStageCommit = IOManager.readInFile(StageManager.stageToCommitPath)
+
+
     val expextedContent = "Blob "+sha1IHello+" "+"testFolder" + File.separator + "hello"+"\n"+"Blob "+sha1IdWorld+" "+"testFolder" + File.separator + "world"+"\n"
+
     //Then
     assert(contentOfStageCommit == expextedContent)
 
@@ -98,7 +102,6 @@ class CommandAddSpec  extends FlatSpec with BeforeAndAfterEach {
     Add_cmd.add(Array("add",helloFilePath))
     val previousSha1 = IOManager.readInFileAsLine(StageManager.stageToCommitPath).head.split(" ")(1)
     IOManager.writeInFile(helloFilePath,"HelloWorld", append = true)
-
     Add_cmd.add(Array("add",helloFilePath))
     val newSha1 = IOManager.readInFileAsLine(StageManager.stageToCommitPath).head.split(" ")(1)
     //THEN

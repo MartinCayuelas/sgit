@@ -10,7 +10,7 @@ object Commit_cmd {
   /**
    * Main function that process the commit.
    * Checks if it is possible to commit.
-   * If yes, then retrieves all files in root et in subdirectories and call a method to creates all the trees. Then th Commit class do the commit
+   * If yes, then retrieves all files in root et in subdirectories and call a Function to creates all the trees. Then th Commit class do the commit
    * If no, the user is informed that there is nothing to commit
    */
   def commit(args: Array[String]): Unit = {

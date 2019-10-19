@@ -3,6 +3,7 @@ package fr.cayuelas.helpers
 import java.io.File
 
 import fr.cayuelas.managers.{IOManager, StageManager}
+import fr.cayuelas.objects.Wrapper
 
 object HelperBlob {
 
@@ -11,38 +12,36 @@ object HelperBlob {
 
   /**
    * Function that checks exitency in stage and stageCommit and write in files
-   * @param relativePath : path of the blob
-   * @param idSha1 : id's blob
+   * @param blobWrapped: element blob wrapped
    */
-  def checksAndWriteInFiles(relativePath: String, idSha1: String): Unit = {
-    val isInStage: Boolean = StageManager.checkIfFileIsInStage(relativePath, StageManager.currentStagePath)
-    val isInStageCommit: Boolean = StageManager.checkIfFileIsInStage(relativePath, StageManager.stageToCommitPath)
-    val modifiedInStage: Boolean = StageManager.checkModification(relativePath,idSha1,StageManager.currentStagePath)
+  def checksAndWriteInFiles(blobWrapped: Wrapper): Unit = {
+    val isInStage: Boolean = StageManager.checkIfFileIsInStage(blobWrapped.path, StageManager.currentStagePath)
+    val isInStageCommit: Boolean = StageManager.checkIfFileIsInStage(blobWrapped.path, StageManager.stageToCommitPath)
+    val modifiedInStage: Boolean = StageManager.checkModification(blobWrapped.path,blobWrapped.hash,StageManager.currentStagePath)
 
-    StageManager.deleteLineInStageIfFileAlreadyExists(relativePath,StageManager.stageToCommitPath)
-    StageManager.deleteLineInStageIfFileAlreadyExists(relativePath,StageManager.stageValidatedPath)
-
-    val blob : String = s"Blob ${idSha1} ${relativePath}\n"
-
-    if(isInStageCommit && !isInStage) write(blob,relativePath,"newFile")
+    if(isInStageCommit && !isInStage) write(blobWrapped,"newFile")
     else if(!isInStageCommit && isInStage ){
-      if (modifiedInStage) write(blob,relativePath,"modified")
+      if (modifiedInStage) write(blobWrapped,"modified")
     }
-    else if(isInStage && isInStageCommit)write(blob,relativePath,"modified")
-    else write(blob,relativePath,"newFile")
+    else if(isInStage && isInStageCommit)write(blobWrapped,"modified")
+    else write(blobWrapped,"newFile")
   }
 
   /**
    * Writes in différents files given params
-   * @param blob: the content that will be written
-   * @param relativePath : the path of the file
+   * @param blobWrapped: wrapper of the blob beeing written
    * @param typeOfAdd : "Modified or newFile
    */
-  def write(blob: String, relativePath: String, typeOfAdd: String): Unit = {
-    IOManager.writeInFile(StageManager.stageValidatedPath,s"${typeOfAdd} : "+relativePath,append = true)
-    IOManager.writeInFile(StageManager.stageToCommitPath,blob,append = true)
-  }
+  def write(blobWrapped: Wrapper, typeOfAdd: String): Unit = {
+    val isIn1ButNotIn2C = StageManager.writeInStagesWithChecks(blobWrapped,StageManager.stageToCommitPath)
+    val isIn1ButNotIn2V = StageManager.writeInStagesWithChecks(blobWrapped,StageManager.stageValidatedPath)
 
+    if(isIn1ButNotIn2C&&isIn1ButNotIn2V){//New
+      val blob : String = s"Blob ${blobWrapped.hash} ${blobWrapped.path}\n"
+      IOManager.writeInFile(StageManager.stageValidatedPath,s"${typeOfAdd} : "+blobWrapped.path,append = true)
+      IOManager.writeInFile(StageManager.stageToCommitPath,blob,append = true)
+    }
+  }
 
   /**
    * Allows to creates an id string

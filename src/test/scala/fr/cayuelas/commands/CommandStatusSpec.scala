@@ -45,6 +45,7 @@ class CommandStatusSpec  extends FlatSpec with BeforeAndAfterEach {
     //When
     Add_cmd.add(Array("add",helloFilePath))
     val line = IOManager.readInFileAsLine(StageManager.stageValidatedPath)
+    print("StageValidated : "+line)
     //Then
     assert(line.length == 1)
     assert(line(0).startsWith("newFile"))

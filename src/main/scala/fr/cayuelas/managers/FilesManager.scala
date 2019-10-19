@@ -6,7 +6,7 @@ import java.io.File
 object FilesManager {
 
   /**
-   * Methods that gives recursively all the files contained in a directory and his subdirectories
+   * Functions that gives recursively all the files contained in a directory and his subdirectories
    * @param dir : directry name
    * @return a list of File of the given directory, could be empty if the directory is empty
    */
@@ -21,7 +21,7 @@ object FilesManager {
   }
 
   /**
-   * Methods that gives recursively all the files and directories contained in a directory and his subdirectories
+   * Functions that gives recursively all the files and directories contained in a directory and his subdirectories
    * @param dir :directry name
    * @return a list of files and directories of the given directory, could be empty if the directory is empty
    */
@@ -46,7 +46,7 @@ object FilesManager {
   }
   
   /**
-   * Method that creates a folder given a path (String)
+   * Function that creates a folder given a path (String)
    * @param pathNewFolder : the path of the new folder that will be created
    * @return true if it's created else false
    */
@@ -55,7 +55,7 @@ object FilesManager {
   }
 
   /**
-   * Method that creates a file given a path (String)
+   * Function that creates a file given a path (String)
    * @param pathNewFile : the path of the new file that will be created
    * @return true if it's created else false
    */

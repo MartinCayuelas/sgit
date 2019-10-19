@@ -3,7 +3,7 @@ package fr.cayuelas.commands
 import java.io.File
 
 import fr.cayuelas.helpers.HelperDiff.{createMatrix, getDeltas}
-import fr.cayuelas.helpers.{HelperCommit, HelperPaths}
+import fr.cayuelas.helpers.{HelperCommit, HelperDiff, HelperPaths}
 import fr.cayuelas.managers.{FilesManager, IOManager}
 import org.scalatest.{BeforeAndAfterEach, FlatSpec}
 
@@ -111,12 +111,12 @@ class CommandDiffSpec  extends FlatSpec with BeforeAndAfterEach {
     Add_cmd.add(Array("add",helloFilePath,worldFilePath))
     Commit_cmd.commit(Array("commit"))
 
-    IOManager.writeInFile("testFolder" + File.separator + "hello","HELLO",false)
-    IOManager.writeInFile("testFolder" + File.separator + "world","HELP",false)
+    IOManager.writeInFile("testFolder" + File.separator + "hello","HELLO",append = false)
+    IOManager.writeInFile("testFolder" + File.separator + "world","HELP",append = false)
     Add_cmd.add(Array("add",helloFilePath,worldFilePath))
 
     val lastCommit = HelperCommit.getLastCommitInRefs()
-    val (inserted,deleted) = Diff_cmd.diffWhenCommitting(lastCommit)
+    val (inserted,deleted) = HelperDiff.diffWhenCommitting(lastCommit)
 
     //Then
     assert(inserted == 2)

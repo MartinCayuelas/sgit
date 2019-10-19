@@ -3,6 +3,10 @@ package fr.cayuelas.managers
 
 import java.io.{BufferedWriter, File, FileWriter}
 
+import fr.cayuelas.helpers.HelperBranch
+import fr.cayuelas.managers.LogsManager.logFormatting
+import fr.cayuelas.objects.Commit
+
 import scala.annotation.tailrec
 
 object IOManager {
@@ -70,7 +74,7 @@ object IOManager {
    */
   def printBranch(nameBranch: String): Unit = println("\n"+Console.GREEN+"("+nameBranch+")")
   def printFatalError(nameBranch: String): Unit = println(s"fatal: your current '${nameBranch}' branch does not yet contain any log")
-  def printNonCurrentBranch(nameBranch: String): Unit = println(s"* ${nameBranch} (branch)")
+  def printNonCurrentBranch(nameBranch: String): Unit = println(s"  ${nameBranch} (branch)")
   def printCurrentBranch(nameBranch: String): Unit = println(s"* ${nameBranch} (branch)")
 
   /*
@@ -87,11 +91,28 @@ object IOManager {
   TAG
    */
   def printFatalCreation(typeE: String, name: String): Unit = println(s"Fatal: a ${typeE} named ${name} is exits already")
+  def printTag(tag: String): Unit = println(s"  ${tag} (tag)")
   /*
   COMMIT
    */
   def nothingToCommit(): Unit = println("Nothing to commit")
   def printErrorNoCommitExisting(): Unit = println("There is no commit yet, you must commit something before")
+
+  def printResultCommit(numberOfChanges: Int, commit: Commit, inserted: Int, deleted: Int): Unit = {
+    if(deleted > 0){
+      val resToPrint = numberOfChanges match {
+        case  1 =>"["+HelperBranch.getCurrentBranch+" "+commit.idCommit.substring(0,8)+"] "+commit.message+s"\n  ${numberOfChanges} file changed, ${inserted} insertions(+), ${deleted} deletions(-)"
+        case _ =>"["+HelperBranch.getCurrentBranch+" "+commit.idCommit.substring(0,8)+"] "+commit.message+s"\n  ${numberOfChanges} files changed, ${inserted} insertions(+), ${deleted} deletions(-)"
+      }
+      println(resToPrint)
+    }else{
+      val resToPrint = numberOfChanges match {
+        case  1 =>"["+HelperBranch.getCurrentBranch+" "+commit.idCommit.substring(0,8)+"] "+commit.message+s"\n  ${numberOfChanges} file changed, ${inserted} insertions(+)"
+        case _ =>"["+HelperBranch.getCurrentBranch+" "+commit.idCommit.substring(0,8)+"] "+commit.message+s"\n  ${numberOfChanges} files changed, ${inserted} insertions(+)"
+      }
+      println(resToPrint)
+    }
+  }
 
   /*
   DIFF
@@ -117,6 +138,8 @@ object IOManager {
   /*
   LOGS
    */
+
+  def printLogFormated(log: String): Unit =  println(logFormatting(log)) //Format Display
   /**
    *Print the stat (insertion and deletion) for a file
    * @param path: path of the file
@@ -129,6 +152,20 @@ object IOManager {
       case y if y.equals("-") => println(path + "                            | " + changes + Console.RED +"-"*changes+Console.RESET)
       case _ =>  println(path + " "*15+"|"  + changes + s"${Console.GREEN}  +${Console.RESET}" + s"${Console.RED}-${Console.RESET}")
     }
+  }
+
+  /**
+   * Display the changes
+   * @param filesChanged: number of files changed
+   * @param inserted: number of insertions
+   * @param deleted number of deletions
+   */
+  def printChanges(filesChanged: Int,inserted: Int,deleted: Int): Unit = {
+    val resToPrint = filesChanged match {
+      case  1 => filesChanged +s" file changed, ${inserted} insertions(+), ${deleted} deletions(-)"
+      case _ => filesChanged +s" files changed, ${inserted} insertions(+), ${deleted} deletions(-)"
+    }
+    println(resToPrint)
   }
 
   /*

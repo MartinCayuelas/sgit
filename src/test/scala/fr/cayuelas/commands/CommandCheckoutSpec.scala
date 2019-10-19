@@ -3,7 +3,7 @@ package fr.cayuelas.commands
 import java.io.File
 
 import fr.cayuelas.helpers.{HelperBranch, HelperCommit, HelperPaths, HelperTag}
-import fr.cayuelas.managers.{FilesManager, IOManager}
+import fr.cayuelas.managers.{FilesManager, IOManager, StageManager}
 import org.scalatest.{BeforeAndAfterEach, FlatSpec}
 
 
@@ -44,7 +44,7 @@ class CommandCheckoutSpec  extends FlatSpec with BeforeAndAfterEach {
     //Given
     val sgitPath = HelperPaths.sgitPath
     val helloFilePath = sgitPath + File.separator + "testFolder" + File.separator + "hello"
-
+    //When
     Add_cmd.add(Array("add",helloFilePath))
     Commit_cmd.commit(Array("commit"))
 
@@ -53,7 +53,7 @@ class CommandCheckoutSpec  extends FlatSpec with BeforeAndAfterEach {
     Branch_cmd.branch(Array("branch","devTest"))
     Checkout_cmd.checkout(Array("checkout","devTest"))
     val newHeadContent = IOManager.readInFile(HelperPaths.headFile)
-
+    ////Then
     assert(oldHeadContent != newHeadContent)
     assert(newHeadContent.equals("ref: refs/heads/devTest"))
 
@@ -63,13 +63,14 @@ class CommandCheckoutSpec  extends FlatSpec with BeforeAndAfterEach {
     //Given
     val sgitPath = HelperPaths.sgitPath
     val helloFilePath = sgitPath + File.separator + "testFolder" + File.separator + "hello"
-
+    //When
     Add_cmd.add(Array("add",helloFilePath))
 
     Commit_cmd.commit(Array("commit"))
     Checkout_cmd.checkout(Array("checkout","devTest"))
 
     val newHeadContent = IOManager.readInFile(HelperPaths.headFile)
+    ////Then
     assert(!newHeadContent.equals("ref: refs/heads/devTest"))
 
   }
@@ -77,13 +78,14 @@ class CommandCheckoutSpec  extends FlatSpec with BeforeAndAfterEach {
     //Given
     val sgitPath = HelperPaths.sgitPath
     val helloFilePath = sgitPath + File.separator + "testFolder" + File.separator + "hello"
-
+    //When
     Add_cmd.add(Array("add",helloFilePath))
 
     val oldHeadContent = IOManager.readInFile(HelperPaths.headFile)
 
     Checkout_cmd.checkout(Array("checkout","devTest"))
     val newHeadContent = IOManager.readInFile(HelperPaths.headFile)
+    //Then
     assert(oldHeadContent == newHeadContent)
   }
 
@@ -91,13 +93,14 @@ class CommandCheckoutSpec  extends FlatSpec with BeforeAndAfterEach {
     //Given
     val sgitPath = HelperPaths.sgitPath
     val helloFilePath = sgitPath + File.separator + "testFolder" + File.separator + "hello"
-
+    //When
     Add_cmd.add(Array("add",helloFilePath))
 
     val oldHeadContent = IOManager.readInFile(HelperPaths.headFile)
 
     Checkout_cmd.checkout(Array("checkout","commitHash"))
     val newHeadContent = IOManager.readInFile(HelperPaths.headFile)
+    //Then
     assert(oldHeadContent == newHeadContent)
   }
 
@@ -105,13 +108,14 @@ class CommandCheckoutSpec  extends FlatSpec with BeforeAndAfterEach {
     //Given
     val sgitPath = HelperPaths.sgitPath
     val helloFilePath = sgitPath + File.separator + "testFolder" + File.separator + "hello"
-
+    //When
     Add_cmd.add(Array("add",helloFilePath))
 
     val oldHeadContent = IOManager.readInFile(HelperPaths.headFile)
     HelperTag.createTag("tag1")
     Checkout_cmd.checkout(Array("checkout","tag1"))
     val newHeadContent = IOManager.readInFile(HelperPaths.headFile)
+    //Then
     assert(oldHeadContent == newHeadContent)
   }
 
@@ -119,7 +123,7 @@ class CommandCheckoutSpec  extends FlatSpec with BeforeAndAfterEach {
     //Given
     val sgitPath = HelperPaths.sgitPath
     val helloFilePath = sgitPath + File.separator + "testFolder" + File.separator + "hello"
-
+    //When
     Add_cmd.add(Array("add",helloFilePath))
     Commit_cmd.commit(Array("commit"))
 
@@ -128,7 +132,7 @@ class CommandCheckoutSpec  extends FlatSpec with BeforeAndAfterEach {
     Branch_cmd.branch(Array("branch","devTest"))
     Checkout_cmd.checkout(Array("checkout","devTest"))
     val newPathRefs = HelperBranch.getCurrentBranch
-
+    //Then
     assert(oldPathRefs != newPathRefs)
   }
 
@@ -138,13 +142,14 @@ class CommandCheckoutSpec  extends FlatSpec with BeforeAndAfterEach {
     //Given
     val sgitPath = HelperPaths.sgitPath
     val helloFilePath = sgitPath + File.separator + "testFolder" + File.separator + "hello"
-
+    //When
     Add_cmd.add(Array("add",helloFilePath))
     Commit_cmd.commit(Array("commit"))
     val oldHeadContent = IOManager.readInFile(HelperPaths.headFile)
     HelperTag.createTag("tag1")
     Checkout_cmd.checkout(Array("checkout","tag1"))
     val newHeadContent = IOManager.readInFile(HelperPaths.headFile)
+    //Then
     assert(oldHeadContent == newHeadContent)
 
   }
@@ -152,7 +157,7 @@ class CommandCheckoutSpec  extends FlatSpec with BeforeAndAfterEach {
     //Given
     val sgitPath = HelperPaths.sgitPath
     val helloFilePath = sgitPath + File.separator + "testFolder" + File.separator + "hello"
-
+    //When
     Add_cmd.add(Array("add",helloFilePath))
     Commit_cmd.commit(Array("commit"))
 
@@ -161,6 +166,7 @@ class CommandCheckoutSpec  extends FlatSpec with BeforeAndAfterEach {
 
     Checkout_cmd.checkout(Array("checkout",lastCommit))
     val newHeadContent = IOManager.readInFile(HelperPaths.headFile)
+    //Then
     assert(oldHeadContent == newHeadContent)
   }
 
@@ -168,7 +174,7 @@ class CommandCheckoutSpec  extends FlatSpec with BeforeAndAfterEach {
     //Given
     val sgitPath = HelperPaths.sgitPath
     val helloFilePath = sgitPath + File.separator + "testFolder" + File.separator + "hello"
-
+    //When
     Add_cmd.add(Array("add",helloFilePath))
     Commit_cmd.commit(Array("commit"))
 
@@ -176,7 +182,7 @@ class CommandCheckoutSpec  extends FlatSpec with BeforeAndAfterEach {
 
     Checkout_cmd.checkout(Array("checkout","master"))
     val newPathRefs = HelperBranch.getCurrentBranch
-
+    //then
     assert(oldPathRefs == newPathRefs)
   }
 
@@ -184,13 +190,14 @@ class CommandCheckoutSpec  extends FlatSpec with BeforeAndAfterEach {
     //Given
     val sgitPath = HelperPaths.sgitPath
     val helloFilePath = sgitPath + File.separator + "testFolder" + File.separator + "hello"
-
+    //When
     Add_cmd.add(Array("add",helloFilePath))
     Commit_cmd.commit(Array("commit"))
 
 
     Branch_cmd.branch(Array("branch","devTest"))
     Checkout_cmd.checkout(Array("checkout","devTest"))
+    //then
     assert(FilesManager.getListOfFiles(sgitPath + File.separator + "testFolder").length == 2)
   }
 
@@ -199,11 +206,12 @@ class CommandCheckoutSpec  extends FlatSpec with BeforeAndAfterEach {
     val sgitPath = HelperPaths.sgitPath
     val helloFilePath = sgitPath + File.separator + "testFolder" + File.separator + "hello"
     val worldFilePath = sgitPath + File.separator + "testFolder" + File.separator + "world"
+    //When
     Add_cmd.add(Array("add",helloFilePath,worldFilePath))
     Commit_cmd.commit(Array("commit"))
-
     Branch_cmd.branch(Array("branch","devTest"))
     Checkout_cmd.checkout(Array("checkout","devTest"))
+    //Then
     assert(FilesManager.getListOfFiles(sgitPath + File.separator + "testFolder").length == 2)
   }
 
@@ -212,6 +220,7 @@ class CommandCheckoutSpec  extends FlatSpec with BeforeAndAfterEach {
     val sgitPath = HelperPaths.sgitPath
     val helloFilePath = sgitPath + File.separator + "testFolder" + File.separator + "hello"
     val worldFilePath = sgitPath + File.separator + "testFolder" + File.separator + "world"
+    //When
     IOManager.writeInFile("testFolder" + File.separator + "fileForTag","tagtag",append = false)
     Add_cmd.add(Array("add",helloFilePath,worldFilePath))
     Commit_cmd.commit(Array("commit"))
@@ -220,9 +229,46 @@ class CommandCheckoutSpec  extends FlatSpec with BeforeAndAfterEach {
     val fileForTagPath = sgitPath + File.separator + "testFolder" + File.separator + "fileForTag"
     Add_cmd.add(Array("add",fileForTagPath))
     Commit_cmd.commit(Array("commit"))
-
     Checkout_cmd.checkout(Array("checkout","V1"))
+    //Then
     assert(FilesManager.getListOfFiles(sgitPath + File.separator + "testFolder").length == 2)
+  }
+
+  it should "change the id of the last commit in the branch refs if checkout on a tag" in {
+    //Given
+    val sgitPath = HelperPaths.sgitPath
+    val helloFilePath = sgitPath + File.separator + "testFolder" + File.separator + "hello"
+    val worldFilePath = sgitPath + File.separator + "testFolder" + File.separator + "world"
+    //When
+    Add_cmd.add(Array("add",helloFilePath,worldFilePath))
+    Commit_cmd.commit(Array("commit"))
+
+    val lastCommit = HelperCommit.getLastCommitInRefs()
+    Tag_cmd.tag(Array("tag","V1"))
+    Checkout_cmd.checkout(Array("checkout","V1"))
+    val lastCommitTag1 = HelperCommit.getLastCommitInRefs()
+    //then
+    assert(lastCommit.equals(lastCommitTag1))
+  }
+
+  it should "change the content of the stage of the last commit if checkout on a commit" in {
+    //Given
+    val sgitPath = HelperPaths.sgitPath
+    val helloFilePath = sgitPath + File.separator + "testFolder" + File.separator + "hello"
+    val worldFilePath = sgitPath + File.separator + "testFolder" + File.separator + "world"
+    //When
+    Add_cmd.add(Array("add",helloFilePath,worldFilePath))
+    Commit_cmd.commit(Array("commit"))
+    val lastCommit = HelperCommit.getLastCommitInRefs()
+    val stage = IOManager.readInFileAsLine(StageManager.currentStagePath)
+    val fileForTagPath = sgitPath + File.separator + "testFolder" + File.separator + "fileForTag"
+    Add_cmd.add(Array("add",fileForTagPath))
+    Commit_cmd.commit(Array("commit"))
+
+    Checkout_cmd.checkout(Array("checkout",lastCommit))
+    val stage2 = IOManager.readInFileAsLine(StageManager.currentStagePath)
+    //Then
+    assert(stage.length == stage2.length)
   }
 
 }

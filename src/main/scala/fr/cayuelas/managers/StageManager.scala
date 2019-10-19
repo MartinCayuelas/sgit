@@ -12,26 +12,26 @@ object StageManager {
   def stageToCommitPath : String = HelperPaths.stagePath + File.separator + "stageToCommit"
   def stageValidatedPath : String = HelperPaths.stagePath + File.separator + "stageValidated"
   /**
-   * Method that retrieve the current content in the stage file
+   * Function that retrieve the current content in the stage file
    * @return the current content of the stage
    */
   def readStage(): String = IOManager.readInFile(currentStagePath)
 
 
   /**
-   * Method that retrieve the current content in the stage file
+   * Function that retrieve the current content in the stage file
    * @return the current content of the stage
    */
   def readStageAsLines(): List[String] = IOManager.readInFileAsLine(currentStagePath)
 
   /**
-   * Method that retrieve the current content in the stageCommit file used to do commit
+   * Function that retrieve the current content in the stageCommit file used to do commit
    * @return the current content of the stageCommit
    */
   def readStageToCommit(): List[String] = IOManager.readInFileAsLine(stageToCommitPath)
 
   /**
-   * Method that retrieve the current content in the stageValidated file used to sgit status
+   * Function that retrieve the current content in the stageValidated file used to sgit status
    * @return the current content of the stageValidated
    */
   def readStageValidated(): List[String] = IOManager.readInFileAsLine(stageValidatedPath)
@@ -48,7 +48,7 @@ object StageManager {
   }
 
   /**
-   * Method that verify if the stage can be commited or not. If there are at least one line, it's true else false
+   * Function that verify if the stage can be commited or not. If there are at least one line, it's true else false
    * @return true if the stage can be commited else false
    */
   def canCommit: Boolean = {
@@ -56,7 +56,7 @@ object StageManager {
   }
 
   /**
-   * Given the stage, this method check if a file is at the root of .sgit directory or not. The content is filtered given a predicat
+   * Given the stage, this Function check if a file is at the root of .sgit directory or not. The content is filtered given a predicat
    * @return a List of Wrapper containing all the files in same directory as .sgit
    */
   def retrieveStageRootBlobs(): List[Wrapper]= {
@@ -69,7 +69,7 @@ object StageManager {
   }
 
   /**
-   *Given the stage, this method check if a file is at the root of .sgit directory or not. The content is filtered given a predicat
+   *Given the stage, this Function check if a file is at the root of .sgit directory or not. The content is filtered given a predicat
    * After that, for each line we get the path and retrieve his parent
    *  3 lists are created so then we zip them together and return only one List[Wrapper]
    * @return a ist of Wrapper containing all the files in subdirectories of .sgit path folder
@@ -101,19 +101,27 @@ object StageManager {
    * Function that verify if the blob already exists in the stage given his path
    * The content is filtered. If the path given equals the path already in the file. It's deleted
    * After the process, the content is rewritten in the file stage
-   * @param pathLine : the path of the file that will be added in the stage
+   * @param blobWrapped : the path of the file that will be added in the stage
+   * @param stageToWrite : stage in wich one we will write
    */
-  def deleteLineInStageIfFileAlreadyExists(pathLine: String, stageToWrite: String): Unit = {
-    val lines = IOManager.readInFileAsLine(stageToWrite)
-    //Clean the file
+  def writeInStagesWithChecks(blobWrapped: Wrapper, stageToWrite: String): Boolean = {
+    val lines = IOManager.readInFileAsLine(stageToWrite).map(x => x.split(" "))
+    val linesWrapped = lines.map(x => Wrapper(x(2),x(1),x(0),""))
+   //Clean the file
     val writer = new PrintWriter(stageToWrite)
     writer.print("")
     writer.close()
-    val stageContent = lines.map(x => x.split(" "))
-    val stageFiltered =  stageContent.filter(x => !x(2).equals(pathLine))
-    val stage: List[String] = stageFiltered.map(x => x(0)+" "+x(1)+" "+x(2)+"\n")
 
-    stage.map(line => IOManager.writeInFile(stageToWrite,line,append = true))//WriteInStage
+    val newLinesWrapped: List[Wrapper] = linesWrapped.map(line => if(line.path.equals(blobWrapped.path) && (stageToWrite.equals(stageToCommitPath)||stageToWrite.equals(currentStagePath))) blobWrapped else line)
+    newLinesWrapped.map(l => IOManager.writeInFile(stageToWrite,l.typeElement+" "+l.hash+" "+l.path+"\n",append = true))//WriteInStage
+
+    val isIn1ButNotIn2 = inFirstListButNotInSecondListWithPath(List(blobWrapped),newLinesWrapped)
+    if(isIn1ButNotIn2.nonEmpty) true
+    else false
+  }
+
+   def inFirstListButNotInSecondListWithPath(l1: List[Wrapper], l2: List[Wrapper]): List[Wrapper] = {
+    l1.filter(x => !l2.exists(y => x.path.equals(y.path)))
   }
 
   /**

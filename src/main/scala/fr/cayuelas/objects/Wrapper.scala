@@ -1,6 +1,6 @@
 package fr.cayuelas.objects
 
-case class Wrapper(path: String, hash: String, typeElement: String, name: String) {
+case class Wrapper(path: String="", hash: String="", typeElement: String="", name: String="") {
 
 }
 
