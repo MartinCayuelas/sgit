@@ -1,5 +1,6 @@
-#!/bin/sh
-chmod +x sgit.sh
-DIR="$( cd "$( dirname -- $0 )" && pwd )"
-alias sgit='source '$DIR'/./sgit.sh'
-
+#!/bin/bash
+sbt assembly
+chmod u+x sgit.sh
+ln -s sgit.sh sgit
+export PATH=$PATH:`pwd`
+echo scala `pwd`/target/scala-2.13/sgit-assembly-0.1.jar \$\* > sgit.sh
