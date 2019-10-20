@@ -13,7 +13,8 @@ $ cd ..
 $ mkdir yourOwnFolder
 $ cd yourOwnFolder
 ```
-You have to stay in the same terminal or redo the source install.sh if you change terminal
+You have to stay in the same terminal or redo the source install.sh if you change terminal.
+
 If you can't launch later, you can add this to your PATH 
   ```shell script
   export PATH="/Your/Path/sgit/target/scala-2.13/:$PATH"
