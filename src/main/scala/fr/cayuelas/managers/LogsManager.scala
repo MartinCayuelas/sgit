@@ -88,7 +88,7 @@ object LogsManager {
     @tailrec
     def recursiveLogs(logs: List[String]): Unit = {
       if(logs.nonEmpty){
-       IoManager.printLogFormated(logs.head)
+        IoManager.printLogFormated(logs.head)
         val (parentCommit,currentCommit): (String,String) =  (logs.head.split(" ")(0),logs.head.split(" ")(1))
         val res = HelperDiff.diffBetweenTwoCommits(currentCommit,parentCommit,logStat)
         if(logStat){
@@ -134,13 +134,15 @@ object LogsManager {
       (0,linesCounted)
     }
     else {
-      val matrix = createMatrix(oldContent, newContent, 0, 0, Map())
-      val deltas = getDeltas(oldContent, newContent, oldContent.length - 1, newContent.length - 1, matrix, List())
-      if (deltas.nonEmpty) {
-        val (inserted, deleted) = calculateDeletionAndInsertion(deltas)
-        val changes = inserted + deleted
-        IoManager.printLineStat(path,"+-",changes)
-        (inserted,deleted)
+      if (newContent.nonEmpty && oldContent.nonEmpty) {
+        val matrix = createMatrix(oldContent, newContent, 0, 0, Map())
+        val deltas = getDeltas(oldContent, newContent, oldContent.length - 1, newContent.length - 1, matrix, List())
+        if(deltas.nonEmpty){
+          val (inserted, deleted) = calculateDeletionAndInsertion(deltas)
+          val changes = inserted + deleted
+          IoManager.printLineStat(path,"+-",changes)
+          (inserted,deleted)
+        }else (0,0)
       }else (0,0)
     }
   }
