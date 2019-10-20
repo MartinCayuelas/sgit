@@ -155,10 +155,12 @@ object HelperDiff {
       IoManager.printDiff(oldContent.map("- " +_))
     }
     else {
-      val deltas = getDeltas(oldContent, newContent, oldContent.length - 1, newContent.length - 1, createMatrix(oldContent, newContent, 0, 0, Map()), List())
-      if (deltas.nonEmpty) {
-        IoManager.printDiffForFile(path,sha1)
-        IoManager.printDiff(deltas)
+      if(newContent.nonEmpty && oldContent.nonEmpty){
+        val deltas = getDeltas(oldContent, newContent, oldContent.length - 1, newContent.length - 1, createMatrix(oldContent, newContent, 0, 0, Map()), List())
+        if (deltas.nonEmpty) {
+          IoManager.printDiffForFile(path,sha1)
+          IoManager.printDiff(deltas)
+        }
       }
     }
   }
