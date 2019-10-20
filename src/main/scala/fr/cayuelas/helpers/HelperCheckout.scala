@@ -11,7 +11,7 @@ object HelperCheckout {
    * @param args : should be the name of a tag or branch or a commit id
    */
   def checkout(args: Seq[String]): Unit = {
-      args(1) match {
+    args(1) match {
       case x if HelperBranch.isABranch(x) => checkoutBranch(x)
       case y if HelperTag.isATag(y) => checkoutCommitOrTag(y,isTag = true)
       case z if HelperCommit.isACommit(z)=> checkoutCommitOrTag(z,isTag = false)
@@ -27,7 +27,7 @@ object HelperCheckout {
     if(HelperBranch.getCurrentBranch.equals(nameBranch)) IoManager.printErrorOnCheckoutSameBranch(nameBranch)
     else{
       val stage: List[Wrapper] = IoManager.readInFileAsLine(StageManager.currentStagePath).map(_.split(" ")).map(blob => Wrapper(blob(2),blob(1),"Blob",""))
-      StageManager.clearStage(StageManager.currentStagePath)
+      IoManager.clearFile(StageManager.currentStagePath)
       HelperBranch.setNewBranchInHEAD(nameBranch)
       val lastCommit = HelperCommit.getLastCommitInRefs()
       val blobsRetrieved: List[Wrapper] = HelperCommit.getAllBlobsFromCommit(lastCommit)
@@ -42,7 +42,7 @@ object HelperCheckout {
    */
   def checkoutCommitOrTag(name: String, isTag: Boolean): Unit = {
     val stage: List[Wrapper] = IoManager.readInFileAsLine(StageManager.currentStagePath).map(_.split(" ")).map(blob => Wrapper(blob(2),blob(1),"Blob",""))
-    StageManager.clearStage(StageManager.currentStagePath)
+    IoManager.clearFile(StageManager.currentStagePath)
 
     val blobsRetrieved: List[Wrapper] = isTag match {
       case true => HelperCommit.getAllBlobsFromCommit(IoManager.readInFile(HelperPaths.tagsPath+File.separator+name))
@@ -64,8 +64,8 @@ object HelperCheckout {
 
     stage.map(line => FilesManager.deleteFile(line.path))
 
-    StageManager.clearStage(HelperPaths.stagePath+File.separator+"stageToCommit")
-    StageManager.clearStage(HelperPaths.stagePath+File.separator+"stageValidated")
+    IoManager.clearFile(HelperPaths.stagePath+File.separator+"stageToCommit")
+    IoManager.clearFile(HelperPaths.stagePath+File.separator+"stageValidated")
 
     blobsRetrieved.map(blob => {
       IoManager.writeInFile(StageManager.currentStagePath,blob.typeElement+" "+blob.hash+" "+blob.path+"\n",append = true)

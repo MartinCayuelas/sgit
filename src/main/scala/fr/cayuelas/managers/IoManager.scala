@@ -1,7 +1,7 @@
 package fr.cayuelas.managers
 
 
-import java.io.{BufferedWriter, File, FileWriter}
+import java.io.{BufferedWriter, File, FileWriter, PrintWriter}
 
 import fr.cayuelas.helpers.HelperBranch
 import fr.cayuelas.managers.LogsManager.logFormatting
@@ -49,13 +49,23 @@ object IoManager {
     lines
   }
 
+  /**
+   * Function that clears the content of a File
+   * @param path : path of the file that will be cleared
+   */
+  def clearFile(path: String): Unit ={
+    val writer = new PrintWriter(path)
+    writer.print("")
+    writer.close()
+  }
+
   /*
   Println part
    */
 
   def noArgumentsExpected() : Unit = println("No argument(s) expected.")
   def numberOfArgumentNotSupported(cmd: String): Unit = println(s"Number of arguments not supported for the command '${cmd}'.")
-  def notSgitReposiroty(): Unit = println("fatal: neither this nor any of its parent directories is a sgit: .sgit repository")
+  def notSgitRepository(): Unit = println("fatal: neither this nor any of its parent directories is a sgit: .sgit repository")
   def notExistingCommand(): Unit = println("This command doesn't exists")
   def argumentNotSupported(): Unit =println("Argument not supported.")
   /*
@@ -81,12 +91,12 @@ object IoManager {
   /*
   STATUS
    */
-  def printToBEValdiatedInfos(nameBranch: String): Unit = println(s"On the ${nameBranch} branch\nChanges that will be validated : \n")
+  def printToBValidatedInfos(nameBranch: String): Unit = println(s"On the ${nameBranch} branch\nChanges that will be validated : \n")
   def printNotValidatedInfos(): Unit = println("\nChanges that will not be validated:\n   (use \"git add <file> ...\" to update what will be validated)\n")
   def printUntrackedInfos(): Unit = println("\nFiles untracked:\n   (use \"git add <file> ...\" to include what will be validated)\n")
   def printElemValidated(elem: String) : Unit =  println(s"   ${Console.GREEN}"+elem+Console.RESET)
   def printElemNotValidated(e: String) : Unit =  println(s"   ${Console.RED}modified : "+e+Console.RESET)
-  def printElemNUntracked(e: String) : Unit =    println(s"   ${Console.RED}"+e+Console.RESET)
+  def printElemUntracked(e: String) : Unit =    println(s"   ${Console.RED}"+e+Console.RESET)
 
   /*
   TAG

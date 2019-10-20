@@ -24,7 +24,7 @@ object Launcher extends App {
       case Array("init", _) => IoManager.noArgumentsExpected()
       case Array("init") => init(System.getProperty("user.dir"))
 
-      case Array(_*) if (!isInSgitRepository) => IoManager.notSgitReposiroty()
+      case Array(_*) if (!isInSgitRepository) => IoManager.notSgitRepository()
       //ADD
       case Array("add", _*) => add(args)
         //Status

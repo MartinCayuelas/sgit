@@ -1,7 +1,7 @@
 package fr.cayuelas.objects
 
 
-import java.io.{File, PrintWriter}
+import java.io.File
 
 import fr.cayuelas.helpers.{HelperPaths, HelperSha1}
 import fr.cayuelas.managers.{FilesManager, IoManager}
@@ -43,13 +43,7 @@ case class Tree( contentTree: List[Wrapper] = List.empty, id: String = "") {
    * @param folder : tree's name folder
    * @param nameFile : tree's name file
    */
-  def clearTreefile(folder: String, nameFile: String): Unit = {
-    val path = treesPath + File.separator + folder + File.separator + nameFile
-    //Clean the file
-    val writer = new PrintWriter(path)
-    writer.print("")
-    writer.close()
-  }
+  def clearTreefile(folder: String, nameFile: String): Unit = IoManager.clearFile(treesPath + File.separator + folder + File.separator + nameFile)
 
   /**
    * Function thats accumulated all the content of a given list

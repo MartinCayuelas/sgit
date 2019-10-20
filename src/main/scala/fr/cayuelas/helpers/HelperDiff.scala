@@ -204,24 +204,24 @@ object HelperDiff {
 
       val contentBlobParent = HelperBlob.readContentInBlob(listBlobParent.head.hash)
       val contentBlobCurrent = HelperBlob.readContentInBlob(listBlobCommit.head.hash)
-      if(logStat) {
+      if(logStat) {//Log --stat
         val resFunc = LogsManager.displayStatsLog(contentBlobParent, contentBlobCurrent, listBlobCommit.head.path)
         val resInsertedDeleted = Some((resFunc._1+ins,resFunc._2+deleted))
         recursiveDisplay(listBlobCommit.tail,listBlobParent.tail,logStat,resInsertedDeleted)
       }
-      else{
+      else{//Log -p
         HelperDiff.displayDifferenceBetweenTwoFiles(contentBlobParent, contentBlobCurrent, listBlobCommit.head.path, listBlobCommit.head.hash)
         recursiveDisplay(listBlobCommit.tail,listBlobParent.tail,logStat,None)
       }
     }else{
       if(listBlobCommit.nonEmpty){
         val contentBlobCurrent = HelperBlob.readContentInBlob(listBlobCommit.head.hash)
-        if(logStat){
+        if(logStat){//Log --stat
           val resFunc = LogsManager.displayStatsLog(List(), contentBlobCurrent, listBlobCommit.head.path)
           val resInsertedDeleted = Some((resFunc._1+ins,resFunc._2+deleted))
           recursiveDisplay(listBlobCommit.tail,List(),logStat,resInsertedDeleted)
         }
-        else{
+        else{//Log -p
           HelperDiff.displayDifferenceBetweenTwoFiles(List(), contentBlobCurrent, listBlobCommit.head.path, listBlobCommit.head.hash)
           recursiveDisplay(listBlobCommit.tail, List(),logStat,None)
         }

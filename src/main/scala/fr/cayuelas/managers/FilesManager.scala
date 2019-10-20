@@ -2,7 +2,6 @@ package fr.cayuelas.managers
 
 import java.io.File
 
-
 object FilesManager {
 
   /**
@@ -52,7 +51,5 @@ object FilesManager {
    * @return true if it's created else false
    */
   def createNewFile(pathNewFile: String): Boolean = new File(pathNewFile).createNewFile()
-
-
 
 }

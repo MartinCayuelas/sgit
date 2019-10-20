@@ -30,9 +30,9 @@ object HelperCommit {
     else HelperCommit.printResultFirstCommit(commitCopy)
 
     HelperCommit.setCommitInRefs(commitCopy.idCommit)
-    StageManager.clearStage(StageManager.stageToCommitPath)
-    StageManager.clearStage(StageManager.stageValidatedPath)
 
+    IoManager.clearFile(StageManager.stageToCommitPath)
+    IoManager.clearFile(StageManager.stageValidatedPath)
     IoManager.writeInFile(LogsManager.getCurrentPathLogs,HelperCommit.getCommitContentForLog(commitCopy),append = true)//WriteInLogs
   }
 

@@ -1,6 +1,6 @@
 package fr.cayuelas.managers
 
-import java.io.{File, PrintWriter}
+import java.io.File
 
 import better.files.{File => BFile}
 import fr.cayuelas.helpers.{HelperBranch, HelperPaths}
@@ -35,15 +35,6 @@ object StageManager {
    */
   def readStageValidated(): List[String] = IoManager.readInFileAsLine(stageValidatedPath)
 
-  /**
-   * Function that clears the content of a stage File
-   * @param path : path of the file that will be cleared
-   */
-  def clearStage(path: String): Unit ={
-    val writer = new PrintWriter(path)
-    writer.print("")
-    writer.close()
-  }
 
   /**
    * Function that verify if the stage can be commited or not. If there are at least one line, it's true else false
@@ -95,7 +86,7 @@ object StageManager {
   def writeInStagesWithChecks(blobWrapped: Wrapper, stageToWrite: String): Boolean = {
     val linesWrapped = IoManager.readInFileAsLine(stageToWrite).map(_.split(" ")).map(x => Wrapper(x(2),x(1),x(0),""))
    //Clean the file
-    clearStage(stageToWrite)
+   IoManager.clearFile(stageToWrite)
 
     val newLinesWrapped: List[Wrapper] = linesWrapped.map(line => if(line.path.equals(blobWrapped.path) && (stageToWrite.equals(stageToCommitPath)||stageToWrite.equals(currentStagePath))) blobWrapped else line)
     newLinesWrapped.map(l => IoManager.writeInFile(stageToWrite,l.typeElement+" "+l.hash+" "+l.path+"\n",append = true))//WriteInStage

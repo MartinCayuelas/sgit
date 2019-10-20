@@ -8,8 +8,8 @@ It's a simple implementation of Git in Scala. This project was realized in 2 and
 $ cd
 $ git clone https://github.com/MartinCayuelas/sgit.git
 $ cd sgit
-$ source install.sh
 $ sbt assembly
+$ source install.sh
 $ cd ..
 $ mkdir yourOwnFolder
 $ cd yourOwnFolder

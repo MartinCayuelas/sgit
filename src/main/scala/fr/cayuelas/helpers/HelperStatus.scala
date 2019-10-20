@@ -16,7 +16,7 @@ object HelperStatus {
    */
 
   def printChangesThatWillBeValidated(): Unit = {
-    IoManager.printToBEValdiatedInfos(HelperBranch.getCurrentBranch)
+    IoManager.printToBValidatedInfos(HelperBranch.getCurrentBranch)
     getChangesThatWillBeValidated.map(elem => IoManager.printElemValidated(elem))
   }
 
@@ -65,7 +65,7 @@ object HelperStatus {
    */
   def printUntrackedFiles(): Unit = {
     IoManager.printUntrackedInfos()
-    getUntracked(HelperPaths.sgitPath).map(IoManager.printElemNUntracked)
+    getUntracked(HelperPaths.sgitPath).map(IoManager.printElemUntracked)
   }
 
   /**

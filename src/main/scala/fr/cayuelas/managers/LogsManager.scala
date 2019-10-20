@@ -144,6 +144,4 @@ object LogsManager {
       }else (0,0)
     }
   }
-
-
 }
