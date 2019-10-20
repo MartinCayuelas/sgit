@@ -38,7 +38,7 @@ Now, you can test **Sgit**
     
 -   sgit add <filename/filenames or . or regexp> ✅
     
--   git commit ✅
+-   sgit commit ✅
     
 ## Commit History:
     
