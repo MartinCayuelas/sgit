@@ -31,9 +31,12 @@ object IoManager {
    */
 
   def readInFile(pathToFile: String): String = {
-    val source = scala.io.Source.fromFile(pathToFile)
-    val content = try source.mkString finally source.close()
-    content
+    val file = new File(pathToFile)
+    if(file.exists()) {
+      val source = scala.io.Source.fromFile(pathToFile)
+      val content = try source.mkString finally source.close()
+      content
+    }else ""
   }
 
   /**
@@ -43,10 +46,13 @@ object IoManager {
    */
   def readInFileAsLine(pathToFile: String): List[String] = {
     val file = new File(pathToFile)
-    val source = scala.io.Source.fromFile(file)
-    val lines = source.getLines.toList
-    source.close()
-    lines
+    if(file.exists()){
+      val source = scala.io.Source.fromFile(file)
+      val lines = source.getLines.toList
+      source.close()
+      lines
+    }else List()
+
   }
 
   /**
