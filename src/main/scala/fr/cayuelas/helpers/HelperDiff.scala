@@ -124,8 +124,9 @@ object HelperDiff {
         accumulateCalculation(listOfHashesAndPaths.tail, newAccumulator)
       }
       else {
-        val deltas = getDeltas(contentBlob, contentOfFile, contentBlob.length - 1, contentOfFile.length - 1, createMatrix(contentBlob, contentOfFile, 0, 0, Map()), List())
-        if (deltas.nonEmpty) {
+
+        if (contentOfFile.nonEmpty && contentBlob.nonEmpty) {
+          val deltas = getDeltas(contentBlob, contentOfFile, contentBlob.length - 1, contentOfFile.length - 1, createMatrix(contentBlob, contentOfFile, 0, 0, Map()), List())
           val (inserted, deleted) = calculateDeletionAndInsertion(deltas)
           val newAccumulator = (accumulator._1 + inserted, accumulator._2 + deleted)
           accumulateCalculation(listOfHashesAndPaths.tail, newAccumulator)
@@ -155,6 +156,7 @@ object HelperDiff {
       IoManager.printDiff(oldContent.map("- " +_))
     }
     else {
+
       if(newContent.nonEmpty && oldContent.nonEmpty){
         val deltas = getDeltas(oldContent, newContent, oldContent.length - 1, newContent.length - 1, createMatrix(oldContent, newContent, 0, 0, Map()), List())
         if (deltas.nonEmpty) {
