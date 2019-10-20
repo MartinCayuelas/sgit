@@ -61,7 +61,7 @@ object HelperDiff {
    */
   @tailrec
   def getDeltas(oldContent: List[String], newContent: List[String], i: Int, j: Int, matrix: Map[(Int, Int), Int], deltas: List[String]): List[String] = {
-    if (i <= 0 && j <= 0) {
+    if (i == 0 && j == 0) {
       if (matrix(i, j) == 0) List("+ " + newContent(j), "- " + oldContent(i)) ++ deltas
       else deltas
     }
