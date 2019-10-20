@@ -37,7 +37,7 @@ Now, you can test **Sgit**
     
 -   sgit add <filename/filenames or . or regexp> ✅
     
--   sgit commit ✅
+-   sgit commit ✅ (You can use -m yourMessage also)
     
 ## Commit History:
     
@@ -54,13 +54,13 @@ Now, you can test **Sgit**
 ## Branches and Tags
     
 
--   sgit branch <branch name>  ✅
+-   sgit branch <branchname>  ✅
     
 -   sgit branch -av  ✅
   
--   sgit checkout  (branch or tag or commit hash) ⚠
+-   sgit checkout  ⚠ (allows to change branch or tag or commit but there is some anomalies in the files recreated sometimes)
     
--   sgit tag <tag name>  ✅
+-   sgit tag <tagname>  ✅
       
     
 ## Merge & Rebase
