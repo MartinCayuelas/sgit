@@ -13,6 +13,11 @@ $ cd ..
 $ mkdir yourOwnFolder
 $ cd yourOwnFolder
 ```
+If you can't launch later, you can add this to your PATH 
+  ``` 
+  export PATH="/Your/Path/to/sgit/target/scala-2.13/:$PATH"
+  alias sgit="sgit-assembly-0.1.jar"
+```
 
 Now, you can enjoy **Sgit**
 
