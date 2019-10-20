@@ -19,9 +19,11 @@ object IoManager {
    */
   def writeInFile(path: String, content: String, append: Boolean): Unit = {
     val file = new File(path)
-    val bw = new BufferedWriter(new FileWriter(file, append))
-    bw.write(content)
-    bw.close()
+    if(file.exists()){
+      val bw = new BufferedWriter(new FileWriter(file, append))
+      bw.write(content)
+      bw.close()
+    }
   }
 
   /**
