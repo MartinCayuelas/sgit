@@ -31,43 +31,66 @@ Now, you can test **Sgit**
 # Features
 
 ## Create:
-    
--   sgit init ✅ 
+
+Allows you to create a .sgit repository
+```shell script
+sgit init
+``` 
     
 ## Local Changes:
-    
--   sgit status ✅ 
-   
--   sgit diff ✅
-    
--   sgit add <filename/filenames or . or regexp> ✅
-    
--   sgit commit ✅ (You can use -m yourMessage also)
+
+This commands shows the state of each file.(New or modified)
+```shell script
+sgit status
+``` 
+This command allows to see differences between files stage or not if they are modified
+
+```shell script
+sgit diff
+``` 
+This command allows to add files or folder or files with regex expression. The deletion isn't handled
+```shell script
+sgit add <filename/filenames or . or regexp or folder>
+```     
+
+This command is used to do a record of the stage and to have history of it. With a message or not
+```shell script
+sgit commit 
+sgit commit -m <message>
+```     
+        
     
 ## Commit History:
     
--   sgit log  ✅
-    Show all commits started with newest
-    
--   sgit log -p  ✅
-    Show changes overtime
-    
--   sgit log --stat ✅
-   Show stats about changes overtime  
-      
-    
+This command is used to list the version history for all the branches.
+-p and --stat offer more specific information
+```shell script
+sgit log
+sgit log -p
+sgit log --stat
+```     
+
 ## Branches and Tags
     
-
--   sgit branch <branchname>  ✅
-    
--   sgit branch -av  ✅
+This command is used to create a new branch linked to the last commit.
+```shell script
+sgit branch <nameBranch>
+``` 
+This command is used to display all the branches and tags created. Shows also the current branch 
+```shell script
+sgit branch -av
+``` 
   
--   sgit checkout  ⚠ (allows to change branch or tag or commit but there is some anomalies in the files recreated sometimes)
-    
--   sgit tag <tagname>  ✅
+This command is used to switch from one branch to another or to a specific commit or to a specific tag. It's possible there are some bugs with folder not deleted
+```shell script
+sgit checkout <nameBranch or nameTag or commitHash>
+``` 
+ 
+This command is used to create a new tag linked to the last commit.
+```shell script
+sgit tag <nameTag>
+``` 
       
-    
 ## Merge & Rebase
     
 
